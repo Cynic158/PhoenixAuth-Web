@@ -1,0 +1,55 @@
+// 全局scss变量
+// 颜色变量
+$color-blue: #18bcf8;
+$color-light-gray: #dddddd;
+$color-gray: #909399;
+$color-deep-gray: #5a5959;
+$color-white: white;
+$color-deep-white: #e1e1e1;
+$color-light-yellow: #ffe297;
+$color-yellow: #f0cf7d;
+$color-deep-yellow: #e6c182;
+$color-light-green: #85ff85;
+$color-green: #52f052;
+$color-deep-green: #1acf1a;
+
+// 尺寸变量
+$size-logo-container-height: 60px;
+$size-menu-width: 240px;
+$size-tabbar-height: 59px;
+
+// 动画变量
+$ani-opacity: opacity 0.3s;
+
+// 布局变量
+// 登录表单
+$login-form-bgcolor: rgba(
+  $color: $color-deep-white,
+  $alpha: 0.3,
+);
+$login-form-shadow: 0 0 8px 8px
+  rgba(
+    $color: #525252,
+    $alpha: 0.1,
+  );
+// 标题提示
+$login-form-h2: rgba(
+  $color: $color-deep-gray,
+  $alpha: 0.6,
+);
+// 输入框
+$login-form-input-bgcolor: rgba(
+  $color: $color-white,
+  $alpha: 0.5,
+);
+// 按钮
+$login-form-btn: $color-yellow;
+$login-form-btn-hover: $color-light-yellow;
+$login-form-btn-active: $color-deep-yellow;
+// 注册以及返回登录
+$login-form-reg: $color-green;
+$login-form-reg-hover: $color-light-green;
+$login-form-reg-active: $color-deep-green;
+
+// 滚动条
+$scrollbar-default-bgcolor: $color-gray;

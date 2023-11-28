@@ -1,0 +1,49 @@
+@import "./reset.scss";
+
+// 全局样式
+// 滚动条样式
+::-webkit-scrollbar {
+  width: 6px;
+  height: 0px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: $scrollbar-default-bgcolor;
+  opacity: 0.3;
+}
+::-webkit-scrollbar-thumb:hover {
+  opacity: 0.5;
+}
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+// vue动画
+.router-enter-from {
+  position: relative;
+  opacity: 0;
+  left: -50px;
+}
+
+.router-enter-to {
+  position: relative;
+  opacity: 1;
+  left: 0px;
+}
+
+.router-enter-active {
+  transition: all 0.5s;
+}
+
+// 掐掉logo和折叠按钮的propper弹出
+.banpopper {
+  display: none;
+}
+
+.grecaptcha-badge {
+  z-index: 2;
+  // top: 10px;
+  iframe {
+    z-index: 3;
+  }
+}
