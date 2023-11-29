@@ -2,13 +2,27 @@
 import { defineStore } from "pinia";
 
 // 用户请求api
-import { reqLogin, reqUserInfo, reqLogout } from "@/api/user";
+import {
+  reqLogin,
+  reqUserInfo,
+  reqLogout,
+  reqNewToken,
+  reqRegister,
+} from "@/api/user";
 // 导入路由创建动态菜单
 import { defaultRoutes, permissionRoutes, anyRoute } from "@/router/routes";
 import { ref } from "vue";
 import router from "@/router";
 // @ts-ignore
 import cloneDeep from "lodash/cloneDeep";
+// @ts-ignore
+import sha256 from "crypto-js/sha256";
+
+interface userInfo {
+  username: string;
+  password: string;
+  captcha_token: string;
+}
 
 // 过滤权限路由，传入权限路由以及用户所拥有的的路由权限数组
 function filterRoute(asyncRoutes: any, permission: any) {
@@ -59,31 +73,58 @@ let useUserStore = defineStore("user", () => {
   // 人机token
   let robotToken = ref("");
 
-  // 存储token
-  let setToken = (str: string) => {
-    token.value = str;
-    localStorage.setItem("TOKEN", token.value);
-  };
-
-  // 请求登录函数
-  // @ts-ignore
-  let userLogin = async (loginData) => {
-    refreshFlag.value = false;
-    // 发起请求
-    let result = await reqLogin(loginData);
-    // @ts-ignore
-    if (result.code == 200) {
-      // 登录成功，赋值给token
-      token.value = result.data.token;
-      // 本地存储token
+  // 获取会话token
+  let getToken = async () => {
+    let result = await reqNewToken();
+    if (result) {
+      // @ts-ignore
+      token.value = result;
       localStorage.setItem("TOKEN", token.value);
-      // 返回一个成功的promise
       return "success";
     } else {
-      // 登录失败，返回一个失败的promise
-      return Promise.reject(result.data);
+      return Promise.reject("fail");
     }
   };
+
+  // 请求注册
+  let userRegister = async (regInfo: userInfo) => {
+    // 先对密码进行加密
+    const hashpassword = sha256(regInfo.password).toString();
+    regInfo.password = hashpassword;
+    // 发起请求
+    let result = await reqRegister(regInfo);
+    console.log(result);
+    return "ok";
+  };
+
+  // 请求登录
+  let userLogin = async (loginInfo: userInfo) => {
+    // 先对密码进行加密
+    const hashpassword = sha256(loginInfo.password).toString();
+    loginInfo.password = hashpassword;
+    // 发起请求
+    let result = await reqLogin(loginInfo);
+    console.log(result);
+    return "ok";
+  };
+  // @ts-ignore
+  // let userLogin = async (loginData) => {
+  //   refreshFlag.value = false;
+  //   // 发起请求
+  //   let result = await reqLogin(loginData);
+  //   // @ts-ignore
+  //   if (result.code == 200) {
+  //     // 登录成功，赋值给token
+  //     token.value = result.data.token;
+  //     // 本地存储token
+  //     localStorage.setItem("TOKEN", token.value);
+  //     // 返回一个成功的promise
+  //     return "success";
+  //   } else {
+  //     // 登录失败，返回一个失败的promise
+  //     return Promise.reject(result.data);
+  //   }
+  // };
 
   // 获取用户信息
   let userInfo = async () => {
@@ -162,8 +203,9 @@ let useUserStore = defineStore("user", () => {
     clearUser,
     refreshFlag,
     btns,
-    setToken,
+    getToken,
     robotToken,
+    userRegister,
   };
 });
 

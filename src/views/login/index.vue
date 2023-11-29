@@ -136,8 +136,6 @@ import { useRouter } from "vue-router";
 import { ElNotification } from "element-plus";
 // 获取时间字符串函数
 import { getTimeStr } from "@/utils/index";
-// 用户请求api
-import { reqNewToken } from "@/api/user";
 
 // 使用user仓库
 let userStore = useUserStore();
@@ -282,11 +280,13 @@ var robotCallback = (args: any) => {
 var robotExpiredCallback = (args: any) => {
   console.log(args);
   console.log("验证过期");
+  userStore.robotToken = "";
 };
 // 人机验证失败回调
 var robotErrorCallback = (args: any) => {
   console.log(args);
   console.log("验证失败");
+  userStore.robotToken = "";
 };
 // 人机验证过期回调
 // 登录事件
@@ -299,6 +299,15 @@ let login = async () => {
   document.querySelector(".g-recaptcha").click();
   if (userStore.robotToken) {
     // 已通过人机验证，进行登录
+    let loginInfo = {
+      username: "",
+      password: "",
+      captcha_token: userStore.robotToken,
+    };
+    loginInfo.username = loginData.username;
+    loginInfo.password = loginData.password;
+    // 仓库发起登录请求
+    await userStore.userLogin(loginInfo);
   }
 
   // try {
@@ -344,9 +353,9 @@ let register = async () => {
       captcha_token: userStore.robotToken,
     };
     regInfo.username = regData.username;
-    // 对密码进行加密
     regInfo.password = regData.password;
-    // 发起注册请求
+    // 仓库发起注册请求
+    await userStore.userRegister(regInfo);
   }
 
   // try {
@@ -380,11 +389,9 @@ let register = async () => {
 
 // 获取token
 let reqNewTokenFunc = async () => {
-  let result = await reqNewToken();
-  if (result) {
-    // @ts-ignore
-    userStore.setToken(result);
-  } else {
+  try {
+    await userStore.getToken();
+  } catch (error) {
     // 请求失败，消息提示
     ElNotification({
       type: "error",
@@ -595,7 +602,7 @@ onUnmounted(() => {
 .login-container {
   width: 100%;
   height: 100vh;
-  background-image: url("http://localhost/apiresource/bg.png");
+  background-image: url("bg.png");
   // background-image: url("../../../public/bg.png");
   background-repeat: no-repeat;
   background-size: cover;
