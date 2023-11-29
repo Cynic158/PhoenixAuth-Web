@@ -264,16 +264,109 @@ let switchpage = (type: "login" | "reg") => {
 let loadingflag = ref(false);
 let regloadingflag = ref(false);
 // 人机验证成功回调
-var robotCallback = (args: any) => {
-  console.log(args);
-  console.log("验证成功");
+var robotCallback = async (args: any) => {
+  // console.log(args);
+  // console.log("验证成功");
   // 存储人机token
   userStore.robotToken = args;
   // 判断当前是注册还是登录
   if (currentForm.value == "login") {
     // 进行登录
+    if (userStore.robotToken) {
+      try {
+        // 显示加载
+        loadingflag.value = true;
+        // 已通过人机验证，进行登录
+        let loginInfo = {
+          username: "",
+          password: "",
+          captcha_token: userStore.robotToken,
+        };
+        loginInfo.username = loginData.username;
+        loginInfo.password = loginData.password;
+        // 仓库发起登录请求
+        let result = await userStore.userRegLog(loginInfo, currentForm.value);
+        // @ts-ignore
+        if (result.success) {
+          // 请求成功，进入首页
+          $router.push("/");
+          // 获取当前时段字符串
+          let timestr: string = getTimeStr();
+          // 消息提示
+          ElNotification({
+            type: "success",
+            title: timestr,
+            message: "登录成功",
+            duration: 3000,
+          });
+        } else {
+          // 请求失败，消息提示
+          ElNotification({
+            type: "error",
+            // @ts-ignore
+            message: result.message,
+            duration: 3000,
+          });
+        }
+      } catch (error: any) {
+        // 请求失败，消息提示
+        ElNotification({
+          type: "error",
+          message: error.message,
+          duration: 3000,
+        });
+      } finally {
+        // 请求完成，关闭加载
+        loadingflag.value = false;
+      }
+    }
   } else if (currentForm.value == "reg") {
     // 进行注册
+    if (userStore.robotToken) {
+      try {
+        // 显示加载
+        regloadingflag.value = true;
+        // 已通过人机验证，进行注册
+        let regInfo = {
+          username: "",
+          password: "",
+          captcha_token: userStore.robotToken,
+        };
+        regInfo.username = regData.username;
+        regInfo.password = regData.password;
+        // 仓库发起注册请求
+        let result = await userStore.userRegLog(regInfo, currentForm.value);
+        // @ts-ignore
+        if (result.success) {
+          // 注册成功，返回登录
+          switchpage("login");
+          // 消息提示
+          ElNotification({
+            type: "success",
+            message: "注册成功",
+            duration: 3000,
+          });
+        } else {
+          // 请求失败，消息提示
+          ElNotification({
+            type: "error",
+            // @ts-ignore
+            message: result.message,
+            duration: 3000,
+          });
+        }
+      } catch (error: any) {
+        // 请求失败，消息提示
+        ElNotification({
+          type: "error",
+          message: error.message,
+          duration: 3000,
+        });
+      } finally {
+        // 请求完成，关闭加载
+        regloadingflag.value = false;
+      }
+    }
   }
 };
 // 人机验证过期回调
@@ -295,96 +388,22 @@ let login = async () => {
   // @ts-ignore
   await loginform.value.validate();
 
+  userStore.robotToken = "";
+  // @ts-ignore
+  grecaptcha.reset();
   // @ts-ignore
   document.querySelector(".g-recaptcha").click();
-  if (userStore.robotToken) {
-    // 已通过人机验证，进行登录
-    let loginInfo = {
-      username: "",
-      password: "",
-      captcha_token: userStore.robotToken,
-    };
-    loginInfo.username = loginData.username;
-    loginInfo.password = loginData.password;
-    // 仓库发起登录请求
-    await userStore.userLogin(loginInfo);
-  }
-
-  // try {
-  //   // 显示加载
-  //   loadingflag.value = true;
-  //   // 由仓库发起请求
-  //   await userStore.userLogin(loginData);
-  //   // 请求成功，进入首页
-  //   $router.push("/");
-  //   // 获取当前时段字符串
-  //   let timestr: string = getTimeStr();
-  //   // 消息提示
-  //   ElNotification({
-  //     type: "success",
-  //     title: timestr,
-  //     message: "登录成功",
-  //     duration: 3000,
-  //   });
-  // } catch (error: any) {
-  //   // 请求失败，消息提示
-  //   ElNotification({
-  //     type: "error",
-  //     message: error.message,
-  //     duration: 3000,
-  //   });
-  // } finally {
-  //   // 请求完成，关闭加载
-  //   loadingflag.value = false;
-  // }
 };
 let register = async () => {
   // 校验表单
   // @ts-ignore
   await regform.value.validate();
 
+  userStore.robotToken = "";
+  // @ts-ignore
+  grecaptcha.reset();
   // @ts-ignore
   document.querySelector(".g-recaptcha").click();
-  if (userStore.robotToken) {
-    // 已通过人机验证，进行注册
-    let regInfo = {
-      username: "",
-      password: "",
-      captcha_token: userStore.robotToken,
-    };
-    regInfo.username = regData.username;
-    regInfo.password = regData.password;
-    // 仓库发起注册请求
-    await userStore.userRegister(regInfo);
-  }
-
-  // try {
-  //   // 显示加载
-  //   regloadingflag.value = true;
-  //   // 由仓库发起请求
-
-  //   // 请求成功，进入首页
-
-  //   // 获取当前时段字符串
-  //   let timestr: string = getTimeStr();
-  //   // 消息提示
-  //   ElNotification({
-  //     type: "success",
-  //     title: timestr,
-  //     message: "注册成功",
-  //     duration: 3000,
-  //   });
-  // } catch (error: any) {
-  //   // 请求失败，消息提示
-  //   ElNotification({
-  //     type: "error",
-  //     message: error.message,
-  //     duration: 3000,
-  //   });
-  // } finally {
-  //   // 请求完成，关闭加载
-  //   regloadingflag.value = false;
-  // }
 };
 
 // 获取token

@@ -35,8 +35,6 @@
       <el-button circle size="large" class="funcBtn" @click="showSetting">
         <el-icon size="18"><Setting /></el-icon>
       </el-button>
-      <!-- 头像 -->
-      <el-avatar :size="44" :src="userStore.avatar" />
       <!-- 用户名以及退出登录 -->
       <el-dropdown>
         <span class="el-dropdown-link">

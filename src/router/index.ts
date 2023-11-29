@@ -55,6 +55,7 @@ router.beforeEach(async (to, from, next) => {
     next({ path: "/login" });
   } else if (to.path == "/login") {
     // 如果前往的是登录页，直接跳转
+    userStore.clearUser();
     next();
   } else if (userStore.refreshFlag == true) {
     // 已经获取到用户信息，直接跳转
@@ -70,6 +71,12 @@ router.beforeEach(async (to, from, next) => {
       next({ ...to, replace: true });
     } catch (error) {
       // 获取不到用户信息，转回登录页
+      ElNotification({
+        type: "error",
+        message: "获取用户信息错误",
+        duration: 3000,
+      });
+      userStore.clearUser();
       next({ path: "/login" });
     }
   }

@@ -10,7 +10,8 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
-__debug_bin521602532.exe
+menu
+phoenixenhance(1).exe
 new_apis.md
 *.local
 

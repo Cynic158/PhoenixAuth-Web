@@ -3,11 +3,11 @@ import { defineStore } from "pinia";
 
 // 用户请求api
 import {
-  reqLogin,
-  reqUserInfo,
   reqLogout,
   reqNewToken,
   reqRegister,
+  reqLogin,
+  reqGetStatus,
 } from "@/api/user";
 // 导入路由创建动态菜单
 import { defaultRoutes, permissionRoutes, anyRoute } from "@/router/routes";
@@ -86,67 +86,40 @@ let useUserStore = defineStore("user", () => {
     }
   };
 
-  // 请求注册
-  let userRegister = async (regInfo: userInfo) => {
+  // 请求登录或者注册
+  let userRegLog = async (userInfo: userInfo, type: "login" | "reg") => {
     // 先对密码进行加密
-    const hashpassword = sha256(regInfo.password).toString();
-    regInfo.password = hashpassword;
+    const hashpassword = sha256(userInfo.password).toString();
+    userInfo.password = hashpassword;
     // 发起请求
-    let result = await reqRegister(regInfo);
-    console.log(result);
-    return "ok";
+    try {
+      let result = null;
+      if (type == "reg") {
+        result = await reqRegister(userInfo);
+      } else if (type == "login") {
+        result = await reqLogin(userInfo);
+      }
+      console.log(result);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
   };
-
-  // 请求登录
-  let userLogin = async (loginInfo: userInfo) => {
-    // 先对密码进行加密
-    const hashpassword = sha256(loginInfo.password).toString();
-    loginInfo.password = hashpassword;
-    // 发起请求
-    let result = await reqLogin(loginInfo);
-    console.log(result);
-    return "ok";
-  };
-  // @ts-ignore
-  // let userLogin = async (loginData) => {
-  //   refreshFlag.value = false;
-  //   // 发起请求
-  //   let result = await reqLogin(loginData);
-  //   // @ts-ignore
-  //   if (result.code == 200) {
-  //     // 登录成功，赋值给token
-  //     token.value = result.data.token;
-  //     // 本地存储token
-  //     localStorage.setItem("TOKEN", token.value);
-  //     // 返回一个成功的promise
-  //     return "success";
-  //   } else {
-  //     // 登录失败，返回一个失败的promise
-  //     return Promise.reject(result.data);
-  //   }
-  // };
 
   // 获取用户信息
   let userInfo = async () => {
     // 发起请求
-    let result = await reqUserInfo();
+    let result = await reqGetStatus();
     // @ts-ignore
-    if (result.code == 200) {
-      // 传入以及存储用户名和头像和按钮权限
-      uname.value = result.data.userInfo.username;
-      avatar.value = result.data.userInfo.avatar;
-      btns.value = result.data.userInfo.buttons;
-      localStorage.setItem("UNAME", uname.value);
-      localStorage.setItem("AVATAR", avatar.value);
+    if (result.success) {
+      // 获取成功，存储用户用户名
+      // @ts-ignore
+      uname.value = result.username;
+      // @ts-ignore
+      localStorage.setItem("UNAME", result.username);
       // 根据得到的用户路由权限来渲染动态路由
-      let userRoutes = filterRoute(
-        cloneDeep(permissionRoutes),
-        result.data.userInfo.routes
-      );
-      let removePermission = removeFilter(
-        cloneDeep(permissionRoutes),
-        result.data.userInfo.routes
-      );
+      let userRoutes = filterRoute(cloneDeep(permissionRoutes), []);
+      let removePermission = removeFilter(cloneDeep(permissionRoutes), []);
       menuRoutes.value = [...defaultRoutes, ...userRoutes];
       // 动态添加路由
       userRoutes.forEach((route: any) => {
@@ -158,11 +131,9 @@ let useUserStore = defineStore("user", () => {
       });
       // 通配路由放在最后
       router.addRoute(anyRoute);
-      // 返回一个成功的promise
-      return "success";
     } else {
       // 获取失败，返回一个失败的promise
-      return Promise.reject(result.data);
+      return Promise.reject(result);
     }
   };
 
@@ -171,16 +142,14 @@ let useUserStore = defineStore("user", () => {
   let clearUser = () => {
     token.value = "";
     uname.value = "";
-    avatar.value = "";
     localStorage.setItem("TOKEN", "");
     localStorage.setItem("UNAME", "");
-    localStorage.setItem("AVATAR", "");
   };
   let userLogout = async () => {
     // 发起请求
     let result = await reqLogout();
     // @ts-ignore
-    if (result.code == 200) {
+    if (result.success) {
       // 清空用户信息
       clearUser();
       // 重置flag，使得重新登录会再次动态添加路由
@@ -188,7 +157,7 @@ let useUserStore = defineStore("user", () => {
       return "登出成功";
     } else {
       // 登出失败，返回一个失败的promise
-      return Promise.reject(result.data);
+      return Promise.reject(result);
     }
   };
 
@@ -196,7 +165,6 @@ let useUserStore = defineStore("user", () => {
     token,
     uname,
     avatar,
-    userLogin,
     userInfo,
     userLogout,
     menuRoutes,
@@ -205,7 +173,7 @@ let useUserStore = defineStore("user", () => {
     btns,
     getToken,
     robotToken,
-    userRegister,
+    userRegLog,
   };
 });
 
