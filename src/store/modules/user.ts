@@ -8,9 +8,15 @@ import {
   reqRegister,
   reqLogin,
   reqGetStatus,
+  reqGetPhoenixToken,
 } from "@/api/user";
 // 导入路由创建动态菜单
-import { defaultRoutes, permissionRoutes, anyRoute } from "@/router/routes";
+import {
+  defaultRoutes,
+  permissionRoutes,
+  defaultRoutes2,
+  anyRoute,
+} from "@/router/routes";
 import { ref } from "vue";
 import router from "@/router";
 // @ts-ignore
@@ -22,6 +28,13 @@ interface userInfo {
   username: string;
   password: string;
   captcha_token: string;
+}
+interface userDetail {
+  username: string;
+  is_admin: boolean;
+  is_developer: boolean;
+  create_at: number;
+  expire_at: number;
 }
 
 // 过滤权限路由，传入权限路由以及用户所拥有的的路由权限数组
@@ -62,8 +75,15 @@ let useUserStore = defineStore("user", () => {
   let token = ref(localStorage.getItem("TOKEN") || "");
   // 用户名
   let uname = ref(localStorage.getItem("UNAME") || "");
-  // 头像
-  let avatar = ref(localStorage.getItem("AVATAR") || "");
+  // 是否管理员
+  let adminFlag = ref(localStorage.getItem("ADMINFLAG") || "");
+  // 是否开发者
+  let devFlag = ref(localStorage.getItem("DEVFLAG") || "");
+  // 用户创建时间
+  let ucreate = ref(localStorage.getItem("UCREATE") || "");
+  // 用户过期时间
+  let uexpire = ref(localStorage.getItem("UEXPIRE") || "");
+
   // 动态路由菜单项
   let menuRoutes = ref([...defaultRoutes]);
   // 动态路由刷新flag
@@ -106,23 +126,69 @@ let useUserStore = defineStore("user", () => {
     }
   };
 
+  // 持久化用户信息
+  let setUser = (userInfo: userDetail) => {
+    uname.value = userInfo.username;
+    if (userInfo.is_admin) {
+      adminFlag.value = "是";
+    } else {
+      adminFlag.value = "否";
+    }
+    if (userInfo.is_developer) {
+      devFlag.value = "是";
+    } else {
+      devFlag.value = "否";
+    }
+    ucreate.value = userInfo.create_at.toString();
+    uexpire.value = userInfo.expire_at.toString();
+    localStorage.setItem("UNAME", userInfo.username);
+    localStorage.setItem("ADMINFLAG", adminFlag.value);
+    localStorage.setItem("DEVFLAG", devFlag.value);
+    localStorage.setItem("UCREATE", userInfo.create_at.toString());
+    localStorage.setItem("UEXPIRE", userInfo.expire_at.toString());
+  };
+  // 清空用户信息函数
+  let clearUser = () => {
+    token.value = "";
+    uname.value = "";
+    adminFlag.value = "";
+    devFlag.value = "";
+    ucreate.value = "";
+    uexpire.value = "";
+    localStorage.setItem("TOKEN", "");
+    localStorage.setItem("UNAME", "");
+    localStorage.setItem("ADMINFLAG", "");
+    localStorage.setItem("DEVFLAG", "");
+    localStorage.setItem("UCREATE", "");
+    localStorage.setItem("UEXPIRE", "");
+  };
+
   // 获取用户信息
   let userInfo = async () => {
     // 发起请求
     let result = await reqGetStatus();
     // @ts-ignore
     if (result.success) {
-      // 获取成功，存储用户用户名
+      // 获取成功，存储用户信息
       // @ts-ignore
-      uname.value = result.username;
-      // @ts-ignore
-      localStorage.setItem("UNAME", result.username);
+      setUser(result);
       // 根据得到的用户路由权限来渲染动态路由
-      let userRoutes = filterRoute(cloneDeep(permissionRoutes), []);
-      let removePermission = removeFilter(cloneDeep(permissionRoutes), []);
-      menuRoutes.value = [...defaultRoutes, ...userRoutes];
+      let filterArr: Array<string> = [];
+      // @ts-ignore
+      if (result.is_admin) {
+        filterArr = ["admin"];
+      }
+      let userRoutes = filterRoute(cloneDeep(permissionRoutes), filterArr);
+      let removePermission = removeFilter(
+        cloneDeep(permissionRoutes),
+        filterArr
+      );
+      menuRoutes.value = [...defaultRoutes, ...userRoutes, ...defaultRoutes2];
       // 动态添加路由
       userRoutes.forEach((route: any) => {
+        router.addRoute("layout", route);
+      });
+      defaultRoutes2.forEach((route: any) => {
         router.addRoute("layout", route);
       });
       // 移除没有权限的路由
@@ -138,13 +204,6 @@ let useUserStore = defineStore("user", () => {
   };
 
   // 请求登出
-  // 清空用户信息函数
-  let clearUser = () => {
-    token.value = "";
-    uname.value = "";
-    localStorage.setItem("TOKEN", "");
-    localStorage.setItem("UNAME", "");
-  };
   let userLogout = async () => {
     // 发起请求
     let result = await reqLogout();
@@ -161,10 +220,36 @@ let useUserStore = defineStore("user", () => {
     }
   };
 
+  // 请求phoenixtoken
+  let userDownload = async () => {
+    // 发起请求
+    let result = await reqGetPhoenixToken();
+    console.log(result);
+    // 创建 Blob
+    // @ts-ignore
+    const blob = new Blob([result], { type: "text/plain" });
+
+    // 创建 URL
+    const url = window.URL.createObjectURL(blob);
+
+    // 创建 <a> 元素
+    const link = document.createElement("a");
+
+    // 设置 <a> 元素的属性
+    link.href = url;
+    link.download = "fbtoken.txt";
+
+    // 模拟点击 <a> 元素
+    link.click();
+
+    // 释放 URL 对象
+    window.URL.revokeObjectURL(url);
+    return "ok";
+  };
+
   return {
     token,
     uname,
-    avatar,
     userInfo,
     userLogout,
     menuRoutes,
@@ -174,6 +259,11 @@ let useUserStore = defineStore("user", () => {
     getToken,
     robotToken,
     userRegLog,
+    adminFlag,
+    devFlag,
+    ucreate,
+    uexpire,
+    userDownload,
   };
 });
 

@@ -2,7 +2,7 @@
   <div class="logo-container">
     <!-- <img :src="setting.logoImage" alt=""> -->
     <svg-icon
-      name="vite"
+      name="logo"
       width="40px"
       height="40px"
       class="logo-img"

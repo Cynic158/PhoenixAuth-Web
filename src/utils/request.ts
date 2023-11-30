@@ -62,6 +62,22 @@ request.interceptors.response.use(
       userStore.clearUser();
       // 跳转到登录页
       routerPush("/login");
+    } else if (error.response.status == 403) {
+      // 越权
+      ElNotification({
+        type: "warning",
+        title: "越权",
+        message: "跳转到登录页",
+        duration: 3000,
+      });
+      // 使用用户仓库的清空信息函数
+      let userStore = useUserStore();
+      // 清空用户信息
+      userStore.clearUser();
+      // 跳转到登录页
+      routerPush("/login");
+      // 刷新当前页面
+      location.reload();
     }
     // ElMessage({
     //   type: "error",

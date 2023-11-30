@@ -71,11 +71,11 @@ router.beforeEach(async (to, from, next) => {
       next({ ...to, replace: true });
     } catch (error) {
       // 获取不到用户信息，转回登录页
-      ElNotification({
-        type: "error",
-        message: "获取用户信息错误",
-        duration: 3000,
-      });
+      // ElNotification({
+      //   type: "error",
+      //   message: "获取用户信息错误",
+      //   duration: 3000,
+      // });
       userStore.clearUser();
       next({ path: "/login" });
     }

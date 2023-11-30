@@ -32,87 +32,47 @@ export const defaultRoutes = [
         },
       },
       {
-        path: "/imgfile",
-        component: () => import("@/views/imgfile/index.vue"),
-        name: "imgfile",
+        path: "/usermenu",
+        component: () => import("@/views/usermenu/index.vue"),
+        name: "usermenu",
         meta: {
-          title: "图片上传",
+          title: "用户菜单",
           hidden: false,
-          icon: "Picture",
+          icon: "UserFilled",
         },
       },
       {
-        path: "/test2",
+        path: "/gameaccount",
         component: () => import("@/views/test/index.vue"),
-        name: "test2",
-        redirect: "/test2/test21",
+        name: "gameaccount",
+        redirect: "/gameaccount/useraccount",
         meta: {
-          title: "测试菜单项2",
+          title: "游戏账户",
           hidden: false,
-          icon: "Tools",
+          icon: "SwitchFilled",
         },
         children: [
           {
-            path: "/test2/test21",
+            path: "/gameaccount/useraccount",
             component: () => import("@/views/test/index.vue"),
-            name: "test21",
+            name: "useraccount",
             meta: {
-              title: "测试菜单项2-1",
+              title: "我的账号",
               hidden: false,
-              icon: "Tools",
+              icon: "Coordinate",
             },
           },
           {
-            path: "/test2/test22",
+            path: "/gameaccount/robotaccount",
             component: () => import("@/views/test/index.vue"),
-            name: "test22",
+            name: "robotaccount",
             meta: {
-              title: "测试菜单项2-2",
+              title: "Bot 账号",
               hidden: false,
-              icon: "Tools",
-            },
-          },
-          {
-            path: "/test2/test23",
-            component: () => import("@/views/test/index.vue"),
-            name: "test23",
-            meta: {
-              title: "测试菜单项2-3",
-              hidden: false,
-              icon: "Tools",
+              icon: "Cpu",
             },
           },
         ],
-      },
-      {
-        path: "/test3",
-        component: () => import("@/views/test/index.vue"),
-        name: "test3",
-        meta: {
-          title: "测试菜单项3",
-          hidden: false,
-          icon: "Tools",
-        },
-      },
-      {
-        path: "/test4",
-        component: () => import("@/views/test/index.vue"),
-        name: "test4",
-        meta: {
-          title: "测试菜单项4",
-          hidden: false,
-          icon: "Tools",
-        },
-      },
-      {
-        path: "/test5",
-        component: () => import("@/views/test/index.vue"),
-        name: "test5",
-        meta: {
-          title: "测试菜单项5",
-          hidden: false,
-          icon: "Tools",
-        },
       },
     ],
   },
@@ -131,63 +91,37 @@ export const defaultRoutes = [
 // 权限路由
 export const permissionRoutes = [
   {
-    path: "/permissions1",
+    path: "/admin",
     component: () => import("@/views/test/index.vue"),
-    name: "permissions1",
+    name: "admin",
     meta: {
-      title: "admin权限1",
+      title: "管理菜单",
       hidden: false,
-      icon: "Key",
+      icon: "Tools",
+    },
+  },
+];
+
+// 通用路由2
+export const defaultRoutes2 = [
+  {
+    path: "/download",
+    component: () => import("@/views/test/index.vue"),
+    name: "download",
+    meta: {
+      title: "下载",
+      hidden: false,
+      icon: "Download",
     },
   },
   {
-    path: "/permissions2",
+    path: "/about",
     component: () => import("@/views/test/index.vue"),
-    name: "permissions2",
+    name: "about",
     meta: {
-      title: "admin权限2",
+      title: "关于",
       hidden: false,
-      icon: "Key",
-    },
-  },
-  {
-    path: "/permissions3",
-    component: () => import("@/views/test/index.vue"),
-    name: "permissions3",
-    meta: {
-      title: "admin权限3",
-      hidden: false,
-      icon: "Key",
-    },
-  },
-  {
-    path: "/permissions4",
-    component: () => import("@/views/test/index.vue"),
-    name: "permissions4",
-    meta: {
-      title: "user权限1",
-      hidden: false,
-      icon: "Key",
-    },
-  },
-  {
-    path: "/permissions5",
-    component: () => import("@/views/test/index.vue"),
-    name: "permissions5",
-    meta: {
-      title: "user权限2",
-      hidden: false,
-      icon: "Key",
-    },
-  },
-  {
-    path: "/permissions6",
-    component: () => import("@/views/test/index.vue"),
-    name: "permissions6",
-    meta: {
-      title: "user权限3",
-      hidden: false,
-      icon: "Key",
+      icon: "InfoFilled",
     },
   },
 ];

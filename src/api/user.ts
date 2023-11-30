@@ -8,6 +8,7 @@ enum API {
   LOGIN = "/user/login",
   GET_STATUS = "/user/get_status",
   LOGOUT = "/user/logout",
+  GET_PHOENIX_TOKEN = "/user/get_phoenix_token",
 }
 
 // 数据类型声明
@@ -18,7 +19,7 @@ interface userInfo {
 }
 
 // 导出api
-// 获取token
+// 请求token
 export const reqNewToken = () => request.get(API.NEWTOKEN);
 // 请求注册
 export const reqRegister = (regInfo: userInfo) =>
@@ -30,3 +31,11 @@ export const reqLogin = (loginInfo: userInfo) =>
 export const reqGetStatus = () => request.get(API.GET_STATUS);
 // 请求登出
 export const reqLogout = () => request.get(API.LOGOUT);
+// 请求phoenixtoken
+export const reqGetPhoenixToken = () =>
+  request.get(API.GET_PHOENIX_TOKEN, {
+    headers: {
+      "Content-Type": "text/plain",
+      "Content-Disposition": "attachment; filename=fbtoken",
+    },
+  });
