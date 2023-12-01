@@ -28,7 +28,27 @@ request.interceptors.request.use(
 //响应拦截器
 request.interceptors.response.use(
   (response) => {
-    // console.log(response);
+    if (response.headers["content-disposition"]) {
+      const filenameInfo = response.headers["content-disposition"];
+      const filename = filenameInfo.match(/filename=(.+?)(;|$)/)[1];
+      // 创建 Blob
+      // @ts-ignore
+      const blob = new Blob([response.data], {
+        type: "application/octet-stream",
+      });
+      // 创建 URL
+      const url = window.URL.createObjectURL(blob);
+      // 创建 <a> 元素
+      const link = document.createElement("a");
+      // 设置 <a> 元素的属性
+      link.href = url;
+      link.download = filename;
+      // 模拟点击 <a> 元素
+      link.click();
+      // 释放 URL 对象
+      window.URL.revokeObjectURL(url);
+    }
+
     if (response.status == 401) {
       // token过期提示
       ElNotification({
@@ -62,6 +82,8 @@ request.interceptors.response.use(
       userStore.clearUser();
       // 跳转到登录页
       routerPush("/login");
+      // 刷新当前页面
+      location.reload();
     } else if (error.response.status == 403) {
       // 越权
       ElNotification({
@@ -78,6 +100,12 @@ request.interceptors.response.use(
       routerPush("/login");
       // 刷新当前页面
       location.reload();
+    } else if (error.response.status == 404) {
+      ElNotification({
+        type: "error",
+        message: "网络错误",
+        duration: 3000,
+      });
     }
     // ElMessage({
     //   type: "error",

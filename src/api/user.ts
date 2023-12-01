@@ -9,6 +9,7 @@ enum API {
   GET_STATUS = "/user/get_status",
   LOGOUT = "/user/logout",
   GET_PHOENIX_TOKEN = "/user/get_phoenix_token",
+  CHANGE_PASSWORD = "/user/change_password",
 }
 
 // 数据类型声明
@@ -16,6 +17,10 @@ interface userInfo {
   username: string;
   password: string;
   captcha_token: string;
+}
+interface passwordInfo {
+  original_password: string;
+  new_password: string;
 }
 
 // 导出api
@@ -34,8 +39,8 @@ export const reqLogout = () => request.get(API.LOGOUT);
 // 请求phoenixtoken
 export const reqGetPhoenixToken = () =>
   request.get(API.GET_PHOENIX_TOKEN, {
-    headers: {
-      "Content-Type": "text/plain",
-      "Content-Disposition": "attachment; filename=fbtoken",
-    },
+    responseType: "blob",
   });
+// 请求更改密码
+export const reqChangePassword = (passwordInfo: passwordInfo) =>
+  request.post(API.CHANGE_PASSWORD, passwordInfo);

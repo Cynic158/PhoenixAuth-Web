@@ -9,6 +9,7 @@ import {
   reqLogin,
   reqGetStatus,
   reqGetPhoenixToken,
+  reqChangePassword,
 } from "@/api/user";
 // 导入路由创建动态菜单
 import {
@@ -35,6 +36,10 @@ interface userDetail {
   is_developer: boolean;
   create_at: number;
   expire_at: number;
+}
+interface passwordInfo {
+  original_password: string;
+  new_password: string;
 }
 
 // 过滤权限路由，传入权限路由以及用户所拥有的的路由权限数组
@@ -119,7 +124,22 @@ let useUserStore = defineStore("user", () => {
       } else if (type == "login") {
         result = await reqLogin(userInfo);
       }
-      console.log(result);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 请求更改密码
+  let userPassword = async (passwordInfo: passwordInfo) => {
+    // 先对密码进行加密
+    const hashOldPassword = sha256(passwordInfo.original_password).toString();
+    const hashNewPassword = sha256(passwordInfo.new_password).toString();
+    passwordInfo.original_password = hashOldPassword;
+    passwordInfo.new_password = hashNewPassword;
+    // 发起请求
+    try {
+      let result = await reqChangePassword(passwordInfo);
       return result;
     } catch (error) {
       return Promise.reject(error);
@@ -223,28 +243,12 @@ let useUserStore = defineStore("user", () => {
   // 请求phoenixtoken
   let userDownload = async () => {
     // 发起请求
-    let result = await reqGetPhoenixToken();
-    console.log(result);
-    // 创建 Blob
-    // @ts-ignore
-    const blob = new Blob([result], { type: "text/plain" });
-
-    // 创建 URL
-    const url = window.URL.createObjectURL(blob);
-
-    // 创建 <a> 元素
-    const link = document.createElement("a");
-
-    // 设置 <a> 元素的属性
-    link.href = url;
-    link.download = "fbtoken.txt";
-
-    // 模拟点击 <a> 元素
-    link.click();
-
-    // 释放 URL 对象
-    window.URL.revokeObjectURL(url);
-    return "ok";
+    try {
+      await reqGetPhoenixToken();
+      return "ok";
+    } catch (error) {
+      return Promise.reject(error);
+    }
   };
 
   return {
@@ -264,6 +268,7 @@ let useUserStore = defineStore("user", () => {
     ucreate,
     uexpire,
     userDownload,
+    userPassword,
   };
 });
 
