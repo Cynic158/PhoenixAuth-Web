@@ -18,6 +18,8 @@
     "lodash": "^4.17.21",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.34",
+    "prismjs": "^1.29.0",
+    "vite-plugin-prismjs": "^0.0.8",
     "vue": "^3.2.47",
     "vue-router": "^4.2.2"
   },

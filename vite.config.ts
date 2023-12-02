@@ -7,6 +7,7 @@ import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import path from "path";
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
+import { prismjsPlugin } from "vite-plugin-prismjs";
 
 const getEnvFn = (mode: string, target: string) => {
   return loadEnv(mode, process.cwd())[target];
@@ -17,6 +18,13 @@ export default ({ mode }) =>
   defineConfig({
     plugins: [
       vue(),
+      prismjsPlugin({
+        languages: ["json", "js", "bash", "shell"],
+        //  languages: 'all',
+        plugins: ["line-numbers", "copy-to-clipboard"], //配置显示行号插件
+        theme: "solarizedlight", //主题名称
+        css: true,
+      }),
       createHtmlPlugin({
         inject: {
           data: {
