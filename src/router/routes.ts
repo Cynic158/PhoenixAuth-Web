@@ -106,7 +106,7 @@ export const permissionRoutes = [
 export const defaultRoutes2 = [
   {
     path: "/download",
-    component: () => import("@/views/test/index.vue"),
+    component: () => import("@/views/download/index.vue"),
     name: "download",
     meta: {
       title: "下载",
@@ -116,7 +116,7 @@ export const defaultRoutes2 = [
   },
   {
     path: "/about",
-    component: () => import("@/views/test/index.vue"),
+    component: () => import("@/views/about/index.vue"),
     name: "about",
     meta: {
       title: "关于",
