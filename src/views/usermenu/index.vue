@@ -78,7 +78,9 @@
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px; color:dimgray;">PhoenixBuilder 用于登录您账户的凭证</span>
+          <span style="margin-left: 12px; color: dimgray"
+            >PhoenixBuilder 用于登录您账户的凭证</span
+          >
         </div>
         <el-divider />
         <el-button type="primary" round @click="tokenDownload">获取</el-button>
@@ -93,7 +95,9 @@
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px; color: dimgray;">更新您的登录密码</span>
+          <span style="margin-left: 12px; color: dimgray"
+            >更新您的登录密码</span
+          >
         </div>
         <el-divider />
 
@@ -173,7 +177,12 @@ const handleResize = () => {
     infoDirection.value = "horizontal";
   }
 };
+let getInfo = async () => {
+  // 获取用户信息
+  await userStore.userInfo();
+};
 onMounted(() => {
+  getInfo();
   handleResize(); // 初始加载时进行一次判断
   window.addEventListener("resize", handleResize);
 });
@@ -211,7 +220,7 @@ let tokenDownload = async () => {
       duration: 3000,
     });
   } catch (error) {
-    //console.log(error);
+    console.log(error);
   } finally {
     tokenLoading.value = false;
   }

@@ -1,15 +1,22 @@
 <template>
   <div class="layout-container">
     <el-container style="height: 100vh">
-      <el-aside width="auto" style="overflow: hidden">
+      <el-aside
+        width="auto"
+        :style="{
+          zIndex: indexFlag ? '2' : 'unset',
+          overflow: 'hidden',
+          position: indexFlag ? 'fixed' : 'unset',
+        }"
+      >
         <Menu></Menu>
       </el-aside>
       <el-container class="right-container">
         <el-header style="padding: 0">
           <Tabbar></Tabbar>
         </el-header>
-        <el-main>
-          <router-view v-slot="{ Component }" v-show="showFlag">
+        <el-main :style="{ marginLeft: indexFlag ? '64px' : '0' }">
+          <router-view v-slot="{ Component }">
             <Transition name="router">
               <keep-alive v-if="!refreshFlag">
                 <component :is="Component"></component>
@@ -40,16 +47,16 @@ let settingStore = useSettingStore();
 let refreshFlag = ref(false);
 
 // 移动端适配，菜单展开时右边隐藏
-let showFlag = ref(true);
+let indexFlag = ref(false);
 const handleResize3 = () => {
   // 获取当前窗口宽度
   const screenWidth = window.innerWidth;
 
   // 根据窗口宽度进行判断
-  if (screenWidth <= 768 && settingStore.isCollapse == false) {
-    showFlag.value = false;
+  if (screenWidth <= 768) {
+    indexFlag.value = true;
   } else {
-    showFlag.value = true;
+    indexFlag.value = false;
   }
 };
 

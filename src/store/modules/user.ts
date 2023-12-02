@@ -181,6 +181,8 @@ let useUserStore = defineStore("user", () => {
     localStorage.setItem("DEVFLAG", "");
     localStorage.setItem("UCREATE", "");
     localStorage.setItem("UEXPIRE", "");
+    // 重置flag，使得重新登录会再次动态添加路由
+    refreshFlag.value = false;
   };
 
   // 获取用户信息
@@ -231,8 +233,6 @@ let useUserStore = defineStore("user", () => {
     if (result.success) {
       // 清空用户信息
       clearUser();
-      // 重置flag，使得重新登录会再次动态添加路由
-      refreshFlag.value = false;
       return "登出成功";
     } else {
       // 登出失败，返回一个失败的promise
