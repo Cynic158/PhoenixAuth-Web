@@ -42,37 +42,14 @@ export const defaultRoutes = [
         },
       },
       {
-        path: "/gameaccount",
+        path: "/robotaccount",
         component: () => import("@/views/test/index.vue"),
-        name: "gameaccount",
-        redirect: "/gameaccount/useraccount",
+        name: "robotaccount",
         meta: {
-          title: "游戏账户",
+          title: "Bot 账号",
           hidden: false,
-          icon: "SwitchFilled",
+          icon: "Cpu",
         },
-        children: [
-          {
-            path: "/gameaccount/useraccount",
-            component: () => import("@/views/test/index.vue"),
-            name: "useraccount",
-            meta: {
-              title: "我的账号",
-              hidden: false,
-              icon: "Coordinate",
-            },
-          },
-          {
-            path: "/gameaccount/robotaccount",
-            component: () => import("@/views/test/index.vue"),
-            name: "robotaccount",
-            meta: {
-              title: "Bot 账号",
-              hidden: false,
-              icon: "Cpu",
-            },
-          },
-        ],
       },
     ],
   },

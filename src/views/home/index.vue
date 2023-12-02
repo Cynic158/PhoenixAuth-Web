@@ -1,6 +1,16 @@
 <template>
   <div>
     <div class="notice-list-container">
+      <div style="margin-bottom: 8px; display: flex; justify-content: right">
+        <el-button
+          v-if="userStore.adminFlag == '是'"
+          type="primary"
+          round
+          @click="createdialog"
+        >
+          创建公告
+        </el-button>
+      </div>
       <el-empty
         v-if="annList.length == 0"
         v-loading="loading"
@@ -16,24 +26,29 @@
         <template #header>
           <div class="card-header">
             <span>{{ item.title }}</span>
-            <el-button
-              @click="deletedialog(item.id)"
-              v-if="userStore.adminFlag == '是'"
-              type="danger"
-              round
-              >
-              <el-icon class="userinfo-cell-item-icon">
-                <Delete />
-              </el-icon>
-            </el-button
-            >
           </div>
         </template>
         <div class="notice-content" v-html="item.content"></div>
         <el-divider />
         <div class="notice-author">
           <span>{{ item.create_at }}</span>
-          <span>Author: {{ item.author_name }}</span>
+          <div
+            class="notice-option"
+            :style="{ width: pageSmall ? '100%' : 'auto' }"
+          >
+            <span>Author: {{ item.author_name }}</span>
+            <el-button
+              style="margin-left: 8px"
+              @click="deletedialog(item.id)"
+              v-if="userStore.adminFlag == '是'"
+              type="danger"
+              round
+            >
+              <el-icon class="userinfo-cell-item-icon">
+                <Delete />
+              </el-icon>
+            </el-button>
+          </div>
         </div>
       </el-card>
     </div>
@@ -42,23 +57,13 @@
       <el-pagination
         v-model:current-page="currentPage"
         :page-size="5"
+        :pager-count="pageCount"
+        :small="pageSmall"
         background
         layout="total, prev, pager, next"
         :total="annTotal"
         @current-change="handleCurrentChange"
       />
-      <el-button
-        v-if="userStore.adminFlag == '是'"
-        style="margin-left: 12px"
-        type="primary"
-        round
-        @click="createdialog"
-        >
-          <el-icon class="userinfo-cell-item-icon">
-            <Plus />
-          </el-icon>
-        </el-button
-      >
     </div>
 
     <el-dialog
@@ -277,6 +282,10 @@ let createNotice = async () => {
 };
 // 创建公告弹窗宽度
 let dialogWidth = ref("50%");
+// 页码最大数
+let pageCount = ref(7);
+// 分页器大小
+let pageSmall = ref(false);
 // 适配移动端
 const handleResize2 = () => {
   // 获取当前窗口宽度
@@ -285,8 +294,12 @@ const handleResize2 = () => {
   // 根据窗口宽度进行判断
   if (screenWidth <= 768) {
     dialogWidth.value = "100%";
+    pageCount.value = 4;
+    pageSmall.value = true;
   } else {
     dialogWidth.value = "50%";
+    pageCount.value = 7;
+    pageSmall.value = false;
   }
 };
 onMounted(() => {
@@ -355,6 +368,11 @@ let deleteNotice = async () => {
 </script>
 
 <style scoped lang="scss">
+.notice-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 .card-header {
   display: flex;
   justify-content: space-between;

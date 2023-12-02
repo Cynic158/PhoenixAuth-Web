@@ -9,7 +9,7 @@
           <Tabbar></Tabbar>
         </el-header>
         <el-main>
-          <router-view v-slot="{ Component }">
+          <router-view v-slot="{ Component }" v-show="showFlag">
             <Transition name="router">
               <keep-alive v-if="!refreshFlag">
                 <component :is="Component"></component>
@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from "vue";
+import { nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 // 导入左侧菜单
 import Menu from "./Menu.vue";
 // 导入顶部导航
@@ -39,7 +39,23 @@ let settingStore = useSettingStore();
 // 组件销毁状态
 let refreshFlag = ref(false);
 
+// 移动端适配，菜单展开时右边隐藏
+let showFlag = ref(true);
+const handleResize3 = () => {
+  // 获取当前窗口宽度
+  const screenWidth = window.innerWidth;
+
+  // 根据窗口宽度进行判断
+  if (screenWidth <= 768 && settingStore.isCollapse == false) {
+    showFlag.value = false;
+  } else {
+    showFlag.value = true;
+  }
+};
+
 onMounted(() => {
+  handleResize3(); // 初始加载时进行一次判断
+  window.addEventListener("resize", handleResize3);
   // 刷新路由
   watch(
     () => settingStore.refresh,
@@ -52,6 +68,15 @@ onMounted(() => {
       }
     }
   );
+  watch(
+    () => settingStore.isCollapse,
+    () => {
+      handleResize3();
+    }
+  );
+});
+onUnmounted(() => {
+  window.removeEventListener("resize", handleResize3);
 });
 </script>
 
