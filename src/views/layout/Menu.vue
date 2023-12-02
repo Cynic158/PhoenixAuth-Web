@@ -217,6 +217,7 @@ watch(
     opacity: 0;
     transition: $ani-opacity;
   }
+  background-color: var(--el-bg-color);
 }
 .el-scrollbar {
   height: calc(100vh - $size-logo-container-height);
@@ -229,7 +230,7 @@ watch(
 :deep(.el-menu-item),
 :deep(.el-sub-menu) {
   user-select: none;
-  background-color: var(--el-bg-color);
+  // background-color: var(--el-bg-color);
 }
 :deep(.el-menu-item):hover,
 :deep(.el-sub-menu):hover {
