@@ -29,7 +29,7 @@
         <div class="card-header">更改验证服务器</div>
       </template>
       <div>
-        <span>要使用我们的服务，您可能需要在启动客户端程序时添加额外参数</span><br><br>
+        <span>您可能需要在启动客户端程序时添加额外参数来要使用我们的服务</span><br><br>
         <span>./phoenixbuilder -A https://liliya233.uk</span><br><br>
         <span>./windows-amd64.exe -A https://liliya233.uk</span><br><br>
       </div>
@@ -41,5 +41,9 @@
 .card-header {
   display: flex;
   align-items: center;
+}
+
+a:visited {
+  color: inherit;
 }
 </style>

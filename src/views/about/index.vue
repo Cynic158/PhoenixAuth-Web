@@ -26,4 +26,8 @@
   display: flex;
   align-items: center;
 }
+
+a:visited {
+  color: inherit;
+}
 </style>
