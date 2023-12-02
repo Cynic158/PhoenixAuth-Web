@@ -198,22 +198,22 @@ let tokenDownload = async () => {
   tokenLoading.value = true;
   ElNotification({
     type: "info",
-    title: "获取 Phoenix Token",
+    title: "获取 FBToken",
     message: "获取中",
     duration: 3000,
   });
   try {
     await userStore.userDownload();
-  } catch (error) {
-    console.log(error);
-  } finally {
-    tokenLoading.value = false;
     ElNotification({
       type: "success",
-      title: "获取 Phoenix Token",
+      title: "获取 FBToken",
       message: "获取成功",
       duration: 3000,
     });
+  } catch (error) {
+    //console.log(error);
+  } finally {
+    tokenLoading.value = false;
   }
 };
 

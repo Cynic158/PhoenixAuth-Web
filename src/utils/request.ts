@@ -48,65 +48,59 @@ request.interceptors.response.use(
       // 释放 URL 对象
       window.URL.revokeObjectURL(url);
     }
-
-    if (response.status == 401) {
-      // token过期提示
-      ElNotification({
-        type: "warning",
-        title: "登录过期",
-        message: "跳转到登录页",
-        duration: 3000,
-      });
-      // 使用用户仓库的清空信息函数
-      let userStore = useUserStore();
-      // 清空用户信息
-      userStore.clearUser();
-      // 跳转到登录页
-      routerPush("/login");
-    }
     return response.data;
   },
   (error) => {
-    console.log(error);
-    if (error.response.status == 401) {
-      // token过期提示
-      ElNotification({
-        type: "warning",
-        title: "登录过期",
-        message: "跳转到登录页",
-        duration: 3000,
-      });
-      // 使用用户仓库的清空信息函数
-      let userStore = useUserStore();
-      // 清空用户信息
-      userStore.clearUser();
-      // 跳转到登录页
-      routerPush("/login");
-      // 刷新当前页面
-      location.reload();
-    } else if (error.response.status == 403) {
-      console.log(error.response.data);
-      console.log(JSON.parse(error.response.data));
-
-      // 越权
-      ElNotification({
-        type: "error",
-        title: "错误",
-        message: "error",
-        duration: 3000,
-      });
-    } else if (error.response.status == 404) {
-      ElNotification({
-        type: "error",
-        message: "网络错误",
-        duration: 3000,
-      });
+    //console.log(error);
+    // 新建一个reader对象读取blob数据
+    let reader = new FileReader();
+    // 根据状态码进行判断
+    switch (error.response.status) {
+      case 401:
+        reader.onload = function () {
+          // 读取返回的JSON数据
+          const jsonData = JSON.parse(reader.result?.toString() || "{}");
+          // 在这里处理返回的 JSON 数据，例如显示错误信息
+          ElNotification({
+            type: "error",
+            title: "错误",
+            message: jsonData.message || "请先登录",
+            duration: 3000,
+          });
+          // 使用用户仓库的清空信息函数
+          let userStore = useUserStore();
+          // 清空用户信息
+          userStore.clearUser();
+          // 跳转到登录页
+          routerPush("/login");
+          // 刷新当前页面
+          location.reload();
+        };
+        reader.readAsText(error.response.data);
+        break;
+      case 403:
+        reader.onload = function () {
+          // 读取返回的JSON数据
+          const jsonData = JSON.parse(reader.result?.toString() || "{}");
+          // 显示错误信息
+          ElNotification({
+            type: "error",
+            title: "错误",
+            message: jsonData.message || "无权访问",
+            duration: 3000,
+          });
+        };
+        reader.readAsText(error.response.data);
+        break;
+      default:
+        ElNotification({
+          type: "error",
+          title: "错误",
+          message: "网络错误",
+          duration: 3000,
+        });
+        break;
     }
-    // ElMessage({
-    //   type: "error",
-    //   message: "网络错误",
-    //   duration: 3000,
-    // });
     return Promise.reject(error);
   }
 );
