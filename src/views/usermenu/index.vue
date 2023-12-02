@@ -4,15 +4,6 @@
       <template #header>
         <div class="card-header">我的信息</div>
       </template>
-      <div class="userinfo-container">
-        <div class="card-footer">
-          <el-icon>
-            <ChatDotRound />
-          </el-icon>
-          <span style="margin-left: 12px">描述</span>
-        </div>
-      </div>
-      <el-divider />
 
       <el-descriptions
         class="margin-top"
@@ -80,14 +71,14 @@
     </el-card>
     <el-card v-loading="tokenLoading" style="margin-top: 12px" shadow="hover">
       <template #header>
-        <div class="card-header">获取 Phoenix Token</div>
+        <div class="card-header">FBToken</div>
       </template>
       <div>
         <div class="card-footer">
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px">描述</span>
+          <span style="margin-left: 12px; color:dimgray;">PhoenixBuilder 用于登录您账户的凭证</span>
         </div>
         <el-divider />
         <el-button type="primary" round @click="tokenDownload">获取</el-button>
@@ -102,7 +93,7 @@
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px">描述</span>
+          <span style="margin-left: 12px; color: dimgray;">更新您的登录密码</span>
         </div>
         <el-divider />
 
@@ -112,7 +103,7 @@
           :rules="rules"
           ref="passwordform"
         >
-          <el-form-item label="旧密码" prop="oldPassword">
+          <el-form-item label="输入旧密码" prop="oldPassword">
             <el-input
               type="password"
               show-password
@@ -120,7 +111,7 @@
               placeholder="请输入旧密码"
             />
           </el-form-item>
-          <el-form-item label="新密码" prop="newPassword">
+          <el-form-item label="输入新密码" prop="newPassword">
             <el-input
               type="password"
               show-password
@@ -128,7 +119,7 @@
               placeholder="请输入新密码"
             />
           </el-form-item>
-          <el-form-item label="新密码" prop="repassword">
+          <el-form-item label="确认新密码" prop="repassword">
             <el-input
               type="password"
               show-password

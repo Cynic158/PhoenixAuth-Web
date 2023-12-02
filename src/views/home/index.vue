@@ -21,16 +21,18 @@
               v-if="userStore.adminFlag == '是'"
               type="danger"
               round
-              >删除</el-button
+              >
+              <el-icon class="userinfo-cell-item-icon">
+                <Delete />
+              </el-icon>
+            </el-button
             >
           </div>
         </template>
-        <div class="notice-content">
-          {{ item.content }}
-        </div>
+        <div class="notice-content" v-html="item.content"></div>
         <el-divider />
         <div class="notice-author">
-          <span>发布时间: {{ item.create_at }}</span>
+          <span>{{ item.create_at }}</span>
           <span>Author: {{ item.author_name }}</span>
         </div>
       </el-card>
@@ -51,7 +53,11 @@
         type="primary"
         round
         @click="createdialog"
-        >创建公告</el-button
+        >
+          <el-icon class="userinfo-cell-item-icon">
+            <Plus />
+          </el-icon>
+        </el-button
       >
     </div>
 
