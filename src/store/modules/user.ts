@@ -32,6 +32,7 @@ interface userInfo {
 }
 interface userDetail {
   username: string;
+  game_id: number;
   is_admin: boolean;
   is_developer: boolean;
   create_at: number;
@@ -80,6 +81,8 @@ let useUserStore = defineStore("user", () => {
   let token = ref(localStorage.getItem("TOKEN") || "");
   // 用户名
   let uname = ref(localStorage.getItem("UNAME") || "");
+  // 游戏id
+  let uid = ref(localStorage.getItem("UID") || "");
   // 是否管理员
   let adminFlag = ref(localStorage.getItem("ADMINFLAG") || "");
   // 是否开发者
@@ -159,24 +162,32 @@ let useUserStore = defineStore("user", () => {
     } else {
       devFlag.value = "否";
     }
+    if (userInfo.game_id == 0) {
+      uid.value = "暂未获取";
+    } else {
+      uid.value = userInfo.game_id.toString();
+    }
     ucreate.value = userInfo.create_at.toString();
     uexpire.value = userInfo.expire_at.toString();
     localStorage.setItem("UNAME", userInfo.username);
+    localStorage.setItem("UID", uid.value);
     localStorage.setItem("ADMINFLAG", adminFlag.value);
     localStorage.setItem("DEVFLAG", devFlag.value);
-    localStorage.setItem("UCREATE", userInfo.create_at.toString());
-    localStorage.setItem("UEXPIRE", userInfo.expire_at.toString());
+    localStorage.setItem("UCREATE", ucreate.value);
+    localStorage.setItem("UEXPIRE", uexpire.value);
   };
   // 清空用户信息函数
   let clearUser = () => {
     token.value = "";
     uname.value = "";
+    uid.value = "";
     adminFlag.value = "";
     devFlag.value = "";
     ucreate.value = "";
     uexpire.value = "";
     localStorage.setItem("TOKEN", "");
     localStorage.setItem("UNAME", "");
+    localStorage.setItem("UID", "");
     localStorage.setItem("ADMINFLAG", "");
     localStorage.setItem("DEVFLAG", "");
     localStorage.setItem("UCREATE", "");
@@ -254,6 +265,7 @@ let useUserStore = defineStore("user", () => {
   return {
     token,
     uname,
+    uid,
     userInfo,
     userLogout,
     menuRoutes,

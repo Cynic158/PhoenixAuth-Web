@@ -12,7 +12,7 @@
         size="default"
         border
       >
-        <el-descriptions-item :span="2">
+        <el-descriptions-item>
           <template #label>
             <div class="userinfo-cell-item">
               <el-icon class="userinfo-cell-item-icon">
@@ -22,6 +22,17 @@
             </div>
           </template>
           {{ userStore.uname }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="userinfo-cell-item">
+              <el-icon class="userinfo-cell-item-icon">
+                <UserFilled />
+              </el-icon>
+              游戏ID
+            </div>
+          </template>
+          {{ userStore.uid }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -151,7 +162,7 @@
 import useUserStore from "@/store/modules/user";
 // 导入设置仓库
 import useSettingStore from "@/store/modules/setting";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, onActivated, onMounted, reactive, ref } from "vue";
 // 导入时间转换函数
 import { getTimeStr2 } from "@/utils";
 // 导入消息通知组件
@@ -230,6 +241,10 @@ let clearForm = () => {
     "repassword",
   ]);
 };
+// 每次进入子页面就清空表单
+onActivated(() => {
+  clearForm();
+});
 // 修改按钮加载状态
 let passwordloadingflag = ref(false);
 // @ts-ignore

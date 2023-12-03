@@ -44,13 +44,13 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >以游客登录的形式创建机器人</span
+            >以游客登录的形式创建机器人，如果需要验证，请在验证完成后重新点击创建</span
           >
         </div>
         <el-divider />
         <el-alert
           v-if="createAlertTitle"
-          style="margin-bottom: 12px"
+          style="margin-bottom: 16px"
           :title="createAlertTitle"
           :type="createAlertType"
           show-icon
@@ -61,21 +61,72 @@
         >
       </div>
     </el-card>
+
+    <el-card
+      shadow="hover"
+      v-if="botInfo.set == false"
+      v-loading="createDefaultLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
+        <div class="card-header">Bot 创建--邮箱登录</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >以邮箱账号登录的形式创建机器人，如果需要验证，请在验证完成后重新点击创建</span
+          >
+        </div>
+        <el-divider />
+        <el-alert
+          v-if="emailAlertTitle"
+          style="margin-bottom: 16px"
+          :title="emailAlertTitle"
+          :type="emailAlertType"
+          show-icon
+          :closable="false"
+        />
+
+        <el-form
+          class="email-form-container"
+          :model="emailData"
+          :rules="rules"
+          ref="emailform"
+        >
+          <el-form-item label="邮箱账号" prop="username">
+            <el-input
+              v-model="emailData.username"
+              placeholder="请输入邮箱账号"
+            />
+          </el-form-item>
+          <el-form-item label="邮箱密码" prop="password">
+            <el-input
+              type="password"
+              show-password
+              v-model="emailData.password"
+              placeholder="请输入邮箱密码"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="createBotByEmail">创建</el-button>
+            <el-button @click="clearForm">清空表单</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
 // 导入用户仓库
 import useHelperStore from "@/store/modules/helper";
-// 导入设置仓库
-import useSettingStore from "@/store/modules/setting";
 // 导入消息通知组件
 // @ts-ignore
 import { ElNotification } from "element-plus";
-import { onMounted, reactive, ref } from "vue";
-
-// 使用设置仓库的移动端适配
-let settingStore = useSettingStore();
+import { onActivated, onMounted, reactive, ref } from "vue";
 
 // bot信息部分
 // 使用bot仓库
@@ -104,7 +155,7 @@ let queryLoading = ref(false);
 // 提示类型
 let alertType = ref("warning");
 // 提示消息
-let alertTitle = ref("");
+let alertTitle = ref("查询中");
 // 实名链接函数
 let realNameLink = () => {
   window.open(botInfo.realname_url, "_blank");
@@ -178,7 +229,6 @@ let createBotByDefault = async () => {
       }
       // @ts-ignore
       createAlertTitle.value = result.message;
-      getBotStatus();
     } else {
       // 获取失败
       ElNotification({
@@ -187,8 +237,6 @@ let createBotByDefault = async () => {
         message: result.message,
         duration: 3000,
       });
-      // 额外获取一次状态
-      getBotStatus();
     }
   } catch (error: any) {
     // 请求失败，消息提示
@@ -199,6 +247,110 @@ let createBotByDefault = async () => {
     });
   } finally {
     createDefaultLoading.value = false;
+    getBotStatus();
+  }
+};
+
+// 邮箱创建
+// 表单元素
+let emailform = ref(null);
+// 表单数据
+let emailData = reactive({
+  username: "",
+  password: "",
+});
+// 清空表单
+let clearForm = () => {
+  emailData.username = "";
+  emailData.password = "";
+  // 清空校验提示
+  // @ts-ignore
+  emailform.value.clearValidate(["username", "password"]);
+};
+// 每次进入子页面就清空表单
+onActivated(() => {
+  clearForm();
+});
+// @ts-ignore
+let validateEmail = (rule: any, value: any, callback: any) => {
+  // 邮箱正则表达式
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(value)) {
+    callback(new Error("邮箱格式不正确"));
+  } else {
+    callback();
+  }
+};
+// 表单校验规则
+const rules = {
+  username: [
+    {
+      required: true,
+      message: "请输入邮箱账号",
+      trigger: "blur",
+    },
+    { validator: validateEmail, trigger: "blur" },
+  ],
+  password: [
+    {
+      required: true,
+      message: "请输入邮箱密码",
+      trigger: "blur",
+    },
+  ],
+};
+// 邮箱卡片提示
+// 提示类型
+let emailAlertType = ref("success");
+// 提示消息
+let emailAlertTitle = ref("");
+// 邮箱登录
+let createBotByEmail = async () => {
+  // 校验表单
+  // @ts-ignore
+  await emailform.value.validate();
+  try {
+    // 显示加载
+    createDefaultLoading.value = true;
+    let emailInfo = {
+      username: "",
+      password: "",
+    };
+    emailInfo.username = emailData.username;
+    emailInfo.password = emailData.password;
+    // 仓库发起邮箱登录请求
+    let result = await helperStore.botCreateByEmail(emailInfo);
+    // @ts-ignore
+    if (result.success) {
+      // 获取成功
+      // @ts-ignore
+      if (result.need_verify) {
+        emailAlertType.value = "error";
+      } else {
+        emailAlertType.value = "success";
+      }
+      // @ts-ignore
+      emailAlertTitle.value = result.message;
+    } else {
+      // 请求失败，消息提示
+      ElNotification({
+        type: "error",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+    // 请求失败，消息提示
+    ElNotification({
+      type: "error",
+      message: error.message,
+      duration: 3000,
+    });
+  } finally {
+    createDefaultLoading.value = false;
+    getBotStatus();
   }
 };
 </script>
@@ -215,5 +367,8 @@ let createBotByDefault = async () => {
   word-wrap: break-word;
   word-break: break-all;
   white-space: normal;
+}
+.email-form-container {
+  max-width: 600px;
 }
 </style>
