@@ -53,10 +53,21 @@ let useHelperStore = defineStore("helper", () => {
     }
   };
 
+  // 解绑
+  let botUnbind = async () => {
+    try {
+      let result = await reqUnbind();
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   return {
     getBot,
     botCreate,
     botCreateByEmail,
+    botUnbind,
   };
 });
 

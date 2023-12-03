@@ -72,6 +72,10 @@ let useSettingStore = defineStore("setting", () => {
 
   onMounted(() => {
     handleResize(); // 初始加载时进行一次判断
+    if (mmenuFlag.value) {
+      // 一进入页面就是移动端的话就先收起菜单
+      reqCollapse.value = 2;
+    }
     window.addEventListener("resize", handleResize);
   });
   onUnmounted(() => {

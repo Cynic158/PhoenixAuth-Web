@@ -4,7 +4,7 @@
       <el-aside
         width="auto"
         :style="{
-          zIndex: indexFlag ? '9999' : 'unset',
+          zIndex: indexFlag ? '2007' : 'unset',
           overflow: 'hidden',
           position: indexFlag ? 'fixed' : 'unset',
         }"

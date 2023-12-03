@@ -4,29 +4,42 @@
       <template #header>
         <div class="card-header">
           <span style="margin-right: 16px">Bot 信息</span>
+        </div>
+      </template>
+
+      <div>
+        <el-alert
+          :title="alertTitle"
+          :type="alertType"
+          show-icon
+          :closable="false"
+        />
+        <el-divider />
+        <div style="display: inline-flex; align-items: center; flex-wrap: wrap">
           <el-button
             @click="getBotStatus"
             type="primary"
             round
             :loading="queryLoading"
-            >查询状态</el-button
+            >刷新</el-button
           >
           <el-button
             v-if="botInfo.realname_url"
             @click="realNameLink"
-            type="success"
+            type="warning"
             round
-            >实名认证</el-button
+            >实名</el-button
+          >
+          <el-button
+            :disabled="banUnbind"
+            v-if="botInfo.set"
+            @click="unbindDialog"
+            type="danger"
+            round
+            >解绑</el-button
           >
         </div>
-      </template>
-
-      <el-alert
-        :title="alertTitle"
-        :type="alertType"
-        show-icon
-        :closable="false"
-      />
+      </div>
     </el-card>
 
     <el-card
@@ -117,6 +130,23 @@
         </el-form>
       </div>
     </el-card>
+
+    <el-dialog
+      width="300px"
+      v-model="unbindDialogVisible"
+      title="重置"
+      align-center
+    >
+      确定解绑Bot吗
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="unbindDialogVisible = false">取消</el-button>
+          <el-button :loading="unbindLoading" type="primary" @click="unbindBot"
+            >确定</el-button
+          >
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -152,6 +182,8 @@ let setBotInfo = (info: robotInfo) => {
 };
 // 查询loading
 let queryLoading = ref(false);
+// 解绑按钮禁止
+let banUnbind = ref(false);
 // 提示类型
 let alertType = ref("warning");
 // 提示消息
@@ -164,6 +196,7 @@ let realNameLink = () => {
 let getBotStatus = async () => {
   try {
     queryLoading.value = true;
+    banUnbind.value = true;
     let result = await helperStore.getBot();
     // @ts-ignore
     if (result.success) {
@@ -198,6 +231,7 @@ let getBotStatus = async () => {
     });
   } finally {
     queryLoading.value = false;
+    banUnbind.value = false;
   }
 };
 // 初次进入就查询一次
@@ -361,6 +395,49 @@ let createBotByEmail = async () => {
     getBotStatus();
   }
 };
+
+// bot解绑
+// 解绑对话框dialog
+let unbindDialogVisible = ref(false);
+// 解绑确认按钮loading
+let unbindLoading = ref(false);
+// 显示dialog
+let unbindDialog = async () => {
+  unbindDialogVisible.value = true;
+};
+let unbindBot = async () => {
+  try {
+    unbindLoading.value = true;
+    let result = await helperStore.botUnbind();
+    // @ts-ignore
+    if (result.success) {
+      ElNotification({
+        type: "success",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    } else {
+      ElNotification({
+        type: "error",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+    // 请求失败，消息提示
+    ElNotification({
+      type: "error",
+      message: error.message,
+      duration: 3000,
+    });
+  } finally {
+    unbindLoading.value = false;
+    unbindDialogVisible.value = false;
+    getBotStatus();
+  }
+};
 </script>
 
 <style scoped>
@@ -368,6 +445,7 @@ let createBotByEmail = async () => {
 .card-footer {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 .el-alert__title,
 .el-alert__content,

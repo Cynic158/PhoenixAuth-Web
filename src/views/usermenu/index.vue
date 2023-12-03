@@ -5,80 +5,89 @@
         <div class="card-header">我的信息</div>
       </template>
 
-      <el-descriptions
-        class="margin-top"
-        :direction="settingStore.infoDirection"
-        :column="settingStore.infoCol"
-        size="default"
-        border
-      >
-        <el-descriptions-item>
-          <template #label>
-            <div class="userinfo-cell-item">
-              <el-icon class="userinfo-cell-item-icon">
-                <UserFilled />
-              </el-icon>
-              用户名
-            </div>
-          </template>
-          {{ userStore.uname }}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            <div class="userinfo-cell-item">
-              <el-icon class="userinfo-cell-item-icon">
-                <UserFilled />
-              </el-icon>
-              游戏ID
-            </div>
-          </template>
-          {{ userStore.uid }}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            <div class="userinfo-cell-item">
-              <el-icon class="userinfo-cell-item-icon">
-                <Tools />
-              </el-icon>
-              系统管理权限
-            </div>
-          </template>
-          {{ userStore.adminFlag }}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            <div class="userinfo-cell-item">
-              <el-icon class="userinfo-cell-item-icon">
-                <Platform />
-              </el-icon>
-              开发者权限
-            </div>
-          </template>
-          {{ userStore.devFlag }}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            <div class="userinfo-cell-item">
-              <el-icon class="userinfo-cell-item-icon">
-                <Connection />
-              </el-icon>
-              创建时间
-            </div>
-          </template>
-          {{ createTime }}
-        </el-descriptions-item>
-        <el-descriptions-item>
-          <template #label>
-            <div class="userinfo-cell-item">
-              <el-icon class="userinfo-cell-item-icon">
-                <SwitchButton />
-              </el-icon>
-              有效期至
-            </div>
-          </template>
-          {{ expireTime }}
-        </el-descriptions-item>
-      </el-descriptions>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray">用户信息描述</span>
+        </div>
+        <el-divider />
+        <el-descriptions
+          class="margin-top"
+          :direction="settingStore.infoDirection"
+          :column="settingStore.infoCol"
+          size="default"
+          border
+        >
+          <el-descriptions-item>
+            <template #label>
+              <div class="userinfo-cell-item">
+                <el-icon class="userinfo-cell-item-icon">
+                  <UserFilled />
+                </el-icon>
+                用户名
+              </div>
+            </template>
+            {{ userStore.uname }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="userinfo-cell-item">
+                <el-icon class="userinfo-cell-item-icon">
+                  <UserFilled />
+                </el-icon>
+                游戏ID
+              </div>
+            </template>
+            {{ userStore.uid }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="userinfo-cell-item">
+                <el-icon class="userinfo-cell-item-icon">
+                  <Tools />
+                </el-icon>
+                系统管理权限
+              </div>
+            </template>
+            {{ userStore.adminFlag }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="userinfo-cell-item">
+                <el-icon class="userinfo-cell-item-icon">
+                  <Platform />
+                </el-icon>
+                开发者权限
+              </div>
+            </template>
+            {{ userStore.devFlag }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="userinfo-cell-item">
+                <el-icon class="userinfo-cell-item-icon">
+                  <Connection />
+                </el-icon>
+                创建时间
+              </div>
+            </template>
+            {{ createTime }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="userinfo-cell-item">
+                <el-icon class="userinfo-cell-item-icon">
+                  <SwitchButton />
+                </el-icon>
+                有效期至
+              </div>
+            </template>
+            {{ expireTime }}
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
     </el-card>
     <el-card v-loading="tokenLoading" style="margin-top: 12px" shadow="hover">
       <template #header>
