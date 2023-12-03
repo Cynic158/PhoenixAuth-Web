@@ -7,8 +7,8 @@
 
       <el-descriptions
         class="margin-top"
-        :direction="infoDirection"
-        :column="infoCol"
+        :direction="settingStore.infoDirection"
+        :column="settingStore.infoCol"
         size="default"
         border
       >
@@ -149,45 +149,27 @@
 <script setup lang="ts">
 // 导入用户仓库
 import useUserStore from "@/store/modules/user";
-import { computed, onMounted, onUnmounted, reactive, ref } from "vue";
+// 导入设置仓库
+import useSettingStore from "@/store/modules/setting";
+import { computed, onMounted, reactive, ref } from "vue";
 // 导入时间转换函数
 import { getTimeStr2 } from "@/utils";
 // 导入消息通知组件
 // @ts-ignore
 import { ElNotification } from "element-plus";
 
+// 使用设置仓库的移动端适配
+let settingStore = useSettingStore();
+
 // 用户信息部分
 // 使用用户仓库
 let userStore = useUserStore();
-// 用户信息列数
-let infoCol = ref(1);
-// 用户信息排列方式vertical
-let infoDirection = ref("horizontal");
-// 适配移动端
-const handleResize = () => {
-  // 获取当前窗口宽度
-  const screenWidth = window.innerWidth;
-
-  // 根据窗口宽度进行判断
-  if (screenWidth <= 768) {
-    infoCol.value = 1;
-    infoDirection.value = "vertical";
-  } else {
-    infoCol.value = 2;
-    infoDirection.value = "horizontal";
-  }
-};
 let getInfo = async () => {
   // 获取用户信息
   await userStore.userInfo();
 };
 onMounted(() => {
   getInfo();
-  handleResize(); // 初始加载时进行一次判断
-  window.addEventListener("resize", handleResize);
-});
-onUnmounted(() => {
-  window.removeEventListener("resize", handleResize);
 });
 // 用户的创建时间以及过期时间
 const createTime = computed(() => {

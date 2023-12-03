@@ -4,7 +4,7 @@
       <el-aside
         width="auto"
         :style="{
-          zIndex: indexFlag ? '2' : 'unset',
+          zIndex: indexFlag ? '9999' : 'unset',
           overflow: 'hidden',
           position: indexFlag ? 'fixed' : 'unset',
         }"
@@ -48,7 +48,7 @@ let refreshFlag = ref(false);
 
 // 移动端适配，菜单展开时右边隐藏
 let indexFlag = ref(false);
-const handleResize3 = () => {
+const handleResize2 = () => {
   // 获取当前窗口宽度
   const screenWidth = window.innerWidth;
 
@@ -61,8 +61,8 @@ const handleResize3 = () => {
 };
 
 onMounted(() => {
-  handleResize3(); // 初始加载时进行一次判断
-  window.addEventListener("resize", handleResize3);
+  handleResize2(); // 初始加载时进行一次判断
+  window.addEventListener("resize", handleResize2);
   // 刷新路由
   watch(
     () => settingStore.refresh,
@@ -78,12 +78,12 @@ onMounted(() => {
   watch(
     () => settingStore.isCollapse,
     () => {
-      handleResize3();
+      handleResize2();
     }
   );
 });
 onUnmounted(() => {
-  window.removeEventListener("resize", handleResize3);
+  window.removeEventListener("resize", handleResize2);
 });
 </script>
 

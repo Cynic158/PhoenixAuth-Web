@@ -1,6 +1,6 @@
 // 参数仓库
 import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { onMounted, onUnmounted, reactive, ref } from "vue";
 
 // 创建仓库
 let useSettingStore = defineStore("setting", () => {
@@ -35,6 +35,49 @@ let useSettingStore = defineStore("setting", () => {
   // 刷新按钮刷新状态
   let refresh = ref(false);
 
+  // 移动端适配
+  // 创建公告弹窗宽度
+  let createDialogWidth = ref("50%");
+  // 页码最大数
+  let pageCount = ref(7);
+  // 分页器大小
+  let pageSmall = ref(false);
+  // 信息列数
+  let infoCol = ref(2);
+  // 信息排列方式
+  let infoDirection = ref("horizontal");
+  // 点击了菜单之后立马折叠
+  let mmenuFlag = ref(false);
+  // 适配处理函数
+  const handleResize = () => {
+    // 获取当前窗口宽度
+    const screenWidth = window.innerWidth;
+    // 根据窗口宽度进行判断
+    if (screenWidth <= 768) {
+      createDialogWidth.value = "100%";
+      pageCount.value = 4;
+      pageSmall.value = true;
+      infoCol.value = 1;
+      infoDirection.value = "vertical";
+      mmenuFlag.value = true;
+    } else {
+      createDialogWidth.value = "50%";
+      pageCount.value = 7;
+      pageSmall.value = false;
+      infoCol.value = 2;
+      infoDirection.value = "horizontal";
+      mmenuFlag.value = false;
+    }
+  };
+
+  onMounted(() => {
+    handleResize(); // 初始加载时进行一次判断
+    window.addEventListener("resize", handleResize);
+  });
+  onUnmounted(() => {
+    window.removeEventListener("resize", handleResize);
+  });
+
   return {
     isCollapse,
     reqCollapse,
@@ -45,6 +88,12 @@ let useSettingStore = defineStore("setting", () => {
     switchTabs,
     banTabbar,
     refresh,
+    createDialogWidth,
+    pageCount,
+    pageSmall,
+    infoCol,
+    infoDirection,
+    mmenuFlag,
   };
 });
 

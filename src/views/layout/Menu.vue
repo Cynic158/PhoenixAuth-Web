@@ -58,7 +58,7 @@ import useSettingStore from "@/store/modules/setting";
 import { useRoute } from "vue-router";
 // 导入缓动函数
 import { verticalScroll } from "@/utils";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, watch } from "vue";
 
 // 动态菜单项部分
 // 使用用户仓库的动态路由列表
@@ -148,35 +148,20 @@ let foldMenu = async () => {
 };
 
 // 适配移动端，点击了菜单之后立马折叠
-let mmenuFlag = ref(false);
-const handleResize4 = () => {
-  // 获取当前窗口宽度
-  const screenWidth = window.innerWidth;
-
-  // 根据窗口宽度进行判断
-  if (screenWidth <= 768) {
-    mmenuFlag.value = true;
-  } else {
-    mmenuFlag.value = false;
-  }
-};
 let mmenuFold = () => {
-  if (mmenuFlag.value && settingStore.isCollapse == false) {
+  if (settingStore.mmenuFlag == true && settingStore.isCollapse == false) {
     foldMenu();
   }
 };
 onMounted(() => {
-  handleResize4();
-  window.addEventListener("resize", handleResize4);
+  // 监听仓库发起的折叠请求
+  watch(
+    () => settingStore.reqCollapse,
+    () => {
+      foldMenu();
+    }
+  );
 });
-
-// 监听仓库发起的折叠请求
-watch(
-  () => settingStore.reqCollapse,
-  () => {
-    foldMenu();
-  }
-);
 </script>
 
 <style scoped lang="scss">

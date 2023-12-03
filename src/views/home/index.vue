@@ -34,7 +34,7 @@
           <span>{{ item.create_at }}</span>
           <div
             class="notice-option"
-            :style="{ width: pageSmall ? '100%' : 'auto' }"
+            :style="{ width: settingStore.pageSmall ? '100%' : 'auto' }"
           >
             <span>Author: {{ item.author_name }}</span>
             <el-button
@@ -57,8 +57,8 @@
       <el-pagination
         v-model:current-page="currentPage"
         :page-size="5"
-        :pager-count="pageCount"
-        :small="pageSmall"
+        :pager-count="settingStore.pageCount"
+        :small="settingStore.pageSmall"
         background
         layout="total, prev, pager, next"
         :total="annTotal"
@@ -67,7 +67,7 @@
     </div>
 
     <el-dialog
-      :width="dialogWidth"
+      :width="settingStore.createDialogWidth"
       v-model="dialogVisible"
       title="创建公告"
       align-center
@@ -123,16 +123,21 @@
 <script setup lang="ts">
 // 导入用户仓库
 import useUserStore from "@/store/modules/user";
+// 导入设置仓库
+import useSettingStore from "@/store/modules/setting";
 // 导入公告仓库
 import useAnnouncementStore from "@/store/modules/announcement";
-import { onMounted, onUnmounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 // 导入通知
 // @ts-ignore
 import { ElNotification } from "element-plus";
 // 导入缓动函数
 import { verticalScroll } from "@/utils";
+
 // 使用用户仓库的管理员信息
 let userStore = useUserStore();
+// 使用设置仓库的移动端适配
+let settingStore = useSettingStore();
 // 使用公告仓库的请求
 let annStore = useAnnouncementStore();
 
@@ -280,35 +285,6 @@ let createNotice = async () => {
     noticeloadingflag.value = false;
   }
 };
-// 创建公告弹窗宽度
-let dialogWidth = ref("50%");
-// 页码最大数
-let pageCount = ref(7);
-// 分页器大小
-let pageSmall = ref(false);
-// 适配移动端
-const handleResize2 = () => {
-  // 获取当前窗口宽度
-  const screenWidth = window.innerWidth;
-
-  // 根据窗口宽度进行判断
-  if (screenWidth <= 768) {
-    dialogWidth.value = "100%";
-    pageCount.value = 4;
-    pageSmall.value = true;
-  } else {
-    dialogWidth.value = "50%";
-    pageCount.value = 7;
-    pageSmall.value = false;
-  }
-};
-onMounted(() => {
-  handleResize2(); // 初始加载时进行一次判断
-  window.addEventListener("resize", handleResize2);
-});
-onUnmounted(() => {
-  window.removeEventListener("resize", handleResize2);
-});
 
 // 删除公告
 // 弹窗
