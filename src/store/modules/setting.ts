@@ -6,7 +6,7 @@ import { onMounted, onUnmounted, reactive, ref } from "vue";
 let useSettingStore = defineStore("setting", () => {
   // 菜单部分
   // 折叠状态
-  let isCollapse = ref(false);
+  let isCollapse = ref(true);
   // 请求折叠
   let reqCollapse = ref(1);
 
@@ -72,8 +72,8 @@ let useSettingStore = defineStore("setting", () => {
 
   onMounted(() => {
     handleResize(); // 初始加载时进行一次判断
-    if (mmenuFlag.value) {
-      // 一进入页面就是移动端的话就先收起菜单
+    if (!mmenuFlag.value) {
+      // 一进入页面不是移动端的话就先收起菜单
       reqCollapse.value = 2;
     }
     window.addEventListener("resize", handleResize);
