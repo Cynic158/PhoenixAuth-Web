@@ -43,7 +43,7 @@ export const defaultRoutes = [
       },
       {
         path: "/robotaccount",
-        component: () => import("@/views/test/index.vue"),
+        component: () => import("@/views/helper/index.vue"),
         name: "robotaccount",
         meta: {
           title: "Bot 账号",

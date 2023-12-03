@@ -27,8 +27,19 @@ let useHelperStore = defineStore("helper", () => {
     }
   };
 
+  // 游客创建
+  let botCreate = async () => {
+    try {
+      let result = await reqCreate();
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   return {
     getBot,
+    botCreate,
   };
 });
 
