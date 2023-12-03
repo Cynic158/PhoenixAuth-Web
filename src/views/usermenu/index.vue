@@ -234,12 +234,20 @@ let clearForm = () => {
   passwordData.newPassword = "";
   passwordData.repassword = "";
   // 清空校验提示
-  // @ts-ignore
-  passwordform.value.clearValidate([
-    "oldPassword",
-    "newPassword",
-    "repassword",
-  ]);
+  try {
+    setTimeout(() => {
+      if (passwordform.value) {
+        // @ts-ignore
+        passwordform.value.clearValidate([
+          "oldPassword",
+          "newPassword",
+          "repassword",
+        ]);
+      }
+    }, 200);
+  } catch (error) {
+    console.log(error);
+  }
 };
 // 每次进入子页面就清空表单
 onActivated(() => {

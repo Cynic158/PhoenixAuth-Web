@@ -31,7 +31,7 @@
 
     <el-card
       v-if="botInfo.set == false"
-      v-loading="createDefaultLoading"
+      v-loading="createDefaultLoading || queryLoading"
       style="margin-top: 12px"
       shadow="hover"
     >
@@ -65,7 +65,7 @@
     <el-card
       shadow="hover"
       v-if="botInfo.set == false"
-      v-loading="createDefaultLoading"
+      v-loading="createDefaultLoading || queryLoading"
       style="margin-top: 12px"
     >
       <template #header>
@@ -133,7 +133,7 @@ import { onActivated, onMounted, reactive, ref } from "vue";
 let helperStore = useHelperStore();
 // bot信息
 let botInfo = reactive({
-  set: false,
+  set: true,
   realname_url: "",
   username: "",
 });
@@ -264,8 +264,16 @@ let clearForm = () => {
   emailData.username = "";
   emailData.password = "";
   // 清空校验提示
-  // @ts-ignore
-  emailform.value.clearValidate(["username", "password"]);
+  try {
+    setTimeout(() => {
+      if (emailform.value) {
+        // @ts-ignore
+        emailform.value.clearValidate(["username", "password"]);
+      }
+    }, 200);
+  } catch (error) {
+    console.log(error);
+  }
 };
 // 每次进入子页面就清空表单
 onActivated(() => {
