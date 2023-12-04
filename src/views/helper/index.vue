@@ -32,7 +32,7 @@
           >
           <el-button
             :disabled="banUnbind"
-            v-if="botInfo.set"
+            v-if="showUnbind && botInfo.set"
             @click="unbindDialog"
             type="danger"
             round
@@ -110,10 +110,7 @@
           ref="emailform"
         >
           <el-form-item label="账号" prop="username">
-            <el-input
-              v-model="emailData.username"
-              placeholder="请输入账号"
-            />
+            <el-input v-model="emailData.username" placeholder="请输入账号" />
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input
@@ -184,6 +181,8 @@ let setBotInfo = (info: robotInfo) => {
 let queryLoading = ref(false);
 // 解绑按钮禁止
 let banUnbind = ref(false);
+// 首次不显示解绑按钮
+let showUnbind = ref(false);
 // 提示类型
 let alertType = ref("warning");
 // 提示消息
@@ -212,6 +211,10 @@ let getBotStatus = async () => {
         alertType.value = "warning";
         // @ts-ignore
         alertTitle.value = result.message;
+      }
+      if (showUnbind.value == false) {
+        // 任意一次获取信息成功都会导致解绑按钮允许显示
+        showUnbind.value = true;
       }
     } else {
       // 获取失败
@@ -344,7 +347,7 @@ const rules = {
 };
 // 邮箱卡片提示
 // 提示类型
-let emailAlertType = ref("success");
+let emailAlertType = ref("warning");
 // 提示消息
 let emailAlertTitle = ref("");
 // 邮箱登录
