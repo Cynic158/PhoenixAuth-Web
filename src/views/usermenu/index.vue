@@ -37,7 +37,7 @@
             <template #label>
               <div class="userinfo-cell-item">
                 <el-icon class="userinfo-cell-item-icon">
-                  <UserFilled />
+                  <Coordinate />
                 </el-icon>
                 游戏ID
               </div>
@@ -47,9 +47,7 @@
           <el-descriptions-item>
             <template #label>
               <div class="userinfo-cell-item">
-                <el-icon class="userinfo-cell-item-icon">
-                  <Tools />
-                </el-icon>
+                <el-icon class="userinfo-cell-item-icon"> <Tools /> </el-icon>
                 系统管理权限
               </div>
             </template>
@@ -293,7 +291,7 @@ const rules = {
   repassword: [
     {
       required: true,
-      message: "请输入确认密码",
+      message: "请确认新密码",
       trigger: "blur",
     },
     { validator: validateRePassword, trigger: "blur" },
@@ -357,13 +355,11 @@ let changePassword = async () => {
   display: flex;
   align-items: center;
 }
-.userinfo-container {
-  .userinfo-cell-item {
-    display: flex;
-    align-items: center;
-    .userinfo-cell-item-icon {
-      margin-right: 8px;
-    }
+.userinfo-cell-item {
+  display: flex;
+  align-items: center;
+  .userinfo-cell-item-icon {
+    margin-right: 8px;
   }
 }
 .password-form-container {

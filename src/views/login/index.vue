@@ -178,7 +178,7 @@ const rules = {
 const regrules = {
   username: [
     { required: true, message: "请输入用户名", trigger: "blur" },
-    { min: 5, max: 12, message: "用户名长度为5到10位", trigger: "blur" },
+    { min: 5, max: 12, message: "用户名长度为5到12位", trigger: "blur" },
     { validator: validateUserName, trigger: "blur" },
   ],
   password: [
@@ -191,7 +191,7 @@ const regrules = {
   repassword: [
     {
       required: true,
-      message: "请输入确认密码",
+      message: "请确认密码",
       trigger: "blur",
     },
     { validator: validateRePassword, trigger: "blur" },

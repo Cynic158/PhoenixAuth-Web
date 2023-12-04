@@ -464,7 +464,7 @@ let unbindDialogVisible = ref(false);
 // 解绑确认按钮loading
 let unbindLoading = ref(false);
 // 显示dialog
-let unbindDialog = async () => {
+let unbindDialog = () => {
   unbindDialogVisible.value = true;
 };
 let unbindBot = async () => {
@@ -507,7 +507,7 @@ let changeDialogVisible = ref(false);
 // 更改确认按钮loading
 let changeLoading = ref(false);
 // 显示dialog
-let changeDialog = async () => {
+let changeDialog = () => {
   changeDialogVisible.value = true;
 };
 // 表单元素
@@ -591,7 +591,6 @@ let changeBotName = async () => {
 .card-footer {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
 }
 .el-alert__title,
 .el-alert__content,

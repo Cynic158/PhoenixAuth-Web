@@ -22,7 +22,12 @@
           @click="foldMenu"
           class="fold-btn"
           popper-class="banpopper"
-          style="position: sticky; top: 0px; z-index: 2"
+          style="
+            position: sticky;
+            top: 0px;
+            z-index: 2;
+            background-color: var(--el-bg-color);
+          "
         >
           <template #title>
             <el-icon size="18" v-if="!settingStore.isCollapse"
@@ -83,6 +88,25 @@ let closeOpacity = () => {
   // 关闭节流阀
   setTimeout(() => {
     foldFlag = false;
+    // 禁止横向滚动事件
+    function addScrollListener() {
+      // 尝试获取元素
+      const element = document.querySelector(".el-menu .el-scrollbar__wrap");
+
+      // 如果元素存在
+      if (element) {
+        // 添加滚动事件监听器
+        element.addEventListener("scroll", function () {
+          element.scrollLeft = 0;
+        });
+
+        // 停止定时器
+        clearInterval(checkElementInterval);
+      }
+    }
+
+    // 设置定时器，每隔100毫秒检查元素是否存在
+    const checkElementInterval = setInterval(addScrollListener, 100);
   }, 400);
 };
 // 打开透明度函数
@@ -97,6 +121,25 @@ let openOpacity = () => {
   // 关闭节流阀
   setTimeout(() => {
     foldFlag = false;
+    // 禁止横向滚动事件
+    function addScrollListener() {
+      // 尝试获取元素
+      const element = document.querySelector(".el-menu .el-scrollbar__wrap");
+
+      // 如果元素存在
+      if (element) {
+        // 添加滚动事件监听器
+        element.addEventListener("scroll", function () {
+          element.scrollLeft = 0;
+        });
+
+        // 停止定时器
+        clearInterval(checkElementInterval);
+      }
+    }
+
+    // 设置定时器，每隔100毫秒检查元素是否存在
+    const checkElementInterval = setInterval(addScrollListener, 100);
   }, 400);
 };
 
@@ -161,10 +204,33 @@ onMounted(() => {
       foldMenu();
     }
   );
+
+  // 禁止横向滚动事件
+  function addScrollListener() {
+    // 尝试获取元素
+    const element = document.querySelector(".el-menu .el-scrollbar__wrap");
+
+    // 如果元素存在
+    if (element) {
+      // 添加滚动事件监听器
+      element.addEventListener("scroll", function () {
+        element.scrollLeft = 0;
+      });
+
+      // 停止定时器
+      clearInterval(checkElementInterval);
+    }
+  }
+
+  // 设置定时器，每隔100毫秒检查元素是否存在
+  const checkElementInterval = setInterval(addScrollListener, 100);
 });
 </script>
 
 <style scoped lang="scss">
+:deep(.el-scrollbar__bar.is-horizontal) {
+  display: none !important;
+}
 :deep(.el-scrollbar__bar) {
   z-index: 4;
 }
