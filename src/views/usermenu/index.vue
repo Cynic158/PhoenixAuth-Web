@@ -10,7 +10,7 @@
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px; color: dimgray">用户信息描述</span>
+          <span style="margin-left: 12px; color: dimgray">游戏ID在第一次成功登录时获取，之后您只能登录该用户拥有的的租赁服</span>
         </div>
         <el-divider />
         <el-descriptions

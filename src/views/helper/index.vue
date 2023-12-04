@@ -49,7 +49,7 @@
       shadow="hover"
     >
       <template #header>
-        <div class="card-header">Bot 创建--游客登录</div>
+        <div class="card-header">游客登录</div>
       </template>
       <div>
         <div class="card-footer">
@@ -57,7 +57,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >以游客登录的形式创建机器人，如果需要验证，请在验证完成后重新点击创建</span
+            >新建一个游客账号作为Bot</span
           >
         </div>
         <el-divider />
@@ -82,7 +82,7 @@
       style="margin-top: 12px"
     >
       <template #header>
-        <div class="card-header">Bot 创建--邮箱登录</div>
+        <div class="card-header">邮箱登录</div>
       </template>
       <div>
         <div class="card-footer">
@@ -90,7 +90,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >以邮箱账号登录的形式创建机器人，如果需要验证，请在验证完成后重新点击创建</span
+            >使用您提供的邮箱账号作为Bot</span
           >
         </div>
         <el-divider />
@@ -109,18 +109,18 @@
           :rules="rules"
           ref="emailform"
         >
-          <el-form-item label="邮箱账号" prop="username">
+          <el-form-item label="账号" prop="username">
             <el-input
               v-model="emailData.username"
-              placeholder="请输入邮箱账号"
+              placeholder="请输入账号"
             />
           </el-form-item>
-          <el-form-item label="邮箱密码" prop="password">
+          <el-form-item label="密码" prop="password">
             <el-input
               type="password"
               show-password
               v-model="emailData.password"
-              placeholder="请输入邮箱密码"
+              placeholder="请输入密码"
             />
           </el-form-item>
           <el-form-item>
@@ -134,10 +134,10 @@
     <el-dialog
       width="300px"
       v-model="unbindDialogVisible"
-      title="重置"
+      title="解绑"
       align-center
     >
-      确定解绑Bot吗
+      确定解绑Bot吗？当前保存的游戏账号信息将会被彻底清空。
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="unbindDialogVisible = false">取消</el-button>
@@ -207,9 +207,9 @@ let getBotStatus = async () => {
       if (result.username) {
         alertType.value = "success";
         // @ts-ignore
-        alertTitle.value = "Bot " + result.username + " 状态正常";
+        alertTitle.value = result.username;
       } else {
-        alertType.value = "error";
+        alertType.value = "warning";
         // @ts-ignore
         alertTitle.value = result.message;
       }
@@ -257,7 +257,7 @@ let createBotByDefault = async () => {
       // 获取成功
       // @ts-ignore
       if (result.need_verify) {
-        createAlertType.value = "error";
+        createAlertType.value = "warning";
       } else {
         createAlertType.value = "success";
       }
@@ -329,7 +329,7 @@ const rules = {
   username: [
     {
       required: true,
-      message: "请输入邮箱账号",
+      message: "账号不能为空",
       trigger: "blur",
     },
     { validator: validateEmail, trigger: "blur" },
@@ -337,7 +337,7 @@ const rules = {
   password: [
     {
       required: true,
-      message: "请输入邮箱密码",
+      message: "密码不能为空",
       trigger: "blur",
     },
   ],
@@ -368,7 +368,7 @@ let createBotByEmail = async () => {
       // 获取成功
       // @ts-ignore
       if (result.need_verify) {
-        emailAlertType.value = "error";
+        emailAlertType.value = "warning";
       } else {
         emailAlertType.value = "success";
       }
