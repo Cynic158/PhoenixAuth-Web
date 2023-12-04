@@ -7,9 +7,11 @@
       <div>
         <span>Powered by Vue3, Element Plus, etc.</span><br /><br />
         <div style="display: flex; align-items: center">
-          <img class="avatar" src="avatar.jpg" alt="" /><span class="author"
-            >Cynic158</span
-          >
+          <img
+            class="avatar"
+            src="../../assets/images/avatar.jpg"
+            alt=""
+          /><span class="author">Cynic158</span>
         </div>
       </div>
     </el-card>
@@ -20,9 +22,11 @@
       <div>
         <span>Powered by Gin, Gorm, etc.</span><br /><br />
         <div style="display: flex; align-items: center">
-          <img class="avatar" src="avatar2.jpg" alt="" /><span class="author"
-            >Liliya233</span
-          >
+          <img
+            class="avatar"
+            src="../../assets/images/avatar2.jpg"
+            alt=""
+          /><span class="author">Liliya233</span>
         </div>
       </div>
     </el-card>
