@@ -153,7 +153,7 @@
               placeholder="请确认新密码"
             />
           </el-form-item>
-          <el-form-item>
+          <el-form-item style="margin-bottom: 0">
             <el-button
               :loading="passwordloadingflag"
               type="primary"

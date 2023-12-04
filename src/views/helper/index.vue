@@ -120,7 +120,7 @@
               placeholder="请输入密码"
             />
           </el-form-item>
-          <el-form-item>
+          <el-form-item style="margin-bottom: 0">
             <el-button type="primary" @click="createBotByEmail">创建</el-button>
             <el-button @click="clearForm">清空表单</el-button>
           </el-form-item>
@@ -160,7 +160,7 @@
               placeholder="请输入新昵称"
             />
           </el-form-item>
-          <el-form-item>
+          <el-form-item style="margin-bottom: 0">
             <el-button type="primary" @click="changeDialog">更改</el-button>
           </el-form-item>
         </el-form>

@@ -69,7 +69,7 @@ export const defaultRoutes = [
 export const permissionRoutes = [
   {
     path: "/admin",
-    component: () => import("@/views/test/index.vue"),
+    component: () => import("@/views/admin/index.vue"),
     name: "admin",
     meta: {
       title: "管理菜单",
