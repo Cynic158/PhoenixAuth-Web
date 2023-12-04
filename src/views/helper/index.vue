@@ -128,6 +128,45 @@
       </div>
     </el-card>
 
+    <el-card
+      shadow="hover"
+      v-if="botInfo.username"
+      v-loading="queryLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
+        <div class="card-header">更改游戏昵称</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >更改机器人的游戏昵称</span
+          >
+        </div>
+        <el-divider />
+
+        <el-form
+          class="botname-form-container"
+          :model="botnameData"
+          :rules="rules2"
+          ref="botnameform"
+        >
+          <el-form-item label="新昵称" prop="username">
+            <el-input
+              v-model="botnameData.username"
+              placeholder="请输入新昵称"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="changeDialog">更改</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+
     <el-dialog
       width="300px"
       v-model="unbindDialogVisible"
@@ -144,6 +183,26 @@
         </span>
       </template>
     </el-dialog>
+
+    <el-dialog
+      width="300px"
+      v-model="changeDialogVisible"
+      title="更改游戏昵称"
+      align-center
+    >
+      确定更改Bot游戏昵称吗？更改成功后会进入30天冷却期。
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="changeDialogVisible = false">取消</el-button>
+          <el-button
+            :loading="changeLoading"
+            type="primary"
+            @click="changeBotName"
+            >确定</el-button
+          >
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -153,7 +212,7 @@ import useHelperStore from "@/store/modules/helper";
 // 导入消息通知组件
 // @ts-ignore
 import { ElNotification } from "element-plus";
-import { onActivated, onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
 
 // bot信息部分
 // 使用bot仓库
@@ -216,6 +275,8 @@ let getBotStatus = async () => {
         // 任意一次获取信息成功都会导致解绑按钮允许显示
         showUnbind.value = true;
       }
+      // 清空表单
+      clearForm();
     } else {
       // 获取失败
       ElNotification({
@@ -312,10 +373,6 @@ let clearForm = () => {
     console.log(error);
   }
 };
-// 每次进入子页面就清空表单
-onActivated(() => {
-  clearForm();
-});
 // @ts-ignore
 let validateEmail = (rule: any, value: any, callback: any) => {
   // 邮箱正则表达式
@@ -353,8 +410,10 @@ let emailAlertTitle = ref("");
 // 邮箱登录
 let createBotByEmail = async () => {
   // 校验表单
-  // @ts-ignore
-  await emailform.value.validate();
+  if (emailform.value) {
+    // @ts-ignore
+    await emailform.value.validate();
+  }
   try {
     // 显示加载
     createDefaultLoading.value = true;
@@ -441,6 +500,90 @@ let unbindBot = async () => {
     getBotStatus();
   }
 };
+
+// 更改游戏昵称
+// 更改对话框dialog
+let changeDialogVisible = ref(false);
+// 更改确认按钮loading
+let changeLoading = ref(false);
+// 显示dialog
+let changeDialog = async () => {
+  changeDialogVisible.value = true;
+};
+// 表单元素
+let botnameform = ref(null);
+// 表单数据
+let botnameData = reactive({
+  username: "",
+});
+// 清空表单
+let clearChangeForm = () => {
+  botnameData.username = "";
+  // 清空校验提示
+  try {
+    setTimeout(() => {
+      if (botnameform.value) {
+        // @ts-ignore
+        botnameform.value.clearValidate(["username"]);
+      }
+    }, 200);
+  } catch (error) {
+    console.log(error);
+  }
+};
+// 表单校验规则
+const rules2 = {
+  username: [
+    {
+      required: true,
+      message: "新昵称不能为空",
+      trigger: "blur",
+    },
+  ],
+};
+let changeBotName = async () => {
+  // 校验表单
+  if (botnameform.value) {
+    // @ts-ignore
+    await botnameform.value.validate();
+  }
+  try {
+    changeLoading.value = true;
+    let botname = {
+      username: "",
+    };
+    botname.username = botnameData.username;
+    let result = await helperStore.botChangeName(botname);
+    // @ts-ignore
+    if (result.success) {
+      ElNotification({
+        type: "success",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      clearChangeForm();
+    } else {
+      ElNotification({
+        type: "error",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+    // 请求失败，消息提示
+    ElNotification({
+      type: "error",
+      message: error.message,
+      duration: 3000,
+    });
+  } finally {
+    changeLoading.value = false;
+    changeDialogVisible.value = false;
+    getBotStatus();
+  }
+};
 </script>
 
 <style scoped>
@@ -457,7 +600,8 @@ let unbindBot = async () => {
   word-break: break-all;
   white-space: normal;
 }
-.email-form-container {
+.email-form-container,
+.botname-form-container {
   max-width: 600px;
 }
 </style>

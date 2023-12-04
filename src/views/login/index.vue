@@ -227,10 +227,14 @@ let switchpage = (type: "login" | "reg") => {
   if (type == "reg") {
     currentForm.value = "reg";
     // 清空校验提示
-    // @ts-ignore
-    loginform.value.clearValidate(["username", "password"]);
-    // @ts-ignore
-    regform.value.clearValidate(["username", "password", "repassword"]);
+    if (loginform.value) {
+      // @ts-ignore
+      loginform.value.clearValidate(["username", "password"]);
+    }
+    if (regform.value) {
+      // @ts-ignore
+      regform.value.clearValidate(["username", "password", "repassword"]);
+    }
 
     // @ts-ignore
     document.querySelector(".login-form").style.height = "344px";
@@ -244,10 +248,14 @@ let switchpage = (type: "login" | "reg") => {
   } else if (type == "login") {
     currentForm.value = "login";
     // 清空校验提示
-    // @ts-ignore
-    loginform.value.clearValidate(["username", "password"]);
-    // @ts-ignore
-    regform.value.clearValidate(["username", "password", "repassword"]);
+    if (loginform.value) {
+      // @ts-ignore
+      loginform.value.clearValidate(["username", "password"]);
+    }
+    if (regform.value) {
+      // @ts-ignore
+      regform.value.clearValidate(["username", "password", "repassword"]);
+    }
 
     // @ts-ignore
     document.querySelector(".login-form").style.height = "294px";
@@ -370,14 +378,12 @@ var robotCallback = async (args: any) => {
   }
 };
 // 人机验证过期回调
-var robotExpiredCallback = (args: any) => {
-  console.log(args);
+var robotExpiredCallback = () => {
   console.log("验证过期");
   userStore.robotToken = "";
 };
 // 人机验证失败回调
-var robotErrorCallback = (args: any) => {
-  console.log(args);
+var robotErrorCallback = () => {
   console.log("验证失败");
   userStore.robotToken = "";
 };
@@ -385,8 +391,10 @@ var robotErrorCallback = (args: any) => {
 // 登录事件
 let login = async () => {
   // 校验表单
-  // @ts-ignore
-  await loginform.value.validate();
+  if (loginform.value) {
+    // @ts-ignore
+    await loginform.value.validate();
+  }
 
   userStore.robotToken = "";
   // @ts-ignore
@@ -396,8 +404,10 @@ let login = async () => {
 };
 let register = async () => {
   // 校验表单
-  // @ts-ignore
-  await regform.value.validate();
+  if (regform.value) {
+    // @ts-ignore
+    await regform.value.validate();
+  }
 
   userStore.robotToken = "";
   // @ts-ignore

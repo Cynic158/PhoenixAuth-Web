@@ -63,11 +63,22 @@ let useHelperStore = defineStore("helper", () => {
     }
   };
 
+  // 更名
+  let botChangeName = async (username: { username: string }) => {
+    try {
+      let result = await reqChangeName(username);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   return {
     getBot,
     botCreate,
     botCreateByEmail,
     botUnbind,
+    botChangeName,
   };
 });
 

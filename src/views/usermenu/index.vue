@@ -10,7 +10,9 @@
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px; color: dimgray">游戏ID在第一次成功登录时获取，之后您只能登录至此ID的租赁服</span>
+          <span style="margin-left: 12px; color: dimgray"
+            >游戏ID在第一次成功登录时获取，之后您只能登录至此ID的租赁服</span
+          >
         </div>
         <el-divider />
         <el-descriptions
@@ -300,8 +302,11 @@ const rules = {
 // 修改密码
 let changePassword = async () => {
   // 校验表单
-  // @ts-ignore
-  await passwordform.value.validate();
+  if (passwordform.value) {
+    // @ts-ignore
+    await passwordform.value.validate();
+  }
+
   try {
     // 显示加载
     passwordloadingflag.value = true;

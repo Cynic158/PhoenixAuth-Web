@@ -214,10 +214,16 @@ let clearForm = () => {
   noticeData.title = "";
   noticeData.content = "";
   // 清空校验提示
-  setTimeout(() => {
-    // @ts-ignore
-    noticeform.value.clearValidate(["title", "content"]);
-  }, 100);
+  try {
+    setTimeout(() => {
+      if (noticeform.value) {
+        // @ts-ignore
+        noticeform.value.clearValidate(["title", "content"]);
+      }
+    }, 100);
+  } catch (error) {
+    console.log(error);
+  }
 };
 // 创建按钮加载状态
 let noticeloadingflag = ref(false);
