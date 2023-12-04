@@ -76,7 +76,25 @@ request.interceptors.response.use(
           // 刷新当前页面
           location.reload();
         };
-        reader.readAsText(error.response.data);
+        if (typeof error.response.data === "object") {
+          // 是对象，不必解析
+          ElNotification({
+            type: "error",
+            title: "错误",
+            message: error.response.data.message || "请先登录",
+            duration: 3000,
+          });
+          // 使用用户仓库的清空信息函数
+          let userStore = useUserStore();
+          // 清空用户信息
+          userStore.clearUser();
+          // 跳转到登录页
+          routerPush("/login");
+          // 刷新当前页面
+          location.reload();
+        } else {
+          reader.readAsText(error.response.data);
+        }
         break;
       case 403:
         reader.onload = function () {
@@ -90,7 +108,18 @@ request.interceptors.response.use(
             duration: 3000,
           });
         };
-        reader.readAsText(error.response.data);
+        if (typeof error.response.data === "object") {
+          // 是对象，不必解析
+          // 显示错误信息
+          ElNotification({
+            type: "error",
+            title: "错误",
+            message: error.response.data.message || "无权访问",
+            duration: 3000,
+          });
+        } else {
+          reader.readAsText(error.response.data);
+        }
         break;
       default:
         ElNotification({
