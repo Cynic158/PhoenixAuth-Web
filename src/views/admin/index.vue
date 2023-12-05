@@ -398,12 +398,7 @@ let createUser = async () => {
       });
     }
   } catch (error: any) {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
+    console.log(error);
   } finally {
     adminCreateLoading.value = false;
   }
@@ -519,12 +514,7 @@ let queryUser = async () => {
       clearUserInfo();
     }
   } catch (error: any) {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
+    console.log(error);
   } finally {
     adminOptionLoading.value = false;
   }
@@ -564,12 +554,7 @@ let activateUser = async () => {
       });
     }
   } catch (error: any) {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
+    console.log(error);
   } finally {
     adminOptionLoading.value = false;
   }
@@ -618,12 +603,7 @@ let banUser = async () => {
       });
     }
   } catch (error: any) {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
+    console.log(error);
   } finally {
     adminOptionLoading.value = false;
   }
@@ -720,12 +700,7 @@ let renewUser = async () => {
       });
     }
   } catch (error: any) {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
+    console.log(error);
   } finally {
     adminRenewLoading.value = false;
   }

@@ -126,7 +126,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, ref } from "vue";
+import { onMounted, onUnmounted, reactive, ref, onActivated } from "vue";
 // 导入用户仓库
 import useUserStore from "@/store/modules/user";
 // 使用路由
@@ -136,6 +136,7 @@ import { useRouter } from "vue-router";
 import { ElNotification } from "element-plus";
 // 获取时间字符串函数
 import { getTimeStr } from "@/utils/index";
+import bgdark from "../../assets/images/bg_dark.png";
 
 // 使用user仓库
 let userStore = useUserStore();
@@ -317,12 +318,7 @@ var robotCallback = async (args: any) => {
           });
         }
       } catch (error: any) {
-        // 请求失败，消息提示
-        ElNotification({
-          type: "error",
-          message: error.message,
-          duration: 3000,
-        });
+        console.log(error);
       } finally {
         // 请求完成，关闭加载
         loadingflag.value = false;
@@ -364,12 +360,7 @@ var robotCallback = async (args: any) => {
           });
         }
       } catch (error: any) {
-        // 请求失败，消息提示
-        ElNotification({
-          type: "error",
-          message: error.message,
-          duration: 3000,
-        });
+        console.log(error);
       } finally {
         // 请求完成，关闭加载
         regloadingflag.value = false;
@@ -599,6 +590,43 @@ onUnmounted(() => {
   // @ts-ignore
   window.robotErrorCallback = null;
 });
+onActivated(() => {
+  let darkbg = localStorage.getItem("DARKMODE") === "true";
+  if (darkbg) {
+    let changebg = () => {
+      const element = document.querySelector(".login-container");
+      if (element) {
+        // @ts-ignore
+        element.style.backgroundImage =
+          "url('../../assets/images/bg_dark.png')";
+        // 转为黑夜模式
+        document.documentElement.className = "dark";
+
+        clearInterval(checkElementInterval2);
+      }
+    };
+    // 设置定时器，每隔100毫秒检查元素是否存在
+    const checkElementInterval2 = setInterval(changebg, 100);
+  }
+});
+onMounted(() => {
+  let darkbg = localStorage.getItem("DARKMODE") === "true";
+  if (darkbg) {
+    let changebg = () => {
+      const element = document.querySelector(".login-container");
+      if (element) {
+        // @ts-ignore
+        element.style.backgroundImage = `url(${bgdark})`;
+        // 转为黑夜模式
+        document.documentElement.className = "dark";
+
+        clearInterval(checkElementInterval2);
+      }
+    };
+    // 设置定时器，每隔100毫秒检查元素是否存在
+    const checkElementInterval2 = setInterval(changebg, 100);
+  }
+});
 </script>
 
 <style scoped lang="scss">
@@ -623,8 +651,16 @@ onUnmounted(() => {
   }
 }
 :deep(.el-input__wrapper) {
-  background-color: $login-form-input-bgcolor;
+  background-color: var(--el-mask-color-extra-light) !important;
+  // color: black !important;
+  // border-color: white !important;
 }
+// :deep(.el-input__inner) {
+//   color: rgb(78, 77, 77) !important;
+// }
+// :deep(.el-input) {
+//   border-color: white !important;
+// }
 .tip {
   font-size: 16px;
   float: right;

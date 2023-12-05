@@ -280,12 +280,7 @@ let createNotice = async () => {
       });
     }
   } catch (error: any) {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
+    console.log(error);
   } finally {
     // 请求完成，关闭加载
     noticeloadingflag.value = false;
@@ -336,12 +331,7 @@ let deleteNotice = async () => {
       });
     }
   } catch (error: any) {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
+    console.log(error);
   } finally {
     // 请求完成，关闭加载
     deleteloadingflag.value = false;
