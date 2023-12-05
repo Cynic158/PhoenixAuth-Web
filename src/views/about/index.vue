@@ -2,7 +2,7 @@
   <div>
     <el-card shadow="hover">
       <template #header>
-        <div class="card-header">前端-用户中心</div>
+        <div class="card-header">Web</div>
       </template>
       <div>
         <span>Powered by Vue3, Element Plus, etc.</span><br /><br />
@@ -17,14 +17,14 @@
     </el-card>
     <el-card style="margin-top: 12px" shadow="hover">
       <template #header>
-        <div class="card-header">后端-验证服务</div>
+        <div class="card-header">Backend</div>
       </template>
       <div>
         <span>Powered by Gin, Gorm, etc.</span><br /><br />
         <div style="display: flex; align-items: center">
           <img
             class="avatar"
-            src="../../assets/images/avatar2.jpg"
+            src="../../assets/images/avatar2.png"
             alt=""
           /><span class="author">Liliya233</span>
         </div>

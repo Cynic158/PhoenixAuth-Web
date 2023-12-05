@@ -54,7 +54,7 @@
             >
               <el-option label="封禁" value="0" />
               <el-option label="游客" value="1" />
-              <el-option label="普通用户" value="2" />
+              <el-option label="普通" value="2" />
               <el-option label="开发者" value="3" />
             </el-select>
           </el-form-item>
@@ -80,7 +80,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >对用户进行查询、封禁、激活以及解封</span
+            >查询、封禁或激活用户，激活会将用户提升为普通权限</span
           >
         </div>
         <el-divider />
@@ -112,18 +112,7 @@
                     <el-icon class="userinfo-cell-item-icon">
                       <UserFilled />
                     </el-icon>
-                    用户 ID
-                  </div>
-                </template>
-                {{ queryUserInfo.ID }}
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template #label>
-                  <div class="userinfo-cell-item">
-                    <el-icon class="userinfo-cell-item-icon">
-                      <UserFilled />
-                    </el-icon>
-                    用户名称
+                    用户名
                   </div>
                 </template>
                 {{ queryUserInfo.username }}
@@ -145,21 +134,10 @@
                     <el-icon class="userinfo-cell-item-icon">
                       <Tools />
                     </el-icon>
-                    用户权限
+                    权限
                   </div>
                 </template>
                 {{ queryUserInfo.permission }}
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template #label>
-                  <div class="userinfo-cell-item">
-                    <el-icon class="userinfo-cell-item-icon">
-                      <Connection />
-                    </el-icon>
-                    创建时间
-                  </div>
-                </template>
-                {{ queryUserInfo.create_at }}
               </el-descriptions-item>
               <el-descriptions-item>
                 <template #label>
@@ -176,6 +154,17 @@
                 <template #label>
                   <div class="userinfo-cell-item">
                     <el-icon class="userinfo-cell-item-icon">
+                      <Connection />
+                    </el-icon>
+                    创建时间
+                  </div>
+                </template>
+                {{ queryUserInfo.create_at }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <div class="userinfo-cell-item">
+                    <el-icon class="userinfo-cell-item-icon">
                       <Refresh />
                     </el-icon>
                     更新时间
@@ -187,8 +176,18 @@
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
             <el-button type="primary" @click="queryUser">查询</el-button>
-            <el-button type="success" @click="activateUser">激活</el-button>
-            <el-button type="danger" @click="banUserDialog">封禁</el-button>
+            <el-button
+              type="success"
+              @click="activateUser"
+              v-if="['封禁(0)', '游客(1)'].includes(queryUserInfo.permission)"
+            >激活
+            </el-button>
+            <el-button
+              type="danger"
+              @click="banUserDialog"
+              v-if="['游客(1)', '普通(2)', '开发者(3)'].includes(queryUserInfo.permission)"
+            >封禁
+            </el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -208,7 +207,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >输入正整数，以小时为单位，1个月算作30天</span
+            >延长用户的有效期，以小时为单位</span
           >
         </div>
         <el-divider />
@@ -226,7 +225,9 @@
             <el-input
               v-model="renewData.renew_time"
               type="number"
-              placeholder="请输入正整数"
+              placeholder="请输入时长(小时)"
+              min="1"
+              max="86400"
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
@@ -423,16 +424,14 @@ const rules2 = {
 // 查询用户信息
 // 用户信息
 let queryUserInfo = reactive({
-  ID: "未获取",
-  username: "未获取",
-  permission: "未获取",
-  expire_at: "未获取",
-  game_id: "未获取",
-  create_at: "未获取",
-  update_at: "未获取",
+  username: "暂无信息",
+  permission: "暂无信息",
+  expire_at: "暂无信息",
+  game_id: "暂无信息",
+  create_at: "暂无信息",
+  update_at: "暂无信息",
 });
 interface userInfo {
-  ID: number;
   username: string;
   permission: number;
   expire_at: number;
@@ -442,19 +441,21 @@ interface userInfo {
 }
 // 设置用户信息
 let setUserInfo = (userInfo: userInfo) => {
-  queryUserInfo.ID = userInfo.ID.toString();
   queryUserInfo.username = userInfo.username;
   if (userInfo.permission == 0) {
-    queryUserInfo.permission = "封禁(0)";
+    queryUserInfo.permission = "封禁";
   } else if (userInfo.permission == 1) {
-    queryUserInfo.permission = "游客(1)";
+    queryUserInfo.permission = "游客";
   } else if (userInfo.permission == 2) {
-    queryUserInfo.permission = "普通用户(2)";
+    queryUserInfo.permission = "普通";
   } else if (userInfo.permission == 3) {
-    queryUserInfo.permission = "开发者(3)";
+    queryUserInfo.permission = "开发者";
+  } else if (userInfo.permission == 4) {
+    queryUserInfo.permission = "管理员";
   } else {
-    queryUserInfo.permission = "未知(?)";
+    queryUserInfo.permission = "未知";
   }
+  queryUserInfo.permission += `(${userInfo.permission})`;
   let expireTime = getTimeStr2(userInfo.expire_at.toString());
   let createTime = getTimeStr2(userInfo.create_at.toString());
   let updateTime = getTimeStr2(userInfo.update_at.toString());
@@ -469,10 +470,12 @@ let setUserInfo = (userInfo: userInfo) => {
 };
 // 清空用户信息
 let clearUserInfo = () => {
-  queryUserInfo.ID = "未获取";
-  queryUserInfo.username = "未获取";
-  queryUserInfo.permission = "未获取";
-  queryUserInfo.expire_at = "未获取";
+  queryUserInfo.username = "暂无信息";
+  queryUserInfo.game_id = "暂无信息";
+  queryUserInfo.permission = "暂无信息";
+  queryUserInfo.expire_at = "暂无信息";
+  queryUserInfo.create_at = "暂无信息";
+  queryUserInfo.update_at = "暂无信息";
 };
 // 查询用户信息
 let queryUser = async () => {
@@ -635,14 +638,13 @@ let renewStr = computed(() => {
 });
 // 清空表单
 let clearRenewForm = () => {
-  renewData.username = "";
   renewData.renew_time = "";
   // 清空校验提示
   try {
     setTimeout(() => {
       if (renewform.value) {
         // @ts-ignore
-        renewform.value.clearValidate(["username", "renew_time"]);
+        renewform.value.clearValidate(["renew_time"]);
       }
     }, 200);
   } catch (error) {
@@ -654,7 +656,9 @@ let validateRenew = (rule: any, value: any, callback: any) => {
   const intValue = parseInt(value, 10);
   if (isNaN(intValue) || intValue <= 0 || intValue !== parseFloat(value)) {
     callback(new Error("请输入正整数"));
-  } else {
+  } else if (intValue > 86400){
+    callback(new Error("超出最大续期时长"));
+  }else {
     callback();
   }
 };
@@ -699,6 +703,9 @@ let renewUser = async () => {
         duration: 3000,
       });
       clearRenewForm();
+      // 查询该用户
+      optionData.username = renewInfo.username
+      queryUser();
     } else {
       ElNotification({
         type: "error",
