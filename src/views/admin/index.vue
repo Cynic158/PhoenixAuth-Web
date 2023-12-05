@@ -86,6 +86,7 @@
         <el-divider />
 
         <el-form
+          @submit.prevent
           class="admin-option-form-container"
           :model="optionData"
           :rules="rules2"
@@ -180,13 +181,17 @@
               type="success"
               @click="activateUser"
               v-if="['封禁(0)', '游客(1)'].includes(queryUserInfo.permission)"
-            >激活
+              >激活
             </el-button>
             <el-button
               type="danger"
               @click="banUserDialog"
-              v-if="['游客(1)', '普通(2)', '开发者(3)'].includes(queryUserInfo.permission)"
-            >封禁
+              v-if="
+                ['游客(1)', '普通(2)', '开发者(3)'].includes(
+                  queryUserInfo.permission
+                )
+              "
+              >封禁
             </el-button>
           </el-form-item>
         </el-form>
@@ -656,9 +661,9 @@ let validateRenew = (rule: any, value: any, callback: any) => {
   const intValue = parseInt(value, 10);
   if (isNaN(intValue) || intValue <= 0 || intValue !== parseFloat(value)) {
     callback(new Error("请输入正整数"));
-  } else if (intValue > 86400){
+  } else if (intValue > 86400) {
     callback(new Error("超出最大续期时长"));
-  }else {
+  } else {
     callback();
   }
 };
@@ -704,7 +709,7 @@ let renewUser = async () => {
       });
       clearRenewForm();
       // 查询该用户
-      optionData.username = renewInfo.username
+      optionData.username = renewInfo.username;
       queryUser();
     } else {
       ElNotification({

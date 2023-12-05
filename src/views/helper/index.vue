@@ -149,6 +149,7 @@
         <el-divider />
 
         <el-form
+          @submit.prevent
           class="botname-form-container"
           :model="botnameData"
           :rules="rules2"
