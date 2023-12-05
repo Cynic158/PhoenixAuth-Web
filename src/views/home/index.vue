@@ -81,9 +81,9 @@
         <el-form-item label="标题" prop="title">
           <el-input v-model="noticeData.title" placeholder="请输入标题" />
         </el-form-item>
-        <div style="border: 1px solid #ccc">
+        <div style="border: 1px solid var(--el-border-color)">
           <Toolbar
-            style="border-bottom: 1px solid #ccc"
+            style="border-bottom: 1px solid var(--el-border-color)"
             :editor="editorRef"
             :defaultConfig="toolbarConfig"
             :mode="'default'"
@@ -242,6 +242,30 @@ onMounted(() => {
 // 弹窗
 let dialogVisible = ref(false);
 let createdialog = () => {
+  // 在此处获取当前暗黑主题
+  let darkflag = localStorage.getItem("DARKMODE") === "true";
+  let element = document.documentElement;
+  element.style.setProperty("--w-e-textarea-bg-color", "transparent");
+  element.style.setProperty(
+    "--w-e-toolbar-bg-color",
+    "var(--el-fill-color-light)"
+  );
+  element.style.setProperty("--w-e-toolbar-border-color", "transparent");
+  element.style.setProperty(
+    "--w-e-toolbar-active-color",
+    "var(--el-text-color-regular)"
+  );
+  element.style.setProperty(
+    "--w-e-toolbar-color",
+    "var(--el-text-color-regular)"
+  );
+  if (darkflag) {
+    // 更改为黑色
+    element.style.setProperty("--w-e-textarea-color", "#f5f5f5");
+  } else {
+    // 更改为白色
+    element.style.setProperty("--w-e-textarea-color", "#333");
+  }
   dialogVisible.value = true;
   clearForm();
 };
