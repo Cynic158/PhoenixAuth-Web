@@ -288,12 +288,7 @@ let getBotStatus = async () => {
       });
     }
   } catch (error: any) {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
+    console.log(error);
   } finally {
     queryLoading.value = false;
     banUnbind.value = false;
@@ -338,12 +333,7 @@ let createBotByDefault = async () => {
       });
     }
   } catch (error: any) {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
+    console.log(error);
   } finally {
     createDefaultLoading.value = false;
     getBotStatus();
@@ -447,12 +437,7 @@ let createBotByEmail = async () => {
       });
     }
   } catch (error: any) {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
+    console.log(error);
   } finally {
     createDefaultLoading.value = false;
     getBotStatus();
@@ -489,12 +474,7 @@ let unbindBot = async () => {
       });
     }
   } catch (error: any) {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
+    console.log(error);
   } finally {
     unbindLoading.value = false;
     unbindDialogVisible.value = false;
@@ -573,12 +553,7 @@ let changeBotName = async () => {
       });
     }
   } catch (error: any) {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
+    console.log(error);
   } finally {
     changeLoading.value = false;
     changeDialogVisible.value = false;

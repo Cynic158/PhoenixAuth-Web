@@ -76,8 +76,9 @@ request.interceptors.response.use(
           // 刷新当前页面
           location.reload();
         };
-        if (typeof error.response.data === "object") {
-          // 是对象，不必解析
+        if (error.response.data instanceof Blob) {
+          reader.readAsText(error.response.data);
+        } else {
           ElNotification({
             type: "error",
             title: "错误",
@@ -92,8 +93,6 @@ request.interceptors.response.use(
           routerPush("/login");
           // 刷新当前页面
           location.reload();
-        } else {
-          reader.readAsText(error.response.data);
         }
         break;
       case 403:
@@ -108,8 +107,9 @@ request.interceptors.response.use(
             duration: 3000,
           });
         };
-        if (typeof error.response.data === "object") {
-          // 是对象，不必解析
+        if (error.response.data instanceof Blob) {
+          reader.readAsText(error.response.data);
+        } else {
           // 显示错误信息
           ElNotification({
             type: "error",
@@ -117,8 +117,6 @@ request.interceptors.response.use(
             message: error.response.data.message || "无权访问",
             duration: 3000,
           });
-        } else {
-          reader.readAsText(error.response.data);
         }
         break;
       default:
