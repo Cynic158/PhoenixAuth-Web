@@ -656,7 +656,7 @@ onMounted(() => {
   // border-color: white !important;
 }
 // :deep(.el-input__inner) {
-//   color: rgb(78, 77, 77) !important;
+//   background-color: transparent !important;
 // }
 // :deep(.el-input) {
 //   border-color: white !important;
