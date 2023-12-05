@@ -25,7 +25,7 @@ export default ({ mode }) =>
         // 其他环境变量也可以在这里设置
       },
     },
-    // base: "/static",
+    base: "/static",
     // build: {
     //   rollupOptions: {
     //     external: ["avatar.jpg", "avatar2.png", "bg.png", "bg_m.jpg"],
