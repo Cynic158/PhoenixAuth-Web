@@ -125,7 +125,7 @@ let showSetting = () => {
   drawer.value = true;
 };
 // 设置暗黑模式
-let dark = ref(false);
+let dark = ref(localStorage.getItem("DARKMODE") === "true");
 let setDark = () => {
   if (dark.value == false) {
     // 转为白天模式
@@ -134,9 +134,12 @@ let setDark = () => {
     // 转为黑夜模式
     document.documentElement.className = "dark";
   }
+  localStorage.setItem("DARKMODE", dark.value.toString());
 };
+// 首次触发
+setDark();
 // 设置主题
-let themeColor = ref("#409EFF");
+let themeColor = ref(localStorage.getItem("THEMECOLOR") || "#409EFF");
 // 颜色预设
 const predefineColors = ref([
   "#ff4500",
@@ -151,7 +154,10 @@ const predefineColors = ref([
 let setTheme = () => {
   let el = document.documentElement;
   el.style.setProperty("--el-color-primary", themeColor.value);
+  localStorage.setItem("THEMECOLOR", themeColor.value);
 };
+// 首次触发
+setTheme();
 // 设置导航
 let selectTabbar = ref("面包屑");
 let setTabbar = (val: number) => {
@@ -165,7 +171,26 @@ let setTabbar = (val: number) => {
     // 禁用
     settingStore.banTabbar();
   }
+  localStorage.setItem("TABBAR", val.toString());
 };
+// 首次触发
+switch(Number(localStorage.getItem("TABBAR")) || 0){
+  case 0: {
+    setTabbar(0);
+    selectTabbar = ref("面包屑");
+    break;
+  }
+  case 1: {
+    setTabbar(1);
+    selectTabbar = ref("标签页");
+    break;
+  }
+  case 2: {
+    setTabbar(2);
+    selectTabbar = ref("禁用");
+    break;
+  }
+}
 
 // 退出登录部分
 let dialogVisible = ref(false);
