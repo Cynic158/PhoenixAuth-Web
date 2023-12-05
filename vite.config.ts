@@ -16,6 +16,21 @@ const getEnvFn = (mode: string, target: string) => {
 // https://vitejs.dev/config/
 export default ({ mode }) =>
   defineConfig({
+    define: {
+      "process.env": {
+        NODE_ENV: JSON.stringify(mode), // 使用 Vite 的 mode 作为 NODE_ENV
+        VITE_APP_TITLE: JSON.stringify(getEnvFn(mode, "VITE_APP_TITLE")),
+        VITE_APP_BASE_API: JSON.stringify(getEnvFn(mode, "VITE_APP_BASE_API")),
+        VITE_APP_BASE_URL: JSON.stringify(getEnvFn(mode, "VITE_APP_BASE_URL")),
+        // 其他环境变量也可以在这里设置
+      },
+    },
+    // base: "/static",
+    // build: {
+    //   rollupOptions: {
+    //     external: ["avatar.jpg", "avatar2.png", "bg.png", "bg_m.jpg"],
+    //   },
+    // },
     plugins: [
       vue(),
       prismjsPlugin({

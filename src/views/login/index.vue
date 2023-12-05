@@ -604,7 +604,7 @@ onUnmounted(() => {
 <style scoped lang="scss">
 @media (max-width: 768px) {
   .login-container {
-    background-image: url("bg_m.jpg") !important;
+    background-image: url("../../assets/images/bg_m.jpg") !important;
   }
   .login-form {
     width: 100% !important;
@@ -634,7 +634,7 @@ onUnmounted(() => {
 .login-container {
   width: 100%;
   height: 100vh;
-  background-image: url("bg.png");
+  background-image: url("../../assets/images/bg.png");
   // background-image: url("../../../public/bg.png");
   background-repeat: no-repeat;
   background-size: cover;
