@@ -724,4 +724,7 @@ let renewUser = async () => {
     margin-right: 8px;
   }
 }
+::v-deep .el-input input:-webkit-autofill {
+  -webkit-text-fill-color: #000000 !important;
+}
 </style>

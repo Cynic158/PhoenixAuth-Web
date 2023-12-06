@@ -655,6 +655,9 @@ onMounted(() => {
   // color: black !important;
   // border-color: white !important;
 }
+::v-deep .el-input input:-webkit-autofill {
+  -webkit-text-fill-color: #000000 !important;
+}
 // :deep(.el-input__inner) {
 //   background-color: transparent !important;
 // }
