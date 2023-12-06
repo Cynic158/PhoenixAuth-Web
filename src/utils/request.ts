@@ -5,12 +5,18 @@ import { ElMessage, ElNotification } from "element-plus";
 import useUserStore from "@/store/modules/user";
 // 导入路由函数
 import { routerPush } from "@/router";
+// axios重试
+import axiosRetry from "axios-retry";
 
-//创建axios实例
+// 创建axios实例
 let request = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API,
   timeout: 10000,
 });
+
+// 为axios添加失败重试功能
+axiosRetry(request, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+
 //请求拦截器
 request.interceptors.request.use(
   (config) => {

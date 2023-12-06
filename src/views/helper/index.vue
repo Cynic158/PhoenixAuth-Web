@@ -579,7 +579,7 @@ let changeBotName = async () => {
 .botname-form-container {
   max-width: 600px;
 }
-::v-deep .el-input input:-webkit-autofill {
+:deep(.el-input input:-webkit-autofill) {
   -webkit-text-fill-color: #000000 !important;
 }
 </style>
