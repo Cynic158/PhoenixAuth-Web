@@ -92,14 +92,14 @@
 
     <el-card v-loading="codeLoading" style="margin-top: 12px" shadow="hover">
       <template #header>
-        <div class="card-header">RedeemCode</div>
+        <div class="card-header">兑换码</div>
       </template>
       <div>
         <div class="card-footer">
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px; color: dimgray">使用您的兑换码</span>
+          <span style="margin-left: 12px; color: dimgray">使用兑换码更新您的账号</span>
         </div>
         <el-divider />
 
@@ -117,7 +117,7 @@
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" @click="codeUse">更改</el-button>
+            <el-button type="primary" @click="codeUse">兑换</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -133,7 +133,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >PhoenixBuilder 用于登录您账户的凭证</span
+            >PhoenixBuilder 用于登录您账号的凭证</span
           >
         </div>
         <el-divider />

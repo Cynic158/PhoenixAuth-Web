@@ -75,7 +75,7 @@
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px; color: dimgray">生成兑换码</span>
+          <span style="margin-left: 12px; color: dimgray">使用管理权限生成兑换码</span>
         </div>
         <el-divider />
 
@@ -785,7 +785,7 @@ let validateCount = (rule: any, value: any, callback: any) => {
   const intValue = parseInt(value, 10);
   if (isNaN(intValue) || intValue <= 0 || intValue !== parseFloat(value)) {
     callback(new Error("请输入正整数"));
-  } else if (intValue <= 999) {
+  } else if (intValue > 999) {
     callback(new Error("超出最大生成数量"));
   } else {
     callback();
