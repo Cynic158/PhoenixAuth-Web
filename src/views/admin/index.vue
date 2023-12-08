@@ -66,6 +66,54 @@
       </div>
     </el-card>
 
+    <el-card shadow="hover" v-loading="adminCodeLoading">
+      <template #header>
+        <div class="card-header">生成兑换码</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray">生成兑换码</span>
+        </div>
+        <el-divider />
+
+        <el-form
+          class="admin-code-form-container"
+          :model="codeData"
+          :rules="rules4"
+          ref="codeform"
+        >
+          <el-form-item label="兑换码类型" prop="type">
+            <el-select
+              v-model="codeData.type"
+              class="m-2"
+              placeholder="激活账号(1)"
+            >
+              <el-option label="激活账号(1)" value="1" />
+              <el-option label="续费一个月(2)" value="2" />
+              <el-option label="续费三个月(3)" value="3" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="生成数量" prop="count">
+            <el-input
+              type="number"
+              v-model="codeData.count"
+              placeholder="请输入生成数量"
+            />
+          </el-form-item>
+          <el-form-item label="备注" prop="note">
+            <el-input v-model="codeData.note" placeholder="请输入备注" />
+          </el-form-item>
+
+          <el-form-item style="margin-bottom: 0">
+            <el-button type="primary" @click="generateCode">生成</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+
     <el-card
       shadow="hover"
       v-loading="adminOptionLoading"
@@ -705,6 +753,102 @@ let renewUser = async () => {
     adminRenewLoading.value = false;
   }
 };
+
+// 生成兑换码
+// 表单元素
+let codeform = ref(null);
+// 新建信息表单
+let codeData = reactive({
+  type: "1",
+  count: "",
+  note: "",
+});
+// 清空表单
+let clearCodeForm = () => {
+  codeData.type = "1";
+  codeData.count = "";
+  codeData.note = "";
+  // 清空校验提示
+  try {
+    setTimeout(() => {
+      if (codeform.value) {
+        // @ts-ignore
+        codeform.value.clearValidate(["type", "count"]);
+      }
+    }, 200);
+  } catch (error) {
+    console.log(error);
+  }
+};
+// @ts-ignore
+let validateCount = (rule: any, value: any, callback: any) => {
+  const intValue = parseInt(value, 10);
+  if (isNaN(intValue) || intValue <= 0 || intValue !== parseFloat(value)) {
+    callback(new Error("请输入正整数"));
+  } else if (intValue <= 999) {
+    callback(new Error("超出最大生成数量"));
+  } else {
+    callback();
+  }
+};
+const rules4 = {
+  type: [
+    {
+      required: true,
+      message: "请选择兑换码类型",
+      trigger: "blur",
+    },
+  ],
+  count: [
+    { required: true, message: "请输入生成数量", trigger: "blur" },
+    { validator: validateCount, trigger: "blur" },
+  ],
+};
+// 生成卡片loading
+let adminCodeLoading = ref(false);
+// 生成兑换码
+let generateCode = async () => {
+  // 校验表单
+  if (codeform.value) {
+    // @ts-ignore
+    await codeform.value.validate();
+  }
+
+  try {
+    // 显示加载
+    adminCodeLoading.value = true;
+    let codeInfo = {
+      type: 0,
+      count: 0,
+      note: "",
+    };
+    codeInfo.type = Number(codeData.type);
+    codeInfo.count = Number(codeData.count);
+    codeInfo.note = codeData.note;
+    // 仓库发起请求
+    let result = await adminStore.genCode(codeInfo);
+    ElNotification({
+      type: "success",
+      message: "生成兑换码成功",
+      duration: 3000,
+    });
+    // @ts-ignore
+    if (result.success == false) {
+      ElNotification({
+        type: "error",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    } else {
+      clearCodeForm();
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    adminCodeLoading.value = false;
+  }
+};
 </script>
 
 <style scoped lang="scss">
@@ -714,7 +858,8 @@ let renewUser = async () => {
   align-items: center;
 }
 .admin-create-form-container,
-.admin-renew-form-container {
+.admin-renew-form-container,
+.admin-code-form-container {
   max-width: 600px;
 }
 .userinfo-cell-item {

@@ -10,6 +10,7 @@ import {
   reqGetStatus,
   reqGetPhoenixToken,
   reqChangePassword,
+  reqUseRedeemCode,
 } from "@/api/user";
 // 导入路由创建动态菜单
 import {
@@ -256,8 +257,19 @@ let useUserStore = defineStore("user", () => {
   let userDownload = async () => {
     // 发起请求
     try {
-      await reqGetPhoenixToken();
-      return "ok";
+      let result = await reqGetPhoenixToken();
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 请求使用兑换码
+  let userCode = async (code: { redeem_code: string }) => {
+    // 发起请求
+    try {
+      let result = await reqUseRedeemCode(code);
+      return result;
     } catch (error) {
       return Promise.reject(error);
     }
@@ -282,6 +294,7 @@ let useUserStore = defineStore("user", () => {
     uexpire,
     userDownload,
     userPassword,
+    userCode,
   };
 });
 

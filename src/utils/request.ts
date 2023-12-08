@@ -6,6 +6,7 @@ import useUserStore from "@/store/modules/user";
 // 导入路由函数
 import { routerPush } from "@/router";
 // axios重试
+// @ts-ignore
 import axiosRetry from "axios-retry";
 
 // 创建axios实例

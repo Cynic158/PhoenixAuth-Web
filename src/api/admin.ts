@@ -8,6 +8,7 @@ enum API {
   QUERY_USER = "/admin/query_user",
   ACTIVATE_USER = "/admin/activate_user",
   RENEW_USER = "/admin/renew_user",
+  GENERATE_REDEEM_CODE = "/admin/generate_redeem_code",
 }
 
 // 数据类型声明
@@ -19,6 +20,11 @@ interface adminInfo {
 interface renewInfo {
   username: string;
   renew_time: number;
+}
+interface codeInfo {
+  type: number;
+  count: number;
+  note?: string;
 }
 
 // 导出api
@@ -37,3 +43,6 @@ export const reqActivateUser = (username: { username: string }) =>
 // 请求使用管理权限增加一位用户的有效期
 export const reqRenewUser = (renewInfo: renewInfo) =>
   request.post(API.RENEW_USER, renewInfo);
+// 请求生成兑换码
+export const reqGenerateRedeemCode = (codeInfo: codeInfo) =>
+  request.post(API.GENERATE_REDEEM_CODE, codeInfo);

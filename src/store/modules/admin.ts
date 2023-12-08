@@ -9,6 +9,7 @@ import {
   reqActivateUser,
   reqBanUser,
   reqCreateUser,
+  reqGenerateRedeemCode,
   reqQueryUser,
   reqRenewUser,
 } from "@/api/admin";
@@ -21,6 +22,11 @@ interface createInfo {
 interface renewInfo {
   username: string;
   renew_time: number;
+}
+interface codeInfo {
+  type: number;
+  count: number;
+  note?: string;
 }
 
 // 创建仓库
@@ -78,12 +84,23 @@ let useAdminStore = defineStore("admin", () => {
     }
   };
 
+  // 生成兑换码
+  let genCode = async (codeInfo: codeInfo) => {
+    try {
+      let result = await reqGenerateRedeemCode(codeInfo);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   return {
     userCreate,
     userBan,
     userQuery,
     userActivate,
     userRenew,
+    genCode,
   };
 });
 

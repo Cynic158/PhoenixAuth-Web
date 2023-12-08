@@ -89,6 +89,40 @@
         </el-descriptions>
       </div>
     </el-card>
+
+    <el-card v-loading="codeLoading" style="margin-top: 12px" shadow="hover">
+      <template #header>
+        <div class="card-header">RedeemCode</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray">使用您的兑换码</span>
+        </div>
+        <el-divider />
+
+        <el-form
+          @submit.prevent
+          class="code-form-container"
+          :model="codeData"
+          :rules="rules2"
+          ref="codeform"
+        >
+          <el-form-item label="兑换码" prop="redeem_code">
+            <el-input
+              v-model="codeData.redeem_code"
+              placeholder="请输入兑换码"
+            />
+          </el-form-item>
+          <el-form-item style="margin-bottom: 0">
+            <el-button type="primary" @click="codeUse">更改</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+
     <el-card v-loading="tokenLoading" style="margin-top: 12px" shadow="hover">
       <template #header>
         <div class="card-header">FBToken</div>
@@ -106,6 +140,7 @@
         <el-button type="primary" round @click="tokenDownload">获取</el-button>
       </div>
     </el-card>
+
     <el-card style="margin-top: 12px" shadow="hover">
       <template #header>
         <div class="card-header">修改密码</div>
@@ -214,13 +249,23 @@ let tokenDownload = async () => {
     duration: 3000,
   });
   try {
-    await userStore.userDownload();
+    let result = await userStore.userDownload();
     ElNotification({
       type: "success",
       title: "获取 FBToken",
       message: "获取成功",
       duration: 3000,
     });
+    // @ts-ignore
+    if (result.success == false) {
+      ElNotification({
+        type: "error",
+        title: "获取 FBToken",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
   } catch (error) {
     console.log(error);
   } finally {
@@ -342,6 +387,99 @@ let changePassword = async () => {
     passwordloadingflag.value = false;
   }
 };
+
+// 兑换码
+// 兑换码卡片loading
+let codeLoading = ref(false);
+// 表单元素
+let codeform = ref(null);
+// 表单数据
+let codeData = reactive({
+  redeem_code: "",
+});
+// 清空表单
+let clearCodeForm = () => {
+  codeData.redeem_code = "";
+  try {
+    setTimeout(() => {
+      if (codeform.value) {
+        // @ts-ignore
+        codeform.value.clearValidate(["redeem_code"]);
+      }
+    }, 200);
+  } catch (error) {
+    console.log(error);
+  }
+};
+// 每次进入子页面就清空表单
+onActivated(() => {
+  clearCodeForm();
+});
+// @ts-ignore
+let validateReCode = (rule: any, value: any, callback: any) => {
+  // uuid正则
+  const codeReg =
+    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
+  if (!codeReg.test(value)) {
+    callback(new Error("兑换码格式不正确"));
+  } else {
+    callback();
+  }
+};
+// 表单校验规则
+const rules2 = {
+  redeem_code: [
+    {
+      required: true,
+      message: "兑换码不能为空",
+      trigger: "blur",
+    },
+    { validator: validateReCode, trigger: "blur" },
+  ],
+};
+// 使用兑换码
+let codeUse = async () => {
+  // 校验表单
+  if (codeform.value) {
+    // @ts-ignore
+    await codeform.value.validate();
+  }
+  try {
+    // 显示加载
+    codeLoading.value = true;
+    let codeInfo = {
+      redeem_code: "",
+    };
+    codeInfo.redeem_code = codeData.redeem_code;
+    // 仓库发起请求
+    let result = await userStore.userCode(codeInfo);
+    // @ts-ignore
+    if (result.success) {
+      ElNotification({
+        type: "success",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      // 刷新信息
+      getInfo();
+      // 清空表单
+      clearCodeForm();
+    } else {
+      ElNotification({
+        type: "error",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    codeLoading.value = false;
+  }
+};
 </script>
 
 <style scoped lang="scss">
@@ -357,7 +495,8 @@ let changePassword = async () => {
     margin-right: 8px;
   }
 }
-.password-form-container {
+.password-form-container,
+.code-form-container {
   max-width: 600px;
 }
 :deep(.el-input input:-webkit-autofill) {

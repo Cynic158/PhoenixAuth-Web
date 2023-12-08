@@ -10,6 +10,7 @@ enum API {
   LOGOUT = "/user/logout",
   GET_PHOENIX_TOKEN = "/user/get_phoenix_token",
   CHANGE_PASSWORD = "/user/change_password",
+  USE_REDEEM_CODE = "/user/use_redeem_code",
 }
 
 // 数据类型声明
@@ -44,3 +45,6 @@ export const reqGetPhoenixToken = () =>
 // 请求更改密码
 export const reqChangePassword = (passwordInfo: passwordInfo) =>
   request.post(API.CHANGE_PASSWORD, passwordInfo);
+// 请求使用兑换码
+export const reqUseRedeemCode = (code: { redeem_code: string }) =>
+  request.post(API.USE_REDEEM_CODE, code);
