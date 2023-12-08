@@ -28,7 +28,7 @@ export default ({ mode }) =>
     base: "/static",
     // build: {
     //   rollupOptions: {
-    //     external: ["avatar.jpg", "avatar2.png", "bg.png", "bg_m.jpg"],
+    //     external: ["avatar.png", "avatar2.png", "bg.png", "bg_m.png"],
     //   },
     // },
     plugins: [

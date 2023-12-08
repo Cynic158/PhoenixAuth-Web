@@ -663,7 +663,7 @@ onMounted(() => {
 <style scoped lang="scss">
 @media (max-width: 768px) {
   .login-container {
-    background-image: url("../../assets/images/bg_m.jpg") !important;
+    background-image: url("../../assets/images/bg_m.png") !important;
   }
   .login-form {
     width: 100% !important;

@@ -9,7 +9,7 @@
         <div style="display: flex; align-items: center">
           <img
             class="avatar"
-            src="../../assets/images/avatar.jpg"
+            src="../../assets/images/avatar.png"
             alt=""
           /><span class="author">Cynic158</span>
         </div>
