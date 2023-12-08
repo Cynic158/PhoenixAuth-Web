@@ -66,7 +66,11 @@
       </div>
     </el-card>
 
-    <el-card shadow="hover" v-loading="adminCodeLoading">
+    <el-card
+      shadow="hover"
+      v-loading="adminCodeLoading"
+      style="margin-top: 12px"
+    >
       <template #header>
         <div class="card-header">生成兑换码</div>
       </template>
@@ -84,6 +88,8 @@
           :model="codeData"
           :rules="rules4"
           ref="codeform"
+          label-width="100px"
+          label-position="right"
         >
           <el-form-item label="兑换码类型" prop="type">
             <el-select
