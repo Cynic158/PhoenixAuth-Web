@@ -9,7 +9,7 @@
         <div style="display: flex; align-items: center">
           <img
             class="avatar"
-            src="../../assets/images/avatar.png"
+            src="../../assets/images/avatar.webp"
             alt=""
           /><span class="author">Cynic158</span>
         </div>
@@ -24,7 +24,7 @@
         <div style="display: flex; align-items: center">
           <img
             class="avatar"
-            src="../../assets/images/avatar2.png"
+            src="../../assets/images/avatar2.webp"
             alt=""
           /><span class="author">Liliya233</span>
         </div>

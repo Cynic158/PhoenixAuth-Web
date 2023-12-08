@@ -136,7 +136,7 @@ import { useRouter } from "vue-router";
 import { ElNotification } from "element-plus";
 // 获取时间字符串函数
 import { getTimeStr } from "@/utils/index";
-import bgdark from "../../assets/images/bg_dark.png";
+import bgdark from "../../assets/images/bg_dark.webp";
 
 // 使用user仓库
 let userStore = useUserStore();
@@ -422,7 +422,7 @@ let login = async () => {
     });
   }
   // 请求完成，关闭加载
-  regloadingflag.value = false;
+  loadingflag.value = false;
 };
 let register = async () => {
   // 校验表单
@@ -629,7 +629,7 @@ onActivated(() => {
       if (element) {
         // @ts-ignore
         element.style.backgroundImage =
-          "url('../../assets/images/bg_dark.png')";
+          "url('../../assets/images/bg_dark.webp')";
         // 转为黑夜模式
         document.documentElement.className = "dark";
 
@@ -663,7 +663,7 @@ onMounted(() => {
 <style scoped lang="scss">
 @media (max-width: 768px) {
   .login-container {
-    background-image: url("../../assets/images/bg_m.png") !important;
+    background-image: url("../../assets/images/bg_m.webp") !important;
   }
   .login-form {
     width: 100% !important;
@@ -704,8 +704,8 @@ onMounted(() => {
 .login-container {
   width: 100%;
   height: 100vh;
-  background-image: url("../../assets/images/bg.png");
-  // background-image: url("../../../public/bg.png");
+  background-image: url("../../assets/images/bg.webp");
+  // background-image: url("../../../public/bg.webp");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
