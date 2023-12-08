@@ -257,7 +257,7 @@ let tokenDownload = async () => {
       duration: 3000,
     });
     // @ts-ignore
-    if (result.success == false) {
+    if (result.success === false) {
       ElNotification({
         type: "error",
         title: "获取 FBToken",

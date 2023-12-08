@@ -833,7 +833,7 @@ let generateCode = async () => {
       duration: 3000,
     });
     // @ts-ignore
-    if (result.success == false) {
+    if (result.success === false) {
       ElNotification({
         type: "error",
         // @ts-ignore
