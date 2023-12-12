@@ -212,6 +212,19 @@ onMounted(() => {
       foldMenu();
     }
   );
+  //添加移动端点击其他地方菜单也会收起
+  window.addEventListener("click", function (event) {
+    if (settingStore.mmenuFlag == true) {
+      let menu = document.querySelector(".el-aside");
+
+      // Check if the click is outside the modal
+      // @ts-ignore
+      if (!menu.contains(event.target) && settingStore.isCollapse == false) {
+        // Clicked outside the modal, close it
+        foldMenu();
+      }
+    }
+  });
 
   // 禁止横向滚动事件
   function addScrollListener() {
