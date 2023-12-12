@@ -88,6 +88,10 @@ let closeOpacity = () => {
   // 关闭节流阀
   setTimeout(() => {
     foldFlag = false;
+    if (settingStore.mmenuFlag == true) {
+      // @ts-ignore
+      document.querySelector(".el-aside").style.left = "-64px";
+    }
     // 禁止横向滚动事件
     function addScrollListener() {
       // 尝试获取元素
@@ -111,6 +115,10 @@ let closeOpacity = () => {
 };
 // 打开透明度函数
 let openOpacity = () => {
+  if (settingStore.mmenuFlag == true) {
+    // @ts-ignore
+    document.querySelector(".el-aside").style.left = "0";
+  }
   // 打开
   settingStore.isCollapse = false;
   // 将所有菜单项的标题显示

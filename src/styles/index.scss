@@ -15,6 +15,10 @@ html {
     "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
 }
 
+:root {
+  --scrollbar-color: #909399;
+}
+
 // 滚动条样式
 ::-webkit-scrollbar {
   width: 6px;
@@ -22,7 +26,7 @@ html {
 }
 ::-webkit-scrollbar-thumb {
   border-radius: 3px;
-  background-color: $scrollbar-default-bgcolor;
+  background-color: var(--scrollbar-color);
   opacity: 0.3;
 }
 ::-webkit-scrollbar-thumb:hover {

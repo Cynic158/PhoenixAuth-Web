@@ -7,6 +7,7 @@
           zIndex: indexFlag ? '2007' : 'unset',
           overflow: 'hidden',
           position: indexFlag ? 'fixed' : 'unset',
+          left: indexFlag ? '-64px' : '0',
         }"
       >
         <Menu></Menu>
@@ -15,7 +16,7 @@
         <el-header style="padding: 0">
           <Tabbar></Tabbar>
         </el-header>
-        <el-main :style="{ marginLeft: indexFlag ? '64px' : '0' }">
+        <el-main>
           <router-view v-slot="{ Component }">
             <Transition name="router">
               <keep-alive v-if="!refreshFlag">
@@ -55,8 +56,19 @@ const handleResize2 = () => {
   // 根据窗口宽度进行判断
   if (screenWidth <= 768) {
     indexFlag.value = true;
+    // 同时将滚动条颜色变更
+    // 获取根元素
+    const root = document.documentElement;
+
+    // 更改CSS变量的值
+    root.style.setProperty("--scrollbar-color", "transparent");
   } else {
     indexFlag.value = false;
+    // 获取根元素
+    const root = document.documentElement;
+
+    // 更改CSS变量的值
+    root.style.setProperty("--scrollbar-color", "#909399");
   }
 };
 
@@ -96,6 +108,7 @@ onUnmounted(() => {
   }
   .el-aside {
     overflow: hidden;
+    transition: all 0.3s;
   }
   .right-container {
     transition: width 0.3s;
