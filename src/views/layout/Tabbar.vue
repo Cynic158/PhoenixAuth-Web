@@ -6,6 +6,7 @@
       <el-icon
         v-if="!settingStore.isCollapse"
         style="cursor: pointer"
+        size="24"
         @click="menuFold"
         ><Fold
       /></el-icon>
@@ -13,6 +14,7 @@
       <el-icon
         v-if="settingStore.isCollapse"
         style="cursor: pointer"
+        size="24"
         @click="menuFold"
         ><Expand
       /></el-icon>

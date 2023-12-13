@@ -78,8 +78,6 @@ let $route = useRoute();
 let foldFlag = false;
 // 折叠透明度函数
 let closeOpacity = () => {
-  // 折叠
-  settingStore.isCollapse = true;
   // 将所有菜单项的标题隐藏
   document.querySelectorAll(".el-menu-vertical-demo span").forEach((item) => {
     // @ts-ignore
@@ -112,6 +110,8 @@ let closeOpacity = () => {
     // 设置定时器，每隔100毫秒检查元素是否存在
     const checkElementInterval = setInterval(addScrollListener, 100);
   }, 400);
+  // 折叠
+  settingStore.isCollapse = true;
 };
 // 打开透明度函数
 let openOpacity = () => {
@@ -119,8 +119,6 @@ let openOpacity = () => {
     // @ts-ignore
     document.querySelector(".el-aside").style.left = "0";
   }
-  // 打开
-  settingStore.isCollapse = false;
   // 将所有菜单项的标题显示
   document.querySelectorAll(".el-menu-vertical-demo span").forEach((item) => {
     // @ts-ignore
@@ -149,6 +147,8 @@ let openOpacity = () => {
     // 设置定时器，每隔100毫秒检查元素是否存在
     const checkElementInterval = setInterval(addScrollListener, 100);
   }, 400);
+  // 打开
+  settingStore.isCollapse = false;
 };
 
 // 折叠菜单函数
