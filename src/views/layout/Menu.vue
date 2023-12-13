@@ -213,7 +213,7 @@ onMounted(() => {
     }
   );
   //添加移动端点击其他地方菜单也会收起
-  window.addEventListener("touchstart", function (event) {
+  window.addEventListener("touchend", function (event) {
     if (settingStore.mmenuFlag == true) {
       let menu = document.querySelector(".el-aside");
 
@@ -225,6 +225,12 @@ onMounted(() => {
       }
     }
   });
+  //菜单打开时禁止滚动
+  window.addEventListener("touchmove", function (event) {
+    if (settingStore.mmenuFlag && !settingStore.isCollapse) {
+      event.preventDefault();
+    }
+  }, {passive: false});
 
   // 禁止横向滚动事件
   function addScrollListener() {
