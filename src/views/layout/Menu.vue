@@ -213,7 +213,7 @@ onMounted(() => {
     }
   );
   //添加移动端点击其他地方菜单也会收起
-  window.addEventListener("click", function (event) {
+  window.addEventListener("touchstart", function (event) {
     if (settingStore.mmenuFlag == true) {
       let menu = document.querySelector(".el-aside");
 
