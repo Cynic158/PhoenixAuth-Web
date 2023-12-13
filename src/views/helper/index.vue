@@ -135,7 +135,7 @@
       style="margin-top: 12px"
     >
       <template #header>
-        <div class="card-header">更改游戏昵称</div>
+        <div class="card-header">更改昵称</div>
       </template>
       <div>
         <div class="card-footer">
@@ -143,7 +143,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >更改机器人的游戏昵称</span
+            >更改 Bot 的游戏昵称</span
           >
         </div>
         <el-divider />
@@ -174,7 +174,7 @@
       title="解绑"
       align-center
     >
-      确定解绑Bot吗？当前保存的游戏账号信息将会被彻底清空。
+      确定解绑 Bot 吗？当前保存的游戏账号信息将会被彻底清空。
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="unbindDialogVisible = false">取消</el-button>
@@ -191,7 +191,7 @@
       title="更改游戏昵称"
       align-center
     >
-      确定更改Bot游戏昵称吗？更改成功后会进入30天冷却期。
+      确定更改 Bot 游戏昵称吗？更改成功后会进入30天冷却期。
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="changeDialogVisible = false">取消</el-button>

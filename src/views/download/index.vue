@@ -2,21 +2,26 @@
   <div>
     <el-card shadow="hover">
       <template #header>
-        <div class="card-header">从源码构建</div>
+        <div class="card-header">更改验证服务器</div>
       </template>
       <div>
-        <span>您可以从源码构建 PhoenixBuilder 以使用。</span>
-        <Precode :code="code" :type="'bash'"></Precode>
+        <span>您可能需要在启动程序时添加额外参数来使用我们的服务</span>
+        <Precode :code="auth1" :type="'bash'"></Precode>
+        <Precode :code="auth2" :type="'bash'"></Precode>
       </div>
     </el-card>
     <el-card style="margin-top: 12px" shadow="hover">
       <template #header>
-        <div class="card-header">下载预构建版本</div>
+        <div class="card-header">PhoenixBuilder</div>
       </template>
       <div>
-        <span
-          >我们也为每个稳定版本提供了预先构建好的二进制文件供您使用，点击以下链接以查看。</span
-        >
+        <span>
+          您可以从源码构建 PhoenixBuilder 以使用
+        </span>
+        <Precode :code="fbbuild" :type="'bash'"></Precode>
+        <span style="display: inline-block; margin-top: 16px">
+          您也可以点击以下链接下载预先构建好的二进制文件来使用
+        </span>
         <p style="margin-top: 16px">
           <a
             style="white-space: normal; word-wrap: break-word"
@@ -29,11 +34,24 @@
     </el-card>
     <el-card style="margin-top: 12px" shadow="hover">
       <template #header>
-        <div class="card-header">更改验证服务器</div>
+        <div class="card-header">neOmega</div>
       </template>
       <div>
-        <span>您可能需要在启动客户端程序时添加额外参数来使用我们的服务</span>
-        <Precode :code="code2" :type="'bash'"></Precode>
+        <span>
+          安卓 / Linux / macOS 在终端输入以下内容自动下载
+        </span>
+        <Precode :code="neo" :type="'bash'"></Precode>
+        <span style="display: inline-block; margin-top: 16px">
+          Windows 用户点击以下链接下载并运行
+        </span>
+        <p style="margin-top: 16px">
+          <a
+            style="white-space: normal; word-wrap: break-word"
+            href="https://omega-1259160345.cos.ap-nanjing.myqcloud.com/fastbuilder_launcher/windows-amd64.exe"
+            target="_blank"
+            >https://omega-1259160345.cos.ap-nanjing.myqcloud.com/fastbuilder_launcher/windows-amd64.exe
+          </a>
+        </p>
       </div>
     </el-card>
   </div>
@@ -41,21 +59,24 @@
 
 <script setup lang="ts">
 // 导入代码显示
-let code = `git clone git@github.com:LNSSPsd/PhoenixBuilder.git
+let auth1 = `./phoenixbuilder -A https://liliya233.uk`;
+
+let auth2 = `./windows-amd64.exe -A https://liliya233.uk`;
+
+let fbbuild = `git clone git@github.com:LNSSPsd/PhoenixBuilder.git
 
 cd PhoenixBuilder
 
 make current
 
 # 初次使用在执行完一次 make 后执行下面的命令
-sed "s/urrentProtocol byte = 11/urrentProtocol byte = 8/g" ~/go/pkg/mod/github.com/sandertv/go-raknet@v1.12.0/conn.go
+sed "s/currentProtocol byte = */currentProtocol byte = 8/g" ~/go/pkg/mod/github.com/sandertv/go-raknet@v1.12.0/conn.go
 
 make current
 
 ./build/phoenixbuilder`;
-let code2 = `./phoenixbuilder -A https://liliya233.uk
 
-./windows-amd64.exe -A https://liliya233.uk`;
+let neo = `curl -o install.sh https://omega-1259160345.cos.ap-nanjing.myqcloud.com/fastbuilder_launcher/install.sh && bash install.sh `;
 </script>
 
 <style scoped lang="scss">

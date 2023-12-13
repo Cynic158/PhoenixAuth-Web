@@ -11,7 +11,9 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >游戏ID在第一次成功登录时获取，之后您只能登录至此ID的租赁服</span
+            >
+            游戏ID在第一次成功登录时自动获取，之后您只能登录至此ID的租赁服
+            </span
           >
         </div>
         <el-divider />
@@ -133,7 +135,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >PhoenixBuilder 用于登录您账号的凭证</span
+            >为 PhoenixBuilder 或者其他程序提供的登录凭证</span
           >
         </div>
         <el-divider />
