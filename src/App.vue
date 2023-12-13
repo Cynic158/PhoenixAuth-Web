@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="height: 100%">
     <!-- <svg-icon name="test"></svg-icon> -->
     <el-config-provider :locale="locale">
       <router-view></router-view>
@@ -19,5 +19,10 @@ const locale = zhCn;
 <style lang="scss">
 #nprogress .bar {
   background: #29d;
+}
+html,
+body,
+#app {
+  height: 100%;
 }
 </style>

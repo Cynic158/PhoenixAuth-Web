@@ -1,6 +1,6 @@
 <template>
   <div class="layout-container">
-    <el-container style="height: 100vh">
+    <el-container class="layout-main">
       <el-aside
         width="auto"
         :style="{
@@ -100,9 +100,13 @@ onUnmounted(() => {
 </script>
 
 <style scoped lang="scss">
+.layout-main {
+  width: 100%;
+  height: 100%;
+}
 .layout-container {
   width: 100%;
-  height: 100vh;
+  height: 100%;
   .el-main {
     padding: 20px;
   }
@@ -112,6 +116,7 @@ onUnmounted(() => {
   }
   .right-container {
     transition: width 0.3s;
+    height: 100%;
   }
 }
 </style>
