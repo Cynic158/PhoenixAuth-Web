@@ -129,17 +129,23 @@ let showSetting = () => {
 // 设置暗黑模式
 let dark = ref(localStorage.getItem("DARKMODE") === "true");
 let setDark = () => {
-  if (dark.value == false) {
-    // 转为白天模式
-    document.documentElement.className = "";
-  } else if (dark.value == true) {
-    // 转为黑夜模式
-    document.documentElement.className = "dark";
-  }
+  document.documentElement.className = dark.value ? "dark" : "";
   localStorage.setItem("DARKMODE", dark.value.toString());
 };
-// 首次触发
-setDark();
+if (window.innerWidth<=768){
+  // 移动端暗黑模式设置函数
+  let setupMobileDarkmode = function(){
+    dark.value = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    setDark();
+  }
+  // 监听移动端系统主题变化
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setupMobileDarkmode);
+  // 移动端首次触发
+  setupMobileDarkmode();
+} else {
+  // PC端首次触发
+  setDark();
+}
 // 设置主题
 let themeColor = ref(localStorage.getItem("THEMECOLOR") || "#409EFF");
 // 颜色预设
