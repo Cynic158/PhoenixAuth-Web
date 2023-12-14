@@ -84,8 +84,7 @@ let neo = `curl -o install.sh https://omega-1259160345.cos.ap-nanjing.myqcloud.c
   display: flex;
   align-items: center;
 }
-
-a:visited {
+a {
   color: inherit;
 }
 </style>
