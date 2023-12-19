@@ -8,7 +8,7 @@ enum API {
   CREATE = "/helper/create",
   BIND_EMAIL_ACCOUNT = "/helper/bind_email_account",
   UNBIND = "/helper/unbind",
-  SIGN_IN = "/helper/sign_in",
+  SIGN_IN = "/helper/daily_sign",
 }
 
 // 数据类型声明

@@ -183,7 +183,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >签到可以给 Bot 加经验值</span
+            >每日首次签到可以给 Bot 加经验值</span
           >
         </div>
         <el-divider />
@@ -294,7 +294,7 @@ let getBotStatus = async () => {
           // @ts-ignore
           result.username +
           // @ts-ignore
-          ` - [Lv.${result.lv} (${result.exp}/${result.total_exp})]`;
+          ` [Lv.${result.lv} (${result.exp}/${result.total_exp})]`;
       } else {
         alertType.value = "warning";
         // @ts-ignore
