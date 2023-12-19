@@ -8,6 +8,7 @@ enum API {
   CREATE = "/helper/create",
   BIND_EMAIL_ACCOUNT = "/helper/bind_email_account",
   UNBIND = "/helper/unbind",
+  SIGN_IN = "/helper/sign_in",
 }
 
 // 数据类型声明
@@ -29,3 +30,5 @@ export const reqBindEmailAccount = (emailInfo: emailInfo) =>
   request.post(API.BIND_EMAIL_ACCOUNT, emailInfo);
 // 请求解绑机器人
 export const reqUnbind = () => request.get(API.UNBIND);
+// 请求签到
+export const reqSignIn = () => request.get(API.SIGN_IN);

@@ -168,6 +168,30 @@
       </div>
     </el-card>
 
+    <el-card
+      shadow="hover"
+      v-if="botInfo.username"
+      v-loading="signLoading || queryLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
+        <div class="card-header">每日签到</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >签到可以给 Bot 加经验值</span
+          >
+        </div>
+        <el-divider />
+
+        <el-button type="success" @click="signinBot">签到</el-button>
+      </div>
+    </el-card>
+
     <el-dialog
       width="300px"
       v-model="unbindDialogVisible"
@@ -265,8 +289,12 @@ let getBotStatus = async () => {
       // @ts-ignore
       if (result.username) {
         alertType.value = "success";
-        // @ts-ignore
-        alertTitle.value = result.username;
+
+        alertTitle.value =
+          // @ts-ignore
+          result.username +
+          // @ts-ignore
+          ` - [Lv.${result.lv} (${result.exp}/${result.total_exp})]`;
       } else {
         alertType.value = "warning";
         // @ts-ignore
@@ -557,6 +585,36 @@ let changeBotName = async () => {
   } finally {
     changeLoading.value = false;
     changeDialogVisible.value = false;
+    getBotStatus();
+  }
+};
+
+// bot签到
+let signLoading = ref(false);
+let signinBot = async () => {
+  try {
+    signLoading.value = true;
+    let result = await helperStore.botSignIn();
+    // @ts-ignore
+    if (result.success) {
+      ElNotification({
+        type: "success",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    } else {
+      ElNotification({
+        type: "error",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+    console.log(error);
+  } finally {
+    signLoading.value = false;
     getBotStatus();
   }
 };
