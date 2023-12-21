@@ -5,10 +5,10 @@ import request from "@/utils/request";
 enum API {
   GET_STATUS = "/helper/get_status",
   CHANGE_NAME = "/helper/change_name",
-  CREATE = "/helper/create",
+  BIND_GUEST_ACCOUNT = "/helper/bind_guest_account",
   BIND_EMAIL_ACCOUNT = "/helper/bind_email_account",
   UNBIND = "/helper/unbind",
-  SIGN_IN = "/helper/daily_sign",
+  DAILY_SIGN = "/helper/daily_sign",
 }
 
 // 数据类型声明
@@ -24,11 +24,11 @@ export const reqGetStatus = () => request.get(API.GET_STATUS);
 export const reqChangeName = (username: { username: string }) =>
   request.post(API.CHANGE_NAME, username);
 // 请求以游客登录的形式创建机器人
-export const reqCreate = () => request.get(API.CREATE);
+export const reqCreate = () => request.get(API.BIND_GUEST_ACCOUNT);
 // 请求以网易邮箱账号登录的形式创建机器人
 export const reqBindEmailAccount = (emailInfo: emailInfo) =>
   request.post(API.BIND_EMAIL_ACCOUNT, emailInfo);
 // 请求解绑机器人
 export const reqUnbind = () => request.get(API.UNBIND);
 // 请求签到
-export const reqSignIn = () => request.get(API.SIGN_IN);
+export const reqSignIn = () => request.get(API.DAILY_SIGN);
