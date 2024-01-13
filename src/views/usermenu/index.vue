@@ -86,17 +86,6 @@
             </template>
             {{ expireTime }}
           </el-descriptions-item>
-          <el-descriptions-item :span="1">
-            <template #label>
-              <div class="userinfo-cell-item">
-                <el-icon class="userinfo-cell-item-icon">
-                  <Key />
-                </el-icon>
-                apikey
-              </div>
-            </template>
-            {{ userStore.uapi }}
-          </el-descriptions-item>
         </el-descriptions>
       </div>
     </el-card>
@@ -156,7 +145,7 @@
 
     <el-card style="margin-top: 12px" shadow="hover">
       <template #header>
-        <div class="card-header">黑名单</div>
+        <div class="card-header">上传黑名单</div>
       </template>
       <div>
         <div class="card-footer">
@@ -164,7 +153,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >设置是否上传租赁服黑名单至云黑</span
+            >设置是否在进入服务器时获取黑名单并上传至验证服务器, 不会影响进服速度</span
           >
         </div>
         <el-divider />
@@ -236,7 +225,7 @@
 
     <el-card v-loading="apikeyLoading" style="margin-top: 12px" shadow="hover">
       <template #header>
-        <div class="card-header">API接口密钥</div>
+        <div class="card-header">API Key</div>
       </template>
       <div>
         <div class="card-footer">
@@ -244,7 +233,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >专供给开发者使用的同等权限密钥，可以为您的第三方程序提供充足的功能与可靠的稳定性。</span
+            >为 API 调用提供的用户凭证, API Key 会给予调用者控制您账户的权限, 请勿随意泄露</span
           >
         </div>
         <el-divider />

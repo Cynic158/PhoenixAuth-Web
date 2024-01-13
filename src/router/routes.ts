@@ -42,16 +42,6 @@ export const defaultRoutes = [
         },
       },
       {
-        path: "/robotaccount",
-        component: () => import("@/views/helper/index.vue"),
-        name: "robotaccount",
-        meta: {
-          title: "Bot 菜单",
-          hidden: false,
-          icon: "Cpu",
-        },
-      },
-      {
         path: "/gameaccount",
         component: () => import("@/views/owner/index.vue"),
         name: "gameaccount",
@@ -59,6 +49,16 @@ export const defaultRoutes = [
           title: "我的账号",
           hidden: false,
           icon: "SwitchFilled",
+        },
+      },
+      {
+        path: "/robotaccount",
+        component: () => import("@/views/helper/index.vue"),
+        name: "robotaccount",
+        meta: {
+          title: "Bot 菜单",
+          hidden: false,
+          icon: "Cpu",
         },
       },
     ],

@@ -241,7 +241,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >每日首次签到可以给 Bot 加经验值</span
+            >可以获得游戏内道具以及经验值奖励</span
           >
         </div>
         <el-divider />

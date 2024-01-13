@@ -3,7 +3,7 @@
     <el-card shadow="hover">
       <template #header>
         <div class="card-header">
-          <span style="margin-right: 16px">账户信息</span>
+          <span style="margin-right: 16px">我的账号</span>
         </div>
       </template>
 
@@ -161,7 +161,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >每日首次签到可以给 Bot 加经验值</span
+            >可以获得游戏内道具以及经验值奖励</span
           >
         </div>
         <el-divider />
