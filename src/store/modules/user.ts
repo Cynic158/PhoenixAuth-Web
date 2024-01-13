@@ -11,6 +11,9 @@ import {
   reqGetPhoenixToken,
   reqChangePassword,
   reqUseRedeemCode,
+  reqDisableApiKey,
+  reqGenApiKey,
+  reqSetBanListUpload,
 } from "@/api/user";
 // 导入路由创建动态菜单
 import {
@@ -39,6 +42,8 @@ interface userDetail {
   is_developer: boolean;
   create_at: number;
   expire_at: number;
+  enable_ban_list_upload: boolean;
+  api_key: string;
 }
 interface passwordInfo {
   original_password: string;
@@ -93,6 +98,10 @@ let useUserStore = defineStore("user", () => {
   let ucreate = ref(localStorage.getItem("UCREATE") || "");
   // 用户过期时间
   let uexpire = ref(localStorage.getItem("UEXPIRE") || "");
+  // 黑名单
+  let banlistFlag = ref(Boolean(localStorage.getItem("BANLISTFLAG")) || false);
+  // API
+  let uapi = ref(localStorage.getItem("UAPI") || "");
 
   // 动态路由菜单项
   let menuRoutes = ref([...defaultRoutes]);
@@ -171,12 +180,16 @@ let useUserStore = defineStore("user", () => {
     }
     ucreate.value = userInfo.create_at.toString();
     uexpire.value = userInfo.expire_at.toString();
+    uapi.value = userInfo.api_key || "未生成";
+    banlistFlag.value = userInfo.enable_ban_list_upload;
     localStorage.setItem("UNAME", userInfo.username);
     localStorage.setItem("UID", uid.value);
     localStorage.setItem("ADMINFLAG", adminFlag.value);
     localStorage.setItem("DEVFLAG", devFlag.value);
     localStorage.setItem("UCREATE", ucreate.value);
     localStorage.setItem("UEXPIRE", uexpire.value);
+    localStorage.setItem("UAPI", uapi.value);
+    localStorage.setItem("BANLISTFLAG", banlistFlag.value.toString());
   };
   // 清空用户信息函数
   let clearUser = () => {
@@ -187,6 +200,8 @@ let useUserStore = defineStore("user", () => {
     devFlag.value = "";
     ucreate.value = "";
     uexpire.value = "";
+    banlistFlag.value = false;
+    uapi.value = "";
     localStorage.setItem("TOKEN", "");
     localStorage.setItem("UNAME", "");
     localStorage.setItem("UID", "");
@@ -194,6 +209,8 @@ let useUserStore = defineStore("user", () => {
     localStorage.setItem("DEVFLAG", "");
     localStorage.setItem("UCREATE", "");
     localStorage.setItem("UEXPIRE", "");
+    localStorage.setItem("UAPI", "");
+    localStorage.setItem("BANLISTFLAG", "");
     // 重置flag，使得重新登录会再次动态添加路由
     refreshFlag.value = false;
   };
@@ -264,11 +281,44 @@ let useUserStore = defineStore("user", () => {
     }
   };
 
+  // 黑名单
+  let userBanList = async (enable: { enable: boolean }) => {
+    // 发起请求
+    try {
+      let result = await reqSetBanListUpload(enable);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   // 请求使用兑换码
   let userCode = async (code: { redeem_code: string }) => {
     // 发起请求
     try {
       let result = await reqUseRedeemCode(code);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 请求生成api
+  let userGenApi = async () => {
+    // 发起请求
+    try {
+      let result = await reqGenApiKey();
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 请求禁用api
+  let userDisApi = async () => {
+    // 发起请求
+    try {
+      let result = await reqDisableApiKey();
       return result;
     } catch (error) {
       return Promise.reject(error);
@@ -292,9 +342,14 @@ let useUserStore = defineStore("user", () => {
     devFlag,
     ucreate,
     uexpire,
+    banlistFlag,
+    uapi,
     userDownload,
     userPassword,
     userCode,
+    userGenApi,
+    userDisApi,
+    userBanList,
   };
 });
 

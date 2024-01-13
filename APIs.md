@@ -467,6 +467,48 @@ c.String(http.StatusOK, token)
 
 
 
+### /user/set_ban_list_upload
+
+设置是否上传租赁服黑名单至云黑
+
+
+
+**Method： POST**
+
+**Parameters：除约定以外，有以下字段**
+
+|  名称  | 类型 | 是否必选 |      说明      |
+| :----: | :--: | :------: | :------------: |
+| enable | bool |    是    | 更新的开关状态 |
+
+**Return：无约定以外的字段**
+
+**Extra：调用此 API 后 bearer 会失效，再次请求需要使用新的 bearer**
+
+
+
+**成功返回示例**
+
+``````json
+{
+    "success": true,
+    "message": "设置成功",
+}
+``````
+
+
+
+**失败返回示例**
+
+```json
+{
+    "success": false,
+    "message": "请先登录",
+}
+```
+
+
+
 
 
 ### /helper/get_status

@@ -1,0 +1,38 @@
+<template>
+  <div style="width: 100%; height: 100%; position: relative">
+    <iframe
+      class="list-iframe-container"
+      ref="myIframe"
+      src="https://liliya233.uk/openapi/swagger/index.html"
+      frameborder="0"
+      @load="iframeLoadedFunc"
+    ></iframe>
+    <p v-if="!iframeLoaded" class="iframe-null">加载页面中</p>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+
+let iframeLoaded = ref(false);
+let iframeLoadedFunc = () => {
+  // iframe加载完成后触发的回调
+  iframeLoaded.value = true;
+};
+</script>
+
+<style lang="scss">
+.list-iframe-container {
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  position: absolute;
+  left: -20px;
+  top: -20px;
+}
+.iframe-null {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>

@@ -102,6 +102,16 @@ export const defaultRoutes2 = [
     },
   },
   {
+    path: "/apilist",
+    component: () => import("@/views/apiList/index.vue"),
+    name: "apilist",
+    meta: {
+      title: "OpenAPI",
+      hidden: false,
+      icon: "Key",
+    },
+  },
+  {
     path: "/about",
     component: () => import("@/views/about/index.vue"),
     name: "about",

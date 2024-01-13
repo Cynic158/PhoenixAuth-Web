@@ -238,7 +238,7 @@ let showUnbind = ref(false);
 // 提示类型
 let alertType = ref("warning");
 // 提示消息
-let alertTitle = ref("查询中");
+let alertTitle = ref("点击刷新来查询");
 // 获取bot信息
 let getBotStatus = async () => {
   try {

@@ -10,11 +10,9 @@
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px; color: dimgray"
-            >
+          <span style="margin-left: 12px; color: dimgray">
             游戏ID在第一次成功登录时自动获取，之后您只能登录至此ID的租赁服
-            </span
-          >
+          </span>
         </div>
         <el-divider />
         <el-descriptions
@@ -88,6 +86,17 @@
             </template>
             {{ expireTime }}
           </el-descriptions-item>
+          <el-descriptions-item :span="1">
+            <template #label>
+              <div class="userinfo-cell-item">
+                <el-icon class="userinfo-cell-item-icon">
+                  <Key />
+                </el-icon>
+                apikey
+              </div>
+            </template>
+            {{ userStore.uapi }}
+          </el-descriptions-item>
         </el-descriptions>
       </div>
     </el-card>
@@ -101,7 +110,9 @@
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px; color: dimgray">使用兑换码更新您的账号</span>
+          <span style="margin-left: 12px; color: dimgray"
+            >使用兑换码更新您的账号</span
+          >
         </div>
         <el-divider />
 
@@ -140,6 +151,28 @@
         </div>
         <el-divider />
         <el-button type="primary" round @click="tokenDownload">获取</el-button>
+      </div>
+    </el-card>
+
+    <el-card style="margin-top: 12px" shadow="hover">
+      <template #header>
+        <div class="card-header">黑名单</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >设置是否上传租赁服黑名单至云黑</span
+          >
+        </div>
+        <el-divider />
+        <el-switch
+          v-model="userStore.banlistFlag"
+          :loading="banloading"
+          :before-change="beforeChange"
+        />
       </div>
     </el-card>
 
@@ -200,6 +233,38 @@
         </el-form>
       </div>
     </el-card>
+
+    <el-card v-loading="apikeyLoading" style="margin-top: 12px" shadow="hover">
+      <template #header>
+        <div class="card-header">API接口密钥</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >专供给开发者使用的同等权限密钥，可以为您的第三方程序提供充足的功能与可靠的稳定性。</span
+          >
+        </div>
+        <el-divider />
+        <Precode :code="userStore.uapi" :type="'bash'"></Precode>
+        <el-button
+          style="margin-top: 12px"
+          type="primary"
+          round
+          @click="apikeyGen"
+          >生成API密钥</el-button
+        >
+        <el-button
+          style="margin-top: 12px"
+          type="danger"
+          round
+          @click="apikeyDis"
+          >关闭API接口</el-button
+        >
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -218,9 +283,103 @@ import { ElNotification } from "element-plus";
 // 使用设置仓库的移动端适配
 let settingStore = useSettingStore();
 
-// 用户信息部分
 // 使用用户仓库
 let userStore = useUserStore();
+
+let banloading = ref(false);
+let beforeChange = async () => {
+  banloading.value = true;
+  try {
+    let result = await userStore.userBanList({
+      enable: !userStore.banlistFlag,
+    });
+    // @ts-ignore
+    if (result.success) {
+      // userStore.banlistFlag = !userStore.banlistFlag;
+      ElNotification({
+        type: "success",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      return true;
+    } else {
+      ElNotification({
+        type: "error",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      return false;
+    }
+  } catch (error) {
+    console.log(error);
+    return false;
+  } finally {
+    banloading.value = false;
+  }
+};
+
+let apikeyLoading = ref(false);
+let apikeyGen = async () => {
+  apikeyLoading.value = true;
+  try {
+    let result = await userStore.userGenApi();
+    // @ts-ignore
+    if (result.success) {
+      // @ts-ignore
+      userStore.uapi = result.api_key;
+      ElNotification({
+        type: "success",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    } else {
+      // 获取失败
+      ElNotification({
+        type: "error",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    apikeyLoading.value = false;
+  }
+};
+let apikeyDis = async () => {
+  apikeyLoading.value = true;
+  try {
+    let result = await userStore.userDisApi();
+    // @ts-ignore
+    if (result.success) {
+      userStore.uapi = "暂未获取";
+      ElNotification({
+        type: "success",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    } else {
+      // 获取失败
+      ElNotification({
+        type: "error",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    apikeyLoading.value = false;
+  }
+};
+
+// 用户信息部分
 let getInfo = async () => {
   // 获取用户信息
   await userStore.userInfo();
