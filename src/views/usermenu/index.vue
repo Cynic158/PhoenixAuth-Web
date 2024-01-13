@@ -243,14 +243,14 @@
           type="primary"
           round
           @click="apikeyGen"
-          >生成API密钥</el-button
+          >生成 Key</el-button
         >
         <el-button
           style="margin-top: 12px"
           type="danger"
           round
           @click="apikeyDis"
-          >关闭API接口</el-button
+          >删除 Key</el-button
         >
       </div>
     </el-card>
