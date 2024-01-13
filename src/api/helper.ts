@@ -9,12 +9,24 @@ enum API {
   BIND_EMAIL_ACCOUNT = "/helper/bind_email_account",
   UNBIND = "/helper/unbind",
   DAILY_SIGN = "/helper/daily_sign",
+  BIND_MOBILE_ACCOUNT = "/helper/bind_mobile_account",
+  GET_LOGIN_SMSCODE = "/helper/get_login_smscode",
 }
 
 // 数据类型声明
 interface emailInfo {
   username: string;
   password: string;
+}
+
+interface phoneInfo {
+  mobile: string;
+  smscode: string;
+}
+
+interface codeInfo {
+  mobile: string;
+  captcha_token: string;
 }
 
 // 导出api
@@ -28,7 +40,13 @@ export const reqCreate = () => request.get(API.BIND_GUEST_ACCOUNT);
 // 请求以网易邮箱账号登录的形式创建机器人
 export const reqBindEmailAccount = (emailInfo: emailInfo) =>
   request.post(API.BIND_EMAIL_ACCOUNT, emailInfo);
+// 请求以手机账号登录的形式创建机器人
+export const reqBindMobileAccount = (phoneInfo: phoneInfo) =>
+  request.post(API.BIND_MOBILE_ACCOUNT, phoneInfo);
 // 请求解绑机器人
 export const reqUnbind = () => request.get(API.UNBIND);
 // 请求签到
 export const reqSignIn = () => request.get(API.DAILY_SIGN);
+// 获取验证码
+export const reqGetLoginSmscode = (codeInfo: codeInfo) =>
+  request.post(API.GET_LOGIN_SMSCODE, codeInfo);

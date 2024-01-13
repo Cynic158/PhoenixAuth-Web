@@ -82,6 +82,64 @@
       style="margin-top: 12px"
     >
       <template #header>
+        <div class="card-header">手机登录</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >使用您提供的手机账号作为Bot</span
+          >
+        </div>
+        <el-divider />
+        <el-alert
+          v-if="phoneAlertTitle"
+          style="margin-bottom: 16px"
+          :title="phoneAlertTitle"
+          :type="phoneAlertType"
+          show-icon
+          :closable="false"
+        />
+
+        <el-form
+          class="phone-form-container"
+          :model="phoneData"
+          :rules="phoneRules"
+          ref="phoneform"
+        >
+          <el-form-item label="手机号" prop="phone">
+            <el-input v-model="phoneData.phone" placeholder="请输入手机号" />
+          </el-form-item>
+          <el-form-item label="验证码" prop="code">
+            <el-input v-model="phoneData.code" placeholder="请输入验证码" />
+          </el-form-item>
+          <el-form-item style="margin-bottom: 0">
+            <el-button type="primary" @click="createBotByPhone">创建</el-button>
+            <el-button
+              v-if="!codeTimeShow"
+              type="primary"
+              @click="robotCheck"
+              :loading="codeloadingflag"
+              :disabled="codedisabled"
+              >获取验证码</el-button
+            >
+            <el-button v-if="codeTimeShow" type="primary" disabled>{{
+              codeTimes
+            }}</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+
+    <el-card
+      shadow="hover"
+      v-if="botInfo.set == false"
+      v-loading="createDefaultLoading || queryLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
         <div class="card-header">邮箱登录</div>
       </template>
       <div>
@@ -228,16 +286,28 @@
         </span>
       </template>
     </el-dialog>
+    <button
+      class="g-recaptcha"
+      data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
+      data-callback="robotCallback"
+      data-expired-callback="robotExpiredCallback"
+      data-error-callback="robotErrorCallback"
+      hidden
+    >
+      click
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
-// 导入用户仓库
+// 导入bot仓库
 import useHelperStore from "@/store/modules/helper";
+// 导入用户仓库
+import useUserStore from "@/store/modules/user";
 // 导入消息通知组件
 // @ts-ignore
 import { ElNotification } from "element-plus";
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, onUnmounted, reactive, ref } from "vue";
 
 // bot信息部分
 // 使用bot仓库
@@ -306,6 +376,7 @@ let getBotStatus = async () => {
       }
       // 清空表单
       clearForm();
+      clearPhoneForm();
     } else {
       // 获取失败
       ElNotification({
@@ -455,6 +526,224 @@ let createBotByEmail = async () => {
       }
       // @ts-ignore
       emailAlertTitle.value = result.message;
+    } else {
+      // 请求失败，消息提示
+      ElNotification({
+        type: "error",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+    console.log(error);
+  } finally {
+    createDefaultLoading.value = false;
+    getBotStatus();
+  }
+};
+
+// 手机创建
+// 表单元素
+let phoneform = ref(null);
+// 表单数据
+let phoneData = reactive({
+  phone: "",
+  code: "",
+});
+// 清空表单
+let clearPhoneForm = () => {
+  phoneData.phone = "";
+  phoneData.code = "";
+  // 清空校验提示
+  try {
+    setTimeout(() => {
+      if (phoneform.value) {
+        // @ts-ignore
+        phoneform.value.clearValidate(["phone"]);
+      }
+    }, 200);
+  } catch (error) {
+    console.log(error);
+  }
+};
+// @ts-ignore
+let validatePhone = (rule: any, value: any, callback: any) => {
+  // 手机正则表达式
+  const phoneRegex = /^1[3456789]\d{9}$/;
+
+  if (!phoneRegex.test(value)) {
+    callback(new Error("手机格式不正确"));
+  } else {
+    callback();
+  }
+};
+// 表单校验规则
+const phoneRules = {
+  phone: [
+    {
+      required: true,
+      message: "手机号不能为空",
+      trigger: "blur",
+    },
+    { validator: validatePhone, trigger: "blur" },
+  ],
+};
+// 手机卡片提示
+// 提示类型
+let phoneAlertType = ref("warning");
+// 提示消息
+let phoneAlertTitle = ref("");
+// 获取验证码加载
+let codeloadingflag = ref(false);
+// 验证码允许点击
+let codedisabled = ref(false);
+// 验证码倒计时
+let codeTimes = ref(60);
+// 显示倒计时
+let codeTimeShow = ref(false);
+// 使用user仓库
+let userStore = useUserStore();
+// 人机验证成功回调
+var robotCallback = async (args: any) => {
+  userStore.robotToken = args;
+  if (userStore.robotToken) {
+    getCode();
+  }
+};
+// 人机验证过期回调
+var robotExpiredCallback = () => {
+  console.log("验证过期");
+  userStore.robotToken = "";
+};
+// 人机验证失败回调
+var robotErrorCallback = () => {
+  console.log("验证失败");
+  userStore.robotToken = "";
+};
+// recaptcha验证
+let robotCheck = async () => {
+  // 校验表单
+  if (phoneform.value) {
+    // @ts-ignore
+    await phoneform.value.validate();
+  }
+
+  userStore.robotToken = "";
+  // @ts-ignore
+  grecaptcha.reset();
+  // @ts-ignore
+  document.querySelector(".g-recaptcha").click();
+};
+// 添加人机验证
+onMounted(() => {
+  // 添加人机验证
+  const script = document.createElement("script");
+  script.src = "https://recaptcha.net/recaptcha/api.js";
+  script.async = true;
+  document.head.appendChild(script);
+
+  // @ts-ignore
+  window.robotCallback = robotCallback;
+  // @ts-ignore
+  window.robotExpiredCallback = robotExpiredCallback;
+  // @ts-ignore
+  window.robotErrorCallback = robotErrorCallback;
+});
+// 销毁全局变量
+onUnmounted(() => {
+  // @ts-ignore
+  window.robotCallback = null;
+  // @ts-ignore
+  window.robotExpiredCallback = null;
+  // @ts-ignore
+  window.robotErrorCallback = null;
+});
+// 获取验证码
+let getCode = async () => {
+  try {
+    // 显示加载
+    codeloadingflag.value = true;
+    codedisabled.value = true;
+    let codeInfo = {
+      mobile: "",
+      captcha_token: "",
+    };
+    codeInfo.mobile = phoneData.phone;
+    codeInfo.captcha_token = userStore.robotToken;
+    // 仓库发起验证码请求
+    let result = await helperStore.botPhoneCode(codeInfo);
+    // @ts-ignore
+    if (result.success) {
+      // 获取成功
+      // @ts-ignore
+      if (result.need_verify) {
+        phoneAlertType.value = "warning";
+        codedisabled.value = false;
+      } else {
+        phoneAlertType.value = "success";
+        // 成功，开始倒计时
+        codedisabled.value = true;
+        codeTimeShow.value = true;
+        const timer = setInterval(() => {
+          if (codeTimes.value > 0) {
+            codeTimes.value--;
+          } else {
+            codeTimes.value = 60;
+            codedisabled.value = false;
+            codeTimeShow.value = false;
+            clearInterval(timer);
+          }
+        }, 1000);
+      }
+      // @ts-ignore
+      phoneAlertTitle.value = result.message;
+    } else {
+      // 请求失败，消息提示
+      ElNotification({
+        type: "error",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      codedisabled.value = false;
+    }
+  } catch (error: any) {
+    console.log(error);
+    codedisabled.value = false;
+  } finally {
+    codeloadingflag.value = false;
+  }
+};
+// 手机登录
+let createBotByPhone = async () => {
+  // 校验表单
+  if (phoneform.value) {
+    // @ts-ignore
+    await phoneform.value.validate();
+  }
+  try {
+    // 显示加载
+    createDefaultLoading.value = true;
+    let phoneInfo = {
+      mobile: "",
+      smscode: "",
+    };
+    phoneInfo.mobile = phoneData.phone;
+    phoneInfo.smscode = phoneData.code;
+    // 仓库发起手机登录请求
+    let result = await helperStore.botCreateByPhone(phoneInfo);
+    // @ts-ignore
+    if (result.success) {
+      // 获取成功
+      // @ts-ignore
+      if (result.need_verify) {
+        phoneAlertType.value = "warning";
+      } else {
+        phoneAlertType.value = "success";
+      }
+      // @ts-ignore
+      phoneAlertTitle.value = result.message;
     } else {
       // 请求失败，消息提示
       ElNotification({
@@ -634,7 +923,8 @@ let signinBot = async () => {
   white-space: normal;
 }
 .email-form-container,
-.botname-form-container {
+.botname-form-container,
+.phone-form-container {
   max-width: 600px;
 }
 :deep(.el-input input:-webkit-autofill) {

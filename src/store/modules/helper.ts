@@ -12,11 +12,23 @@ import {
   reqGetStatus,
   reqUnbind,
   reqSignIn,
+  reqBindMobileAccount,
+  reqGetLoginSmscode,
 } from "@/api/helper";
 
 interface emailInfo {
   username: string;
   password: string;
+}
+
+interface phoneInfo {
+  mobile: string;
+  smscode: string;
+}
+
+interface codeInfo {
+  mobile: string;
+  captcha_token: string;
 }
 
 // 创建仓库
@@ -48,6 +60,26 @@ let useHelperStore = defineStore("helper", () => {
       const hashpassword = md5(emailInfo.password).toString();
       emailInfo.password = hashpassword;
       let result = await reqBindEmailAccount(emailInfo);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 手机创建
+  let botCreateByPhone = async (phoneInfo: phoneInfo) => {
+    try {
+      let result = await reqBindMobileAccount(phoneInfo);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 获取验证码
+  let botPhoneCode = async (codeInfo: codeInfo) => {
+    try {
+      let result = await reqGetLoginSmscode(codeInfo);
       return result;
     } catch (error) {
       return Promise.reject(error);
@@ -91,6 +123,8 @@ let useHelperStore = defineStore("helper", () => {
     botUnbind,
     botChangeName,
     botSignIn,
+    botCreateByPhone,
+    botPhoneCode,
   };
 });
 
