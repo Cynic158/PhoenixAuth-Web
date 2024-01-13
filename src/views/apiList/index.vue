@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%; height: 100%; position: relative">
+  <div class="list-iframe-div">
     <iframe
       class="list-iframe-container"
       ref="myIframe"
@@ -22,6 +22,14 @@ let iframeLoadedFunc = () => {
 </script>
 
 <style lang="scss">
+.list-iframe-div{
+  width: 100%; 
+  height: 100%; 
+  position: relative;
+  @supports (-webkit-touch-callout: none) { // 检测是否支持 -webkit-fill-available
+    height: -webkit-fill-available; // 设置 Safari 专有的 height 属性
+  }
+}
 .list-iframe-container {
   width: calc(100% + 40px);
   height: calc(100% + 40px);
