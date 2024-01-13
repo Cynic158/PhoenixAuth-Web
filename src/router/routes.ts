@@ -51,6 +51,16 @@ export const defaultRoutes = [
           icon: "Cpu",
         },
       },
+      {
+        path: "/gameaccount",
+        component: () => import("@/views/owner/index.vue"),
+        name: "gameaccount",
+        meta: {
+          title: "我的账号",
+          hidden: false,
+          icon: "SwitchFilled",
+        },
+      },
     ],
   },
   {
