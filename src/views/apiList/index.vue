@@ -3,7 +3,7 @@
     <iframe
       class="list-iframe-container"
       id="listIframe"
-      src="https://liliya233.uk/openapi/swagger/index.html"
+      src="/openapi/swagger/index.html"
       frameborder="0"
       @load="iframeLoadedFunc"
     ></iframe>
@@ -28,6 +28,11 @@ let iframeLoadedFunc = () => {
       settingStore.reqCollapse++;
     }
   });
+  iframeContentWindow.addEventListener("touchend", () => {
+    if (settingStore.mmenuFlag == true && settingStore.isCollapse == false) {
+      settingStore.reqCollapse++;
+    }
+  });
 };
 </script>
 
@@ -37,8 +42,8 @@ let iframeLoadedFunc = () => {
   height: 100%;
   position: relative;
   @supports (-webkit-touch-callout: none) {
-    // 检测是否支持 -webkit-fill-available
-    height: -webkit-fill-available; // 设置 Safari 专有的 height 属性
+    height: -webkit-fill-available;
+    padding-bottom: 65px;
   }
 }
 .list-iframe-container {
