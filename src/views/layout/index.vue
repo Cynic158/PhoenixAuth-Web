@@ -62,6 +62,11 @@ const handleResize2 = () => {
 
     // 更改CSS变量的值
     root.style.setProperty("--scrollbar-color", "transparent");
+
+    // 收起侧边栏
+    if (settingStore.mmenuFlag == true && settingStore.isCollapse == false) {
+      settingStore.reqCollapse++;
+    }
   } else {
     indexFlag.value = false;
     // 获取根元素
