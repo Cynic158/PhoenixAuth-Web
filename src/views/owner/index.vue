@@ -470,7 +470,7 @@ var ownerRobotExpiredCallback = () => {
 };
 // 人机验证失败回调
 var ownerRobotErrorCallback = () => {
-  console.log("验证失败");
+  //console.log("验证失败");
   userStore.robotToken = "";
 };
 // recaptcha验证

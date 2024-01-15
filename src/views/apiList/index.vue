@@ -33,6 +33,11 @@ let iframeLoadedFunc = () => {
       settingStore.reqCollapse++;
     }
   });
+  iframeContentWindow.addEventListener("touchmove", (event:TouchEvent) => {
+    if (settingStore.mmenuFlag && !settingStore.isCollapse) {
+      event.preventDefault();
+    }
+  }, {passive: false});
 };
 </script>
 
@@ -43,7 +48,7 @@ let iframeLoadedFunc = () => {
   position: relative;
   @supports (-webkit-touch-callout: none) {
     height: -webkit-fill-available;
-    padding-bottom: 65px;
+    padding-bottom: 60px; 
   }
 }
 .list-iframe-container {
