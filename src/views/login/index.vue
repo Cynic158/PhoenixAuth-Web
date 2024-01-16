@@ -625,20 +625,13 @@ onUnmounted(() => {
 onMounted(() => {
   let darkbg = localStorage.getItem("DARKMODE") === "true";
   if (darkbg) {
-    let changebg = () => {
       const element = document.querySelector(".login-container");
       if (element) {
         // @ts-ignore
-        element.style.backgroundImage =
-          `url(${darkimg})`;
+        element.style.backgroundImage = `url(${darkimg})`;
         // 转为黑夜模式
         document.documentElement.className = "dark";
-
-        clearInterval(checkElementInterval2);
       }
-    };
-    // 设置定时器，每隔100毫秒检查元素是否存在
-    const checkElementInterval2 = setInterval(changebg, 100);
   }
 });
 </script>
