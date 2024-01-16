@@ -16,7 +16,7 @@ let request = axios.create({
 });
 
 // 为axios添加失败重试功能
-axiosRetry(request, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+axiosRetry(request, { retries: 2, retryDelay: axiosRetry.exponentialDelay });
 
 //请求拦截器
 request.interceptors.request.use(
@@ -81,7 +81,7 @@ request.interceptors.response.use(
           // 跳转到登录页
           routerPush("/login");
           // 刷新当前页面
-          location.reload();
+          //location.reload();
         };
         if (error.response.data instanceof Blob) {
           reader.readAsText(error.response.data);
@@ -99,7 +99,7 @@ request.interceptors.response.use(
           // 跳转到登录页
           routerPush("/login");
           // 刷新当前页面
-          location.reload();
+          //location.reload();
         }
         break;
       case 403:
