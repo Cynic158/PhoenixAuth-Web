@@ -126,7 +126,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, reactive, ref, onActivated } from "vue";
+import { onMounted, onUnmounted, reactive, ref } from "vue";
 // 导入用户仓库
 import useUserStore from "@/store/modules/user";
 // 使用路由
