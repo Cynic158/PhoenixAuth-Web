@@ -409,7 +409,7 @@ let login = async () => {
       message: "登录成功",
       duration: 3000,
     });
-    // 请求成功，进入首页
+    // 请求成功，进入首页，且无需解锁登录按钮
     $router.push("/");
   } else {
     // 请求失败，消息提示
@@ -419,9 +419,9 @@ let login = async () => {
       message: result.message,
       duration: 3000,
     });
+    // 请求完成，关闭加载
+    loadingflag.value = false;
   }
-  // 请求完成，关闭加载
-  loadingflag.value = false;
 };
 let register = async () => {
   // 校验表单
