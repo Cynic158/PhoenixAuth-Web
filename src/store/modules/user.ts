@@ -118,7 +118,6 @@ let useUserStore = defineStore("user", () => {
     if (result) {
       // @ts-ignore
       token.value = result;
-      localStorage.setItem("TOKEN", token.value);
       return "success";
     } else {
       return Promise.reject("fail");
@@ -137,6 +136,7 @@ let useUserStore = defineStore("user", () => {
         result = await reqRegister(userInfo);
       } else if (type == "login") {
         result = await reqLogin(userInfo);
+        localStorage.setItem("TOKEN", token.value);
       }
       return result;
     } catch (error) {
@@ -182,14 +182,15 @@ let useUserStore = defineStore("user", () => {
     uexpire.value = userInfo.expire_at.toString();
     uapi.value = userInfo.api_key || "未生成";
     banlistFlag.value = userInfo.enable_ban_list_upload;
+
     localStorage.setItem("UNAME", userInfo.username);
     localStorage.setItem("UID", uid.value);
     localStorage.setItem("ADMINFLAG", adminFlag.value);
     localStorage.setItem("DEVFLAG", devFlag.value);
     localStorage.setItem("UCREATE", ucreate.value);
     localStorage.setItem("UEXPIRE", uexpire.value);
-    localStorage.setItem("UAPI", uapi.value);
     localStorage.setItem("BANLISTFLAG", banlistFlag.value.toString());
+    localStorage.setItem("UAPI", uapi.value);
   };
   // 清空用户信息函数
   let clearUser = () => {
@@ -202,15 +203,17 @@ let useUserStore = defineStore("user", () => {
     uexpire.value = "";
     banlistFlag.value = false;
     uapi.value = "";
-    localStorage.setItem("TOKEN", "");
-    localStorage.setItem("UNAME", "");
-    localStorage.setItem("UID", "");
-    localStorage.setItem("ADMINFLAG", "");
-    localStorage.setItem("DEVFLAG", "");
-    localStorage.setItem("UCREATE", "");
-    localStorage.setItem("UEXPIRE", "");
-    localStorage.setItem("UAPI", "");
+
+    localStorage.setItem("TOKEN", token.value);
+    localStorage.setItem("UNAME", uname.value);
+    localStorage.setItem("UID", uid.value);
+    localStorage.setItem("ADMINFLAG", adminFlag.value);
+    localStorage.setItem("DEVFLAG", devFlag.value);
+    localStorage.setItem("UCREATE", ucreate.value);
+    localStorage.setItem("UEXPIRE", uexpire.value);
     localStorage.setItem("BANLISTFLAG", "");
+    localStorage.setItem("UAPI", uapi.value);
+
     // 重置flag，使得重新登录会再次动态添加路由
     refreshFlag.value = false;
   };
