@@ -137,6 +137,8 @@ import { ElNotification } from "element-plus";
 // 获取时间字符串函数
 import { getTimeStr } from "@/utils/index";
 
+import darkimg from "../../assets/images/bg_dark.webp";
+
 // 使用user仓库
 let userStore = useUserStore();
 // 使用路由
@@ -620,7 +622,7 @@ onUnmounted(() => {
   // @ts-ignore
   window.robotErrorCallback = null;
 });
-onActivated(() => {
+onMounted(() => {
   let darkbg = localStorage.getItem("DARKMODE") === "true";
   if (darkbg) {
     let changebg = () => {
@@ -628,7 +630,7 @@ onActivated(() => {
       if (element) {
         // @ts-ignore
         element.style.backgroundImage =
-          "url('../../assets/images/bg_dark.webp')";
+          `url(${darkimg})`;
         // 转为黑夜模式
         document.documentElement.className = "dark";
 
