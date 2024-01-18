@@ -3,11 +3,20 @@
     <el-card shadow="hover">
       <template #header>
         <div class="card-header">
-          <span style="margin-right: 16px">Bot 信息</span>
+          <span style="margin-right: 16px">Bot 账号</span>
         </div>
       </template>
 
       <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >Bot 账号是进入服务器时使用的账号</span
+          >
+        </div>
+        <el-divider />
         <el-alert
           :title="alertTitle"
           :type="alertType"

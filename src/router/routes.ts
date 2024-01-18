@@ -56,7 +56,7 @@ export const defaultRoutes = [
         component: () => import("@/views/helper/index.vue"),
         name: "robotaccount",
         meta: {
-          title: "Bot 菜单",
+          title: "Bot 账号",
           hidden: false,
           icon: "Cpu",
         },

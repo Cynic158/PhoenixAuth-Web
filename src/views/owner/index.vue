@@ -8,6 +8,15 @@
       </template>
 
       <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >我的账号是调用一些特殊 API 时使用的账号 (不包括进服), 且只能与绑定的游戏ID一致</span
+          >
+        </div>
+        <el-divider />
         <el-alert
           :title="alertTitle"
           :type="alertType"
@@ -50,7 +59,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >使用您提供的手机账号作为Bot</span
+            >绑定您的手机账号</span
           >
         </div>
         <el-divider />
@@ -108,7 +117,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >使用您提供的邮箱账号作为Bot</span
+            >绑定您的邮箱账号</span
           >
         </div>
         <el-divider />
