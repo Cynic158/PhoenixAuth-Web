@@ -750,6 +750,7 @@ let createBotByPhone = async () => {
         phoneAlertType.value = "warning";
       } else {
         phoneAlertType.value = "success";
+        getBotStatus();
       }
       // @ts-ignore
       phoneAlertTitle.value = result.message;

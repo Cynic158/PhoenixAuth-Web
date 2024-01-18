@@ -385,6 +385,7 @@ let createBotByEmail = async () => {
         emailAlertType.value = "warning";
       } else {
         emailAlertType.value = "success";
+        getBotStatus();
       }
       // @ts-ignore
       emailAlertTitle.value = result.message;
@@ -602,6 +603,7 @@ let createBotByPhone = async () => {
         phoneAlertType.value = "warning";
       } else {
         phoneAlertType.value = "success";
+        getBotStatus();
       }
       // @ts-ignore
       phoneAlertTitle.value = result.message;
