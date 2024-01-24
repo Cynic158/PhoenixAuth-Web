@@ -146,7 +146,7 @@ import { ElNotification } from "element-plus";
 // 导入缓动函数
 import { verticalScroll } from "@/utils";
 // 导入富文本编辑器样式
-import "@wangeditor/editor/dist/css/style.css"; // 引入 css
+// import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 // @ts-ignore
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 // 查看key

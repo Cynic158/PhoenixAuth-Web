@@ -9,6 +9,7 @@ import path from "path";
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import { prismjsPlugin } from "vite-plugin-prismjs";
 import { visualizer } from "rollup-plugin-visualizer";
+import { Plugin as importToCDN, autoComplete } from "vite-plugin-cdn-import";
 
 const getEnvFn = (mode: string, target: string) => {
   return loadEnv(mode, process.cwd())[target];
@@ -34,6 +35,15 @@ export default ({ mode }) =>
     // },
     plugins: [
       vue(),
+      importToCDN({
+        modules: [
+          {
+            name: "wang-editor",
+            var: "wangEditor",
+            path: "https://unpkg.com/@wangeditor/editor@latest/dist/index.js",
+          },
+        ],
+      }),
       prismjsPlugin({
         languages: ["json", "js", "bash", "shell"],
         //  languages: 'all',
@@ -61,7 +71,7 @@ export default ({ mode }) =>
         // Specify symbolId format
         symbolId: "icon-[dir]-[name]",
       }),
-      visualizer({open:true})
+      visualizer({ open: true }),
     ],
     resolve: {
       alias: {
