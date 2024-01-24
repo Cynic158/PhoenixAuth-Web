@@ -132,7 +132,7 @@ import { ElNotification } from "element-plus";
 // 获取时间字符串函数
 import { getTimeStr } from "@/utils/index";
 // 导入暗黑模式背景图
-import darkimg from "../../assets/images/bg_dark.webp";
+//import darkimg from "../../assets/images/bg_dark.webp";
 
 // 使用user仓库
 let userStore = useUserStore();
@@ -576,7 +576,7 @@ onMounted(() => {
       const element = document.querySelector(".login-container");
       if (element) {
         // @ts-ignore
-        element.style.backgroundImage = `url(${darkimg})`;
+        element.style.backgroundImage = `url("https://img.picgo.net/2024/01/24/bg_dark76c3ac9b1eee892b.webp")`;
         // 转为黑夜模式
         document.documentElement.className = "dark";
       }
@@ -587,7 +587,8 @@ onMounted(() => {
 <style scoped lang="scss">
 @media (max-width: 768px) {
   .login-container {
-    background-image: url("../../assets/images/bg_m.webp") !important;
+    // background-image: url("../../assets/images/bg_m.webp") !important;
+    background-image: url("https://img.picgo.net/2024/01/24/bg_m747b3a845541b9e0.webp") !important;
   }
   .login-form {
     width: 100% !important;
@@ -628,8 +629,8 @@ onMounted(() => {
 .login-container {
   width: 100%;
   height: 100vh;
-  background-image: url("../../assets/images/bg.webp");
-  // background-image: url("../../../public/bg.webp");
+  // background-image: url("../../assets/images/bg.webp");
+  background-image: url("https://img.picgo.net/2024/01/24/bge445a85cdac49114.webp");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
