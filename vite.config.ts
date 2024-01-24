@@ -8,6 +8,7 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
 import path from "path";
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import { prismjsPlugin } from "vite-plugin-prismjs";
+import { visualizer } from "rollup-plugin-visualizer";
 
 const getEnvFn = (mode: string, target: string) => {
   return loadEnv(mode, process.cwd())[target];
@@ -59,6 +60,9 @@ export default ({ mode }) =>
         iconDirs: [path.resolve(process.cwd(), "src/assets/icons")],
         // Specify symbolId format
         symbolId: "icon-[dir]-[name]",
+      }),
+      visualizer({
+        open: true,
       }),
     ],
     resolve: {
