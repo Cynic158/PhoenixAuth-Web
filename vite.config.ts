@@ -9,6 +9,7 @@ import path from "path";
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import { prismjsPlugin } from "vite-plugin-prismjs";
 import { visualizer } from "rollup-plugin-visualizer";
+import externalGlobals from "rollup-plugin-external-globals";
 
 const getEnvFn = (mode: string, target: string) => {
   return loadEnv(mode, process.cwd())[target];
@@ -17,6 +18,16 @@ const getEnvFn = (mode: string, target: string) => {
 // https://vitejs.dev/config/
 export default ({ mode }) =>
   defineConfig({
+    build: {
+      rollupOptions: {
+        external: ["wang-editor"],
+        plugins: [
+          externalGlobals({
+            "wang-editor": "wangEditor",
+          }),
+        ],
+      },
+    },
     define: {
       "process.env": {
         NODE_ENV: JSON.stringify(mode), // 使用 Vite 的 mode 作为 NODE_ENV
