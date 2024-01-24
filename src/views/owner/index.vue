@@ -1,5 +1,10 @@
 <template>
   <div>
+    <div class="g-recaptcha"
+      data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
+      data-callback="robotCallback"
+      data-size="invisible">
+    </div>
     <el-card shadow="hover">
       <template #header>
         <div class="card-header">
@@ -8,6 +13,15 @@
       </template>
 
       <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >我的账号是调用一些特殊 API 时使用的账号 (不包括进服), 且只能与绑定的游戏ID一致</span
+          >
+        </div>
+        <el-divider />
         <el-alert
           :title="alertTitle"
           :type="alertType"
@@ -50,7 +64,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >使用您提供的手机账号作为Bot</span
+            >绑定您的手机账号</span
           >
         </div>
         <el-divider />
@@ -108,7 +122,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >使用您提供的邮箱账号作为Bot</span
+            >绑定您的邮箱账号</span
           >
         </div>
         <el-divider />
@@ -186,25 +200,12 @@
         </span>
       </template>
     </el-dialog>
-
-    <button
-      class="g-recaptcha"
-      data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
-      data-callback="ownerRobotCallback"
-      data-expired-callback="ownerRobotExpiredCallback"
-      data-error-callback="ownerRobotErrorCallback"
-      hidden
-    >
-      click
-    </button>
   </div>
 </template>
 
 <script setup lang="ts">
 // 导入bot仓库
 import useOwnerStore from "@/store/modules/owner";
-// 导入用户仓库
-import useUserStore from "@/store/modules/user";
 // 导入消息通知组件
 // @ts-ignore
 import { ElNotification } from "element-plus";
@@ -376,6 +377,7 @@ let createBotByEmail = async () => {
         emailAlertType.value = "warning";
       } else {
         emailAlertType.value = "success";
+        getBotStatus();
       }
       // @ts-ignore
       emailAlertTitle.value = result.message;
@@ -454,24 +456,9 @@ let codedisabled = ref(false);
 let codeTimes = ref(60);
 // 显示倒计时
 let codeTimeShow = ref(false);
-// 使用user仓库
-let userStore = useUserStore();
 // 人机验证成功回调
-var ownerRobotCallback = async (args: any) => {
-  userStore.robotToken = args;
-  if (userStore.robotToken) {
-    getCode();
-  }
-};
-// 人机验证过期回调
-var ownerRobotExpiredCallback = () => {
-  console.log("验证过期");
-  userStore.robotToken = "";
-};
-// 人机验证失败回调
-var ownerRobotErrorCallback = () => {
-  console.log("验证失败");
-  userStore.robotToken = "";
+var robotCallback = async (args: any) => {
+  getCode(args);
 };
 // recaptcha验证
 let robotCheck = async () => {
@@ -480,12 +467,10 @@ let robotCheck = async () => {
     // @ts-ignore
     await phoneform.value.validate();
   }
-
-  userStore.robotToken = "";
   // @ts-ignore
   grecaptcha.reset();
   // @ts-ignore
-  document.querySelector(".g-recaptcha").click();
+  grecaptcha.execute();
 };
 // 添加人机验证
 onMounted(() => {
@@ -493,36 +478,27 @@ onMounted(() => {
   const script = document.createElement("script");
   script.src = "https://recaptcha.net/recaptcha/api.js";
   script.async = true;
+  script.defer = true;
   document.head.appendChild(script);
 
   // @ts-ignore
-  window.ownerRobotCallback = ownerRobotCallback;
-  // @ts-ignore
-  window.ownerRobotExpiredCallback = ownerRobotExpiredCallback;
-  // @ts-ignore
-  window.ownerRobotErrorCallback = ownerRobotErrorCallback;
+  window.robotCallback = robotCallback;
 });
 // 销毁全局变量
 onUnmounted(() => {
   // @ts-ignore
-  window.ownerRobotCallback = null;
-  // @ts-ignore
-  window.ownerRobotExpiredCallback = null;
-  // @ts-ignore
-  window.ownerRobotErrorCallback = null;
+  window.robotCallback = null;
 });
 // 获取验证码
-let getCode = async () => {
+let getCode = async (robotToken: string) => {
   try {
     // 显示加载
     codeloadingflag.value = true;
     codedisabled.value = true;
     let codeInfo = {
-      mobile: "",
-      captcha_token: "",
+      mobile: phoneData.phone,
+      captcha_token: robotToken,
     };
-    codeInfo.mobile = phoneData.phone;
-    codeInfo.captcha_token = userStore.robotToken;
     // 仓库发起验证码请求
     let result = await ownerStore.botPhoneCode(codeInfo);
     // @ts-ignore
@@ -578,11 +554,9 @@ let createBotByPhone = async () => {
     // 显示加载
     createDefaultLoading.value = true;
     let phoneInfo = {
-      mobile: "",
-      smscode: "",
+      mobile: phoneData.phone,
+      smscode: phoneData.code,
     };
-    phoneInfo.mobile = phoneData.phone;
-    phoneInfo.smscode = phoneData.code;
     // 仓库发起手机登录请求
     let result = await ownerStore.botCreateByPhone(phoneInfo);
     // @ts-ignore
@@ -593,6 +567,7 @@ let createBotByPhone = async () => {
         phoneAlertType.value = "warning";
       } else {
         phoneAlertType.value = "success";
+        getBotStatus();
       }
       // @ts-ignore
       phoneAlertTitle.value = result.message;

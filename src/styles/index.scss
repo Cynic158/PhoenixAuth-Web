@@ -1,20 +1,14 @@
 @import "./reset.scss";
-
 // 全局样式
 // 字体
-@font-face {
-  font-family: "TsangerYuYangT";
-  src: url("../assets/fonts/TsangerYuYangT-W03.woff2") format("woff2"),
-       url("../assets/fonts/TsangerYuYangT-W03.woff") format("woff"),
-       url("../assets/fonts/TsangerYuYangT-W03.ttf") format("truetype");
-  /* 可能还需要其他字体格式的引用，具体取决于字体文件 */
-  /* 可以设置字体的其他属性，如字重、字体样式等 */
-  font-weight: normal;
-  font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500&display=swap');
+
 html {
-  font-family: "TsangerYuYangT", Helvetica, Arial, "Microsoft Yahei",
+  font-family: "Noto Sans SC", Helvetica, Arial, "Microsoft Yahei",
     "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
 }
 
 :root {

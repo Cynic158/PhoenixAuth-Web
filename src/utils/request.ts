@@ -6,7 +6,6 @@ import useUserStore from "@/store/modules/user";
 // 导入路由函数
 import { routerPush } from "@/router";
 // axios重试
-// @ts-ignore
 import axiosRetry from "axios-retry";
 
 // 创建axios实例
@@ -16,7 +15,7 @@ let request = axios.create({
 });
 
 // 为axios添加失败重试功能
-axiosRetry(request, { retries: 3, retryDelay: axiosRetry.exponentialDelay });
+axiosRetry(request, { retries: 2, retryDelay: axiosRetry.exponentialDelay });
 
 //请求拦截器
 request.interceptors.request.use(
@@ -58,7 +57,6 @@ request.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    //console.log(error);
     // 新建一个reader对象读取blob数据
     let reader = new FileReader();
     // 根据状态码进行判断
@@ -81,7 +79,7 @@ request.interceptors.response.use(
           // 跳转到登录页
           routerPush("/login");
           // 刷新当前页面
-          location.reload();
+          //location.reload();
         };
         if (error.response.data instanceof Blob) {
           reader.readAsText(error.response.data);
@@ -99,7 +97,7 @@ request.interceptors.response.use(
           // 跳转到登录页
           routerPush("/login");
           // 刷新当前页面
-          location.reload();
+          //location.reload();
         }
         break;
       case 403:
@@ -127,12 +125,7 @@ request.interceptors.response.use(
         }
         break;
       default:
-        ElNotification({
-          type: "error",
-          title: "错误",
-          message: "网络错误",
-          duration: 3000,
-        });
+        // console.log(error);
         break;
     }
     return Promise.reject(error);

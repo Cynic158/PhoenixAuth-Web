@@ -243,7 +243,8 @@ let logoutFunc = async () => {
     // 消息提示
     ElNotification({
       type: "success",
-      message: "登出成功",
+      title: "成功",
+      message: "已退出登录, 欢迎下次再来~",
       duration: 3000,
     });
   } catch (error: any) {

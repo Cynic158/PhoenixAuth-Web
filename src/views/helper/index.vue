@@ -1,13 +1,27 @@
 <template>
   <div>
+    <div class="g-recaptcha"
+      data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
+      data-callback="robotCallback"
+      data-size="invisible">
+    </div>
     <el-card shadow="hover">
       <template #header>
         <div class="card-header">
-          <span style="margin-right: 16px">Bot 信息</span>
+          <span style="margin-right: 16px">Bot 账号</span>
         </div>
       </template>
 
       <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >Bot 账号是进入服务器时使用的账号</span
+          >
+        </div>
+        <el-divider />
         <el-alert
           :title="alertTitle"
           :type="alertType"
@@ -286,24 +300,12 @@
         </span>
       </template>
     </el-dialog>
-    <button
-      class="g-recaptcha"
-      data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
-      data-callback="robotCallback"
-      data-expired-callback="robotExpiredCallback"
-      data-error-callback="robotErrorCallback"
-      hidden
-    >
-      click
-    </button>
   </div>
 </template>
 
 <script setup lang="ts">
 // 导入bot仓库
 import useHelperStore from "@/store/modules/helper";
-// 导入用户仓库
-import useUserStore from "@/store/modules/user";
 // 导入消息通知组件
 // @ts-ignore
 import { ElNotification } from "element-plus";
@@ -602,24 +604,9 @@ let codedisabled = ref(false);
 let codeTimes = ref(60);
 // 显示倒计时
 let codeTimeShow = ref(false);
-// 使用user仓库
-let userStore = useUserStore();
 // 人机验证成功回调
 var robotCallback = async (args: any) => {
-  userStore.robotToken = args;
-  if (userStore.robotToken) {
-    getCode();
-  }
-};
-// 人机验证过期回调
-var robotExpiredCallback = () => {
-  console.log("验证过期");
-  userStore.robotToken = "";
-};
-// 人机验证失败回调
-var robotErrorCallback = () => {
-  console.log("验证失败");
-  userStore.robotToken = "";
+  getCode(args);
 };
 // recaptcha验证
 let robotCheck = async () => {
@@ -628,12 +615,10 @@ let robotCheck = async () => {
     // @ts-ignore
     await phoneform.value.validate();
   }
-
-  userStore.robotToken = "";
   // @ts-ignore
   grecaptcha.reset();
   // @ts-ignore
-  document.querySelector(".g-recaptcha").click();
+  grecaptcha.execute();
 };
 // 添加人机验证
 onMounted(() => {
@@ -641,36 +626,27 @@ onMounted(() => {
   const script = document.createElement("script");
   script.src = "https://recaptcha.net/recaptcha/api.js";
   script.async = true;
+  script.defer = true;
   document.head.appendChild(script);
 
   // @ts-ignore
   window.robotCallback = robotCallback;
-  // @ts-ignore
-  window.robotExpiredCallback = robotExpiredCallback;
-  // @ts-ignore
-  window.robotErrorCallback = robotErrorCallback;
 });
 // 销毁全局变量
 onUnmounted(() => {
   // @ts-ignore
   window.robotCallback = null;
-  // @ts-ignore
-  window.robotExpiredCallback = null;
-  // @ts-ignore
-  window.robotErrorCallback = null;
 });
 // 获取验证码
-let getCode = async () => {
+let getCode = async (robotToken: string) => {
   try {
     // 显示加载
     codeloadingflag.value = true;
     codedisabled.value = true;
     let codeInfo = {
-      mobile: "",
-      captcha_token: "",
+      mobile: phoneData.phone,
+      captcha_token: robotToken,
     };
-    codeInfo.mobile = phoneData.phone;
-    codeInfo.captcha_token = userStore.robotToken;
     // 仓库发起验证码请求
     let result = await helperStore.botPhoneCode(codeInfo);
     // @ts-ignore
@@ -741,6 +717,7 @@ let createBotByPhone = async () => {
         phoneAlertType.value = "warning";
       } else {
         phoneAlertType.value = "success";
+        getBotStatus();
       }
       // @ts-ignore
       phoneAlertTitle.value = result.message;

@@ -243,14 +243,16 @@
           type="primary"
           round
           @click="apikeyGen"
-          >生成 Key</el-button
+          v-if="userStore.uapi === '' || userStore.uapi === '暂未获取'"
+          >生成</el-button
         >
         <el-button
           style="margin-top: 12px"
           type="danger"
           round
           @click="apikeyDis"
-          >删除 Key</el-button
+          v-if="userStore.uapi !== '' && userStore.uapi !== '暂未获取'"
+          >删除</el-button
         >
       </div>
     </el-card>

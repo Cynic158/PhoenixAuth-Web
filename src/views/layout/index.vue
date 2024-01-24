@@ -13,7 +13,7 @@
         <Menu></Menu>
       </el-aside>
       <el-container class="right-container">
-        <el-header style="padding: 0">
+        <el-header class="right-header">
           <Tabbar></Tabbar>
         </el-header>
         <el-main>
@@ -62,6 +62,11 @@ const handleResize2 = () => {
 
     // 更改CSS变量的值
     root.style.setProperty("--scrollbar-color", "transparent");
+
+    // 收起侧边栏
+    if (settingStore.mmenuFlag == true && settingStore.isCollapse == false) {
+      settingStore.reqCollapse++;
+    }
   } else {
     indexFlag.value = false;
     // 获取根元素
@@ -113,6 +118,16 @@ onUnmounted(() => {
   .el-aside {
     overflow: hidden;
     transition: all 0.3s;
+  }
+  .right-header{
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    padding: 0;
+    z-index: 100;
+    background-color: var(--el-bg-color);
   }
   .right-container {
     transition: width 0.3s;
