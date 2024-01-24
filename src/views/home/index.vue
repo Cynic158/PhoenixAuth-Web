@@ -148,7 +148,8 @@ import { verticalScroll } from "@/utils";
 // 导入富文本编辑器样式
 // import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 // @ts-ignore
-import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
+const { Editor, Toolbar } = window.wangEditor;
+// import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 // 查看key
 // import { DomEditor } from '@wangeditor/editor'
 

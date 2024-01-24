@@ -72,6 +72,9 @@ export default ({ mode }) =>
         symbolId: "icon-[dir]-[name]",
       }),
       visualizer({ open: true }),
+      visualizer({
+        open: true,
+      }),
     ],
     resolve: {
       alias: {

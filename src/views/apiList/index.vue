@@ -64,4 +64,8 @@ let iframeLoadedFunc = () => {
   top: 50%;
   transform: translate(-50%, -50%);
 }
+iframe::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
 </style>
