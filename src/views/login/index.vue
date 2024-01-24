@@ -1,4 +1,9 @@
 <template>
+  <div class="g-recaptcha"
+    data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
+    data-callback="robotCallback"
+    data-size="invisible">
+  </div>
   <div class="login-container">
     <el-row>
       <el-col :span="12" :xs="0" :sm="4" :md="8" :lg="12" style="height: 100vh">
@@ -11,16 +16,6 @@
         :lg="12"
         style="height: 100vh; position: relative"
       >
-        <button
-          class="g-recaptcha"
-          data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
-          data-callback="robotCallback"
-          data-expired-callback="robotExpiredCallback"
-          data-error-callback="robotErrorCallback"
-          hidden
-        >
-          click
-        </button>
         <div class="login-form">
           <h1>Welcome</h1>
           <el-form
@@ -136,7 +131,7 @@ import { useRouter } from "vue-router";
 import { ElNotification } from "element-plus";
 // 获取时间字符串函数
 import { getTimeStr } from "@/utils/index";
-
+// 导入暗黑模式背景图
 import darkimg from "../../assets/images/bg_dark.webp";
 
 // 使用user仓库
@@ -247,7 +242,7 @@ let switchpage = (type: "login" | "reg") => {
 
     // 清空表单内容
     clearForm();
-  } else if (type == "login") {
+  } else {
     currentForm.value = "login";
     // 清空校验提示
     if (loginform.value) {
@@ -273,114 +268,58 @@ let switchpage = (type: "login" | "reg") => {
 // 登录按钮加载状态
 let loadingflag = ref(false);
 let regloadingflag = ref(false);
+
 // 人机验证成功回调
 var robotCallback = async (args: any) => {
-  // console.log(args);
-  // console.log("验证成功");
-  // 存储人机token
-  userStore.robotToken = args;
-  // 判断当前是注册还是登录
-  if (currentForm.value == "login") {
-    // 进行登录
-    if (userStore.robotToken) {
-      try {
-        // 显示加载
-        loadingflag.value = true;
-        // 已通过人机验证，进行登录
-        let loginInfo = {
-          username: "",
-          password: "",
-          captcha_token: userStore.robotToken,
-        };
-        loginInfo.username = loginData.username;
-        loginInfo.password = loginData.password;
-        // 仓库发起登录请求
-        let result = await userStore.userRegLog(loginInfo, currentForm.value);
-        // @ts-ignore
-        if (result.success) {
-          // 获取当前时段字符串
-          let timestr: string = getTimeStr();
-          // 消息提示
-          ElNotification({
-            type: "success",
-            title: timestr,
-            message: "登录成功",
-            duration: 3000,
-          });
-          // 请求成功，进入首页
-          $router.push("/");
-        } else {
-          // 请求失败，消息提示
-          ElNotification({
-            type: "error",
-            // @ts-ignore
-            message: result.message,
-            duration: 3000,
-          });
-        }
-      } catch (error: any) {
-        console.log(error);
-      } finally {
-        // 请求完成，关闭加载
-        loadingflag.value = false;
-      }
-    }
-  } else if (currentForm.value == "reg") {
+  // 判断并进行注册
+  if (currentForm.value == "reg") {
     // 进行注册
-    if (userStore.robotToken) {
-      try {
-        // 显示加载
-        regloadingflag.value = true;
-        // 已通过人机验证，进行注册
-        let regInfo = {
-          username: "",
-          password: "",
-          captcha_token: userStore.robotToken,
-        };
-        regInfo.username = regData.username;
-        regInfo.password = regData.password;
-        // 仓库发起注册请求
-        let result = await userStore.userRegLog(regInfo, currentForm.value);
-        // @ts-ignore
-        if (result.success) {
-          // 注册成功，返回登录
-          switchpage("login");
-          // 消息提示
-          ElNotification({
-            type: "success",
-            message: "注册成功",
-            duration: 3000,
-          });
-        } else {
-          // 请求失败，消息提示
-          ElNotification({
-            type: "error",
-            // @ts-ignore
-            message: result.message,
-            duration: 3000,
-          });
-        }
-      } catch (error: any) {
-        console.log(error);
-      } finally {
-        // 请求完成，关闭加载
-        regloadingflag.value = false;
+    // 显示加载
+    regloadingflag.value = true;
+    // 已通过人机验证，进行注册
+    let regInfo = {
+      username: regData.username,
+      password: regData.password,
+      captcha_token: args,
+    };
+    try {
+      // 发起请求前获取token
+      let tokenResult = await reqNewTokenFunc();
+      // @ts-ignore
+      if (!tokenResult.success) {
+        return;
       }
+      // 仓库发起注册请求
+      let result = await userStore.userRegLog(regInfo, currentForm.value);
+      // @ts-ignore
+      if (result.success) {
+        // 消息提示
+        ElNotification({
+          type: "success",
+          message: "注册成功",
+          duration: 3000,
+        });
+        // 注册成功，返回登录
+        switchpage("login");
+      } else {
+        // 请求失败，消息提示
+        ElNotification({
+          type: "error",
+          // @ts-ignore
+          message: result.message,
+          duration: 3000,
+        });
+      }
+    } catch (error: any) {
+      console.log(error);
+    } finally {
+      // 请求完成，关闭加载
+      regloadingflag.value = false;
     }
   }
 };
-// 人机验证过期回调
-var robotExpiredCallback = () => {
-  console.log("验证过期");
-  userStore.robotToken = "";
-};
-// 人机验证失败回调
-var robotErrorCallback = () => {
-  console.log("验证失败");
-  userStore.robotToken = "";
-};
-// 人机验证过期回调
-// 登录事件
+
+// 登录事件, 登录不需要人机验证
 let login = async () => {
   // 校验表单
   if (loginform.value) {
@@ -392,65 +331,81 @@ let login = async () => {
   loadingflag.value = true;
   // 已通过人机验证，进行登录
   let loginInfo = {
-    username: "",
-    password: "",
+    username: loginData.username,
+    password: loginData.password,
     captcha_token: "",
-  };
-  loginInfo.username = loginData.username;
-  loginInfo.password = loginData.password;
-  // 仓库发起登录请求
-  let result = await userStore.userRegLog(loginInfo, "login");
-  // @ts-ignore
-  if (result.success) {
-    // 获取当前时段字符串
-    let timestr: string = getTimeStr();
-    // 消息提示
-    ElNotification({
-      type: "success",
-      title: timestr,
-      message: "登录成功",
-      duration: 3000,
-    });
-    // 请求成功，进入首页，且无需解锁登录按钮
-    $router.push("/");
-  } else {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      // @ts-ignore
-      message: result.message,
-      duration: 3000,
-    });
-    // 请求完成，关闭加载
-    loadingflag.value = false;
   }
+  try {
+    // 发起请求前获取token
+    let tokenResult = await reqNewTokenFunc();
+    // @ts-ignore
+    if (!tokenResult.success) {
+      loadingflag.value = false;
+      return;
+    }
+    // 仓库发起登录请求
+    let result = await userStore.userRegLog(loginInfo, "login");
+    // @ts-ignore
+    if (result.success) {
+      // 获取当前时段字符串
+      let timestr: string = getTimeStr();
+      // 消息提示
+      ElNotification({
+        type: "success",
+        title: timestr,
+        message: "登录成功, 即将跳转至主页",
+        duration: 3000,
+      });
+      // 请求成功，进入首页，且无需解锁登录按钮
+      $router.push("/");
+      return
+    } else {
+      // 请求失败，消息提示
+      ElNotification({
+        type: "error",
+        title: "登录失败",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  }catch (error: any) {
+    //console.log(error);
+  }
+  // 未请求成功，关闭加载
+  loadingflag.value = false;
 };
+
 let register = async () => {
   // 校验表单
   if (regform.value) {
     // @ts-ignore
     await regform.value.validate();
   }
-
-  userStore.robotToken = "";
   // @ts-ignore
   grecaptcha.reset();
   // @ts-ignore
-  document.querySelector(".g-recaptcha").click();
+  grecaptcha.execute();
 };
 
 // 获取token
 let reqNewTokenFunc = async () => {
-  try {
-    await userStore.getToken();
-  } catch (error) {
-    // 请求失败，消息提示
-    ElNotification({
-      type: "error",
-      message: "获取token失败",
-      duration: 3000,
-    });
+  // 如果存在token则直接使用
+  if (!userStore.token) {
+    try {
+      await userStore.getToken();
+    } catch (error) {
+      // 请求失败，消息提示
+      ElNotification({
+        type: "error",
+        title: "错误",
+        message: "无法连接到服务器, 请检查网络连接",
+        duration: 3000,
+      });
+      return Promise.reject(error);
+    }
   }
+  return Promise.resolve({ success: true });
 };
 
 onMounted(() => {
@@ -458,14 +413,11 @@ onMounted(() => {
   const script = document.createElement("script");
   script.src = "https://recaptcha.net/recaptcha/api.js";
   script.async = true;
+  script.defer = true;
   document.head.appendChild(script);
 
   // @ts-ignore
   window.robotCallback = robotCallback;
-  // @ts-ignore
-  window.robotExpiredCallback = robotExpiredCallback;
-  // @ts-ignore
-  window.robotErrorCallback = robotErrorCallback;
 
   // 登录表单输入键盘快捷键代码块
   // 用户名输入框
@@ -609,18 +561,11 @@ onMounted(() => {
   loginform.value.clearValidate(["username", "password"]);
   // @ts-ignore
   regform.value.clearValidate(["username", "password", "repassword"]);
-
-  // 进入页面即获取token
-  reqNewTokenFunc();
 });
 // 销毁全局变量
 onUnmounted(() => {
   // @ts-ignore
   window.robotCallback = null;
-  // @ts-ignore
-  window.robotExpiredCallback = null;
-  // @ts-ignore
-  window.robotErrorCallback = null;
 });
 onMounted(() => {
   let darkbg = localStorage.getItem("DARKMODE") === "true";

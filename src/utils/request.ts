@@ -6,7 +6,6 @@ import useUserStore from "@/store/modules/user";
 // 导入路由函数
 import { routerPush } from "@/router";
 // axios重试
-// @ts-ignore
 import axiosRetry from "axios-retry";
 
 // 创建axios实例
@@ -58,7 +57,6 @@ request.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    //console.log(error);
     // 新建一个reader对象读取blob数据
     let reader = new FileReader();
     // 根据状态码进行判断
@@ -127,12 +125,7 @@ request.interceptors.response.use(
         }
         break;
       default:
-        ElNotification({
-          type: "error",
-          title: "错误",
-          message: "网络错误",
-          duration: 3000,
-        });
+        // console.log(error);
         break;
     }
     return Promise.reject(error);

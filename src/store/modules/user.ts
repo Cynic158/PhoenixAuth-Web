@@ -109,8 +109,6 @@ let useUserStore = defineStore("user", () => {
   let refreshFlag = ref(false);
   // 权限按钮组
   let btns = ref([]);
-  // 人机token
-  let robotToken = ref("");
 
   // 获取会话token
   let getToken = async () => {
@@ -339,7 +337,6 @@ let useUserStore = defineStore("user", () => {
     refreshFlag,
     btns,
     getToken,
-    robotToken,
     userRegLog,
     adminFlag,
     devFlag,
