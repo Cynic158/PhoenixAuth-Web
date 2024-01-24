@@ -1,10 +1,10 @@
 <template>
-  <div class="g-recaptcha"
-    data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
-    data-callback="robotCallback"
-    data-size="invisible">
-  </div>
   <div>
+    <div class="g-recaptcha"
+      data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
+      data-callback="robotCallback"
+      data-size="invisible">
+    </div>
     <el-card shadow="hover">
       <template #header>
         <div class="card-header">

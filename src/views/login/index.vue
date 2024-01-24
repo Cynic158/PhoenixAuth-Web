@@ -1,10 +1,10 @@
 <template>
-  <div class="g-recaptcha"
-    data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
-    data-callback="robotCallback"
-    data-size="invisible">
-  </div>
   <div class="login-container">
+    <div class="g-recaptcha"
+      data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
+      data-callback="robotCallback"
+      data-size="invisible">
+    </div>
     <el-row>
       <el-col :span="12" :xs="0" :sm="4" :md="8" :lg="12" style="height: 100vh">
       </el-col>
@@ -296,7 +296,9 @@ var robotCallback = async (args: any) => {
         // 消息提示
         ElNotification({
           type: "success",
-          message: "注册成功",
+          title: "注册成功",
+          // @ts-ignore
+          message: result.message,
           duration: 3000,
         });
         // 注册成功，返回登录
@@ -305,6 +307,7 @@ var robotCallback = async (args: any) => {
         // 请求失败，消息提示
         ElNotification({
           type: "error",
+          title: "注册失败",
           // @ts-ignore
           message: result.message,
           duration: 3000,
