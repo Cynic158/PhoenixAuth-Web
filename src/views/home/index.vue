@@ -64,13 +64,83 @@
           </div>
         </div>
       </el-card>
+      <el-dialog
+        :width="settingStore.createDialogWidth"
+        v-model="dialogVisible"
+        title="公告内容编辑"
+        align-center
+      >
+        <el-form
+          class="notice-form-container"
+          :model="noticeData"
+          :rules="rules"
+          ref="noticeform"
+        >
+          <el-form-item label="公告ID" v-if="noticeData.ID != 0">
+            <el-input 
+              v-model="noticeData.ID"
+              disabled
+            />
+          </el-form-item>
+          <el-form-item label="标题" prop="title">
+            <el-input 
+              v-model="noticeData.title"
+              placeholder="请输入标题"
+            />
+          </el-form-item>
+          <el-form-item label="内容" prop="content">
+            <el-input
+              v-model="noticeData.content"
+              :autosize="{ minRows: 4 }"
+              type="textarea"
+              placeholder="请输入内容, 支持HTML渲染"
+            />
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="dialogVisible = false">取消</el-button>
+            <el-button
+              type="warning"
+              @click="previewNotice"
+              >预览</el-button
+            >
+            <el-button
+              :loading="noticeloadingflag"
+              type="primary"
+              @click="submitNotice"
+              >提交</el-button
+            >
+          </span>
+        </template>
+      </el-dialog>
+
+      <el-dialog
+        width="300px"
+        v-model="deleteDialogVisible"
+        title="删除公告"
+        align-center
+      >
+        确定要删除该公告吗
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="deleteDialogVisible = false">取消</el-button>
+            <el-button
+              :loading="deleteloadingflag"
+              type="primary"
+              @click="deleteNotice"
+              >确定</el-button
+            >
+          </span>
+        </template>
+      </el-dialog>
     </div>
 
     <div class="notice-footer">
       <el-pagination
         v-model:current-page="currentPage"
         :page-size="5"
-        :pager-count="settingStore.pageCount"
+        :pager-count="5"
         :small="settingStore.pageSmall"
         background
         layout="total, prev, pager, next"
@@ -78,77 +148,6 @@
         @current-change="handleCurrentChange"
       />
     </div>
-
-    <el-dialog
-      :width="settingStore.createDialogWidth"
-      v-model="dialogVisible"
-      title="公告内容编辑"
-      align-center
-    >
-      <el-form
-        class="notice-form-container"
-        :model="noticeData"
-        :rules="rules"
-        ref="noticeform"
-      >
-        <el-form-item label="公告ID" v-if="noticeData.ID != 0">
-          <el-input 
-            v-model="noticeData.ID"
-            disabled
-          />
-        </el-form-item>
-        <el-form-item label="标题" prop="title">
-          <el-input 
-            v-model="noticeData.title"
-            placeholder="请输入标题"
-          />
-        </el-form-item>
-        <el-form-item label="内容" prop="content">
-          <el-input
-            v-model="noticeData.content"
-            :autosize="{ minRows: 4 }"
-            type="textarea"
-            placeholder="请输入内容, 支持HTML渲染"
-          />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button
-            type="warning"
-            @click="previewNotice"
-            >预览</el-button
-          >
-          <el-button
-            :loading="noticeloadingflag"
-            type="primary"
-            @click="submitNotice"
-            >提交</el-button
-          >
-        </span>
-      </template>
-    </el-dialog>
-
-    <el-dialog
-      width="300px"
-      v-model="deleteDialogVisible"
-      title="删除公告"
-      align-center
-    >
-      确定要删除该公告吗
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="deleteDialogVisible = false">取消</el-button>
-          <el-button
-            :loading="deleteloadingflag"
-            type="primary"
-            @click="deleteNotice"
-            >确定</el-button
-          >
-        </span>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
