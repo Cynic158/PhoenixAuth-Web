@@ -285,11 +285,13 @@ const rules = {
 let previewNotice = async () => {
   ElMessageBox.alert(
     noticeData.content,
-    '公告正文预览',
+    noticeData.title,
     {
       dangerouslyUseHTMLString: true,
       showConfirmButton: false,
       closeOnClickModal: true,
+      showClose: false,
+      callback: () => {/* Do nothing */},
     }
   )
 };
