@@ -97,6 +97,11 @@
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
           <el-button
+            type="warning"
+            @click="previewNotice"
+            >预览</el-button
+          >
+          <el-button
             :loading="noticeloadingflag"
             type="primary"
             @click="createNotice"
@@ -138,7 +143,7 @@ import useAnnouncementStore from "@/store/modules/announcement";
 import { onMounted, reactive, ref } from "vue";
 // 导入通知
 // @ts-ignore
-import { ElNotification } from "element-plus";
+import { ElNotification, ElMessageBox } from "element-plus";
 // 导入缓动函数
 import { verticalScroll } from "@/utils";
 
@@ -275,6 +280,18 @@ const rules = {
       trigger: "blur",
     },
   ],
+};
+// 预览公告
+let previewNotice = async () => {
+  ElMessageBox.alert(
+    noticeData.content,
+    '公告正文预览',
+    {
+      dangerouslyUseHTMLString: true,
+      showConfirmButton: false,
+      closeOnClickModal: true,
+    }
+  )
 };
 // 创建公告
 let createNotice = async () => {
