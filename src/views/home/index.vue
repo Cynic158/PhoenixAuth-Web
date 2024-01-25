@@ -79,23 +79,19 @@
         ref="noticeform"
       >
         <el-form-item label="标题" prop="title">
-          <el-input v-model="noticeData.title" placeholder="请输入标题" />
+          <el-input 
+            v-model="noticeData.title"
+            placeholder="请输入标题"
+          />
         </el-form-item>
-        <div style="border: 1px solid var(--el-border-color)">
-          <Toolbar
-            style="border-bottom: 1px solid var(--el-border-color)"
-            :editor="editorRef"
-            :defaultConfig="toolbarConfig"
-            :mode="'default'"
+        <el-form-item label="内容" prop="content">
+          <el-input
+            v-model="noticeData.content"
+            :autosize="{ minRows: 4 }"
+            type="textarea"
+            placeholder="请输入内容, 支持HTML渲染"
           />
-          <Editor
-            style="height: 400px; overflow-y: hidden"
-            v-model="valueHtml"
-            :defaultConfig="editorConfig"
-            :mode="'default'"
-            @onCreated="handleCreated"
-          />
-        </div>
+        </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
@@ -139,43 +135,12 @@ import useUserStore from "@/store/modules/user";
 import useSettingStore from "@/store/modules/setting";
 // 导入公告仓库
 import useAnnouncementStore from "@/store/modules/announcement";
-import { onBeforeUnmount, onMounted, reactive, ref, shallowRef } from "vue";
+import { onMounted, reactive, ref } from "vue";
 // 导入通知
 // @ts-ignore
 import { ElNotification } from "element-plus";
 // 导入缓动函数
 import { verticalScroll } from "@/utils";
-// 导入富文本编辑器样式
-import "@wangeditor/editor/dist/css/style.css"; // 引入 css
-// @ts-ignore
-import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
-// 查看key
-// import { DomEditor } from '@wangeditor/editor'
-
-// 编辑器实例，必须用 shallowRef
-const editorRef = shallowRef();
-// 内容 HTML
-const valueHtml = ref("<p>hello</p>");
-const toolbarConfig = {
-  excludeKeys: ["group-image", "group-video"],
-};
-const editorConfig = { placeholder: "请输入内容..." };
-// 组件销毁时，也及时销毁编辑器
-onBeforeUnmount(() => {
-  const editor = editorRef.value;
-  if (editor == null) return;
-  editor.destroy();
-});
-const handleCreated = (editor: any) => {
-  editorRef.value = editor; // 记录 editor 实例，重要！
-
-  //   setTimeout(() => {
-  //     const toolbar = DomEditor.getToolbar(editor)
-
-  // const curToolbarConfig = toolbar.getConfig()
-  // console.log( curToolbarConfig.toolbarKeys ) // 当前菜单排序和分组
-  //   }, 1000);
-};
 
 // 使用用户仓库的管理员信息
 let userStore = useUserStore();
@@ -274,11 +239,12 @@ let noticeform = ref(null);
 // 表单数据
 let noticeData = reactive({
   title: "",
+  content: "",
 });
 // 清空表单
 let clearForm = () => {
   noticeData.title = "";
-  valueHtml.value = "";
+  noticeData.content = "";
   // 清空校验提示
   try {
     setTimeout(() => {
@@ -302,22 +268,19 @@ const rules = {
       trigger: "blur",
     },
   ],
+  content: [
+    {
+      required: true,
+      message: "请输入内容",
+      trigger: "blur",
+    },
+  ],
 };
 // 创建公告
 let createNotice = async () => {
   // 校验表单
   // @ts-ignore
   await noticeform.value.validate();
-  let valueHtmlContent = valueHtml.value.trim();
-  if (valueHtmlContent == "") {
-    // 没输入正文
-    ElNotification({
-      type: "error",
-      message: "请输入正文",
-      duration: 3000,
-    });
-    return;
-  }
   try {
     // 显示加载
     noticeloadingflag.value = true;
@@ -326,7 +289,7 @@ let createNotice = async () => {
       content: "",
     };
     noticeInfo.title = noticeData.title;
-    noticeInfo.content = valueHtml.value;
+    noticeInfo.content = noticeData.content;
     // 仓库发起请求
     let result = await annStore.annCreate(noticeInfo);
     // @ts-ignore
@@ -336,13 +299,16 @@ let createNotice = async () => {
       getAnnList(1);
       ElNotification({
         type: "success",
-        message: "创建成功",
+        title: "公告创建成功",
+        // @ts-ignore
+        message: result.message,
         duration: 3000,
       });
     } else {
       // 请求失败，消息提示
       ElNotification({
         type: "error",
+        title: "公告创建失败",
         // @ts-ignore
         message: result.message,
         duration: 3000,
