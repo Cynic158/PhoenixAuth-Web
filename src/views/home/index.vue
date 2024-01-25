@@ -19,7 +19,7 @@
       <el-card
         v-loading="loading"
         v-for="item in annList"
-        :key="item.id"
+        :key="item.ID"
         shadow="hover"
         class="notice-container"
       >
@@ -31,23 +31,36 @@
         <div class="notice-content" v-html="item.content"></div>
         <el-divider />
         <div class="notice-author">
-          <span>{{ item.create_at }}</span>
+          <span>{{ item.formatted_create_time }}</span>
           <div
             class="notice-option"
             :style="{ width: settingStore.pageSmall ? '100%' : 'auto' }"
           >
             <span>Author: {{ item.author_name }}</span>
-            <el-button
-              style="margin-left: 8px"
-              @click="deletedialog(item.id)"
-              v-if="userStore.adminFlag == '是'"
-              type="danger"
-              round
-            >
-              <el-icon class="userinfo-cell-item-icon">
-                <Delete />
-              </el-icon>
-            </el-button>
+            <div style="display: inline-flex; align-items: center; flex-wrap: wrap">
+              <el-button
+                style="margin-left: 8px"
+                @click="editDialog(item.ID, item.title, item.content)"
+                v-if="userStore.adminFlag == '是'"
+                type="primary"
+                round
+              >
+                <el-icon class="userinfo-cell-item-icon">
+                  <Edit />
+                </el-icon>
+              </el-button>
+              <el-button
+                style="margin-left: 8px"
+                @click="deletedialog(item.ID)"
+                v-if="userStore.adminFlag == '是'"
+                type="danger"
+                round
+              >
+                <el-icon class="userinfo-cell-item-icon">
+                  <Delete />
+                </el-icon>
+              </el-button>
+            </div>
           </div>
         </div>
       </el-card>
@@ -69,7 +82,7 @@
     <el-dialog
       :width="settingStore.createDialogWidth"
       v-model="dialogVisible"
-      title="创建公告"
+      title="公告内容编辑"
       align-center
     >
       <el-form
@@ -78,6 +91,12 @@
         :rules="rules"
         ref="noticeform"
       >
+        <el-form-item label="公告ID" v-if="noticeData.ID != 0">
+          <el-input 
+            v-model="noticeData.ID"
+            disabled
+          />
+        </el-form-item>
         <el-form-item label="标题" prop="title">
           <el-input 
             v-model="noticeData.title"
@@ -104,8 +123,8 @@
           <el-button
             :loading="noticeloadingflag"
             type="primary"
-            @click="createNotice"
-            >创建</el-button
+            @click="submitNotice"
+            >提交</el-button
           >
         </span>
       </template>
@@ -159,11 +178,11 @@ let annStore = useAnnouncementStore();
 let loading = ref(false);
 // 公告列表数组
 interface annObj {
-  id: number;
+  ID: number;
   title: string;
   content: string;
   author_name: string;
-  create_at: string;
+  formatted_create_time: string;
 }
 let annList = ref<annObj[]>([]);
 // 公告总数
@@ -243,11 +262,13 @@ let createdialog = () => {
 let noticeform = ref(null);
 // 表单数据
 let noticeData = reactive({
+  ID: 0,
   title: "",
   content: "",
 });
 // 清空表单
 let clearForm = () => {
+  noticeData.ID = 0;
   noticeData.title = "";
   noticeData.content = "";
   // 清空校验提示
@@ -283,55 +304,89 @@ const rules = {
 };
 // 预览公告
 let previewNotice = async () => {
-  ElMessageBox.alert(
-    noticeData.content,
-    noticeData.title,
-    {
-      dangerouslyUseHTMLString: true,
-      showConfirmButton: false,
-      closeOnClickModal: true,
-      showClose: false,
-      callback: () => {/* Do nothing */},
-    }
-  )
+  try{
+    // @ts-ignore
+    await noticeform.value.validate();
+    ElMessageBox.alert(
+      noticeData.content,
+      noticeData.title,
+      {
+        dangerouslyUseHTMLString: true,
+        showConfirmButton: false,
+        closeOnClickModal: true,
+        showClose: false,
+        callback: () => { /* Do nothing */ },
+      }
+    )
+  }catch(error: any){}
 };
 // 创建公告
-let createNotice = async () => {
-  // 校验表单
-  // @ts-ignore
-  await noticeform.value.validate();
+let submitNotice = async () => {
   try {
+    // 校验表单
+    // @ts-ignore
+    await noticeform.value.validate();
     // 显示加载
     noticeloadingflag.value = true;
     let noticeInfo = {
+      ID: 0,
       title: "",
       content: "",
     };
+    noticeInfo.ID = noticeData.ID;
     noticeInfo.title = noticeData.title;
     noticeInfo.content = noticeData.content;
-    // 仓库发起请求
-    let result = await annStore.annCreate(noticeInfo);
-    // @ts-ignore
-    if (result.success) {
-      dialogVisible.value = false;
-      //  刷新列表
-      getAnnList(1);
-      ElNotification({
-        type: "success",
-        title: "公告创建成功",
-        // @ts-ignore
-        message: result.message,
-        duration: 3000,
-      });
-    } else {
-      // 请求失败，消息提示
-      ElNotification({
-        type: "error",
-        title: "公告创建失败",
-        // @ts-ignore
-        message: result.message,
-        duration: 3000,
-      });
+    // 如果id为0，说明是新公告，将调用创建接口，否则调用编辑接口
+    if (noticeData.ID == 0){
+      // 仓库发起请求
+      let result = await annStore.annCreate(noticeInfo);
+      // @ts-ignore
+      if (result.success) {
+        dialogVisible.value = false;
+        // 刷新列表
+        getAnnList(1);
+        ElNotification({
+          type: "success",
+          title: "公告创建成功",
+          // @ts-ignore
+          message: result.message,
+          duration: 3000,
+        });
+      } else {
+        // 请求失败，消息提示
+        ElNotification({
+          type: "error",
+          title: "公告创建失败",
+          // @ts-ignore
+          message: result.message,
+          duration: 3000,
+        });
+      }
+    }else{
+      // 仓库发起请求
+      let result = await annStore.annEdit(noticeInfo);
+      // @ts-ignore
+      if (result.success) {
+        dialogVisible.value = false;
+        // 刷新列表
+        getAnnList(1);
+        ElNotification({
+          type: "success",
+          title: "公告更新成功",
+          // @ts-ignore
+          message: result.message,
+          duration: 3000,
+        });
+      } else {
+        // 请求失败，消息提示
+        ElNotification({
+          type: "error",
+          title: "公告更新失败",
+          // @ts-ignore
+          message: result.message,
+          duration: 3000,
+        });
+      }
     }
   } catch (error: any) {
     console.log(error);
@@ -339,6 +394,13 @@ let createNotice = async () => {
     // 请求完成，关闭加载
     noticeloadingflag.value = false;
   }
+};
+// 编辑公告
+let editDialog = (id: number, title: string, content: string) => {
+  noticeData.ID = id;
+  noticeData.title = title;
+  noticeData.content = content;
+  dialogVisible.value = true;
 };
 
 // 删除公告

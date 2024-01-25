@@ -5,6 +5,7 @@ import request from "@/utils/request";
 enum API {
   QUERY_BY_PAGE = "/announcement/query_by_page",
   CREATE = "/announcement/create",
+  EDIT = "/announcement/edit",
   DELETE = "/announcement/delete",
 }
 
@@ -14,6 +15,7 @@ interface pageInfo {
   page_size: number;
 }
 interface announcementInfo {
+  ID: number;
   title: string;
   content: string;
 }
@@ -25,5 +27,8 @@ export const reqQueryByPage = (pageInfo: pageInfo) =>
 // 创建公告
 export const reqCreate = (announcementInfo: announcementInfo) =>
   request.post(API.CREATE, announcementInfo);
+// 编辑公告
+export const reqEdit = (announcementInfo: announcementInfo) =>
+request.post(API.EDIT, announcementInfo);
 // 删除公告
 export const reqDelete = (id: { id: number }) => request.post(API.DELETE, id);
