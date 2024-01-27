@@ -1,10 +1,5 @@
 <template>
   <div class="login-container">
-    <div class="g-recaptcha"
-      data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
-      data-callback="robotCallback"
-      data-size="invisible">
-    </div>
     <el-row>
       <el-col :span="12" :xs="0" :sm="4" :md="8" :lg="12" style="height: 100vh">
       </el-col>
@@ -16,105 +11,122 @@
         :lg="12"
         style="height: 100vh; position: relative"
       >
-        <div class="login-form">
-          <h1>Welcome</h1>
-          <el-form
-            :model="loginData"
-            :rules="rules"
-            ref="loginform"
-            class="login-page login-loginpage"
-          >
-            <h2>验证您的账号密码以登录到用户中心</h2>
-            <div class="input-container">
-              <el-form-item prop="username">
-                <el-input
-                  class="up-input"
-                  v-model="loginData.username"
-                  prefix-icon="User"
-                  placeholder="请输入用户名"
-                />
-              </el-form-item>
-              <el-form-item prop="password">
-                <el-input
-                  class="down-input"
-                  v-model="loginData.password"
-                  type="password"
-                  placeholder="请输入密码"
-                  show-password
-                  prefix-icon="Lock"
-                />
-              </el-form-item>
-              <el-form-item>
-                <el-button
-                  type="primary"
-                  class="login-btn"
-                  @click="login"
-                  :loading="loadingflag"
-                  >登录</el-button
-                >
-                <el-button
-                  type="primary"
-                  class="login-reg"
-                  @click="switchpage('reg')"
-                  >注册</el-button
-                >
-              </el-form-item>
+        <el-popover
+          :width="326"
+          :visible="robotVisible && currentForm === 'reg'"
+        >
+          <template #reference>
+            <div class="login-form">
+              <h1>Welcome</h1>
+              <el-form
+                :model="loginData"
+                :rules="rules"
+                ref="loginform"
+                class="login-page login-loginpage"
+              >
+                <h2>验证您的账号密码以登录到用户中心</h2>
+                <div class="input-container">
+                  <el-form-item prop="username">
+                    <el-input
+                      class="up-input"
+                      v-model="loginData.username"
+                      prefix-icon="User"
+                      placeholder="请输入用户名"
+                    />
+                  </el-form-item>
+                  <el-form-item prop="password">
+                    <el-input
+                      class="down-input"
+                      v-model="loginData.password"
+                      type="password"
+                      placeholder="请输入密码"
+                      show-password
+                      prefix-icon="Lock"
+                    />
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button
+                      type="primary"
+                      class="login-btn"
+                      @click="login"
+                      :loading="loadingflag"
+                      >登录</el-button
+                    >
+                    <el-button
+                      type="primary"
+                      class="login-reg"
+                      @click="switchpage('reg')"
+                      >注册</el-button
+                    >
+                  </el-form-item>
+                </div>
+              </el-form>
+              <el-form
+                :model="regData"
+                :rules="regrules"
+                ref="regform"
+                class="login-page login-regpage"
+              >
+                <h2>创建一个新的账号来使用我们的服务 (需要等待人机验证)</h2>
+                <div class="input-container">
+                  <el-form-item prop="username">
+                    <el-input
+                      class="top-input"
+                      v-model="regData.username"
+                      prefix-icon="User"
+                      placeholder="请输入用户名"
+                    />
+                  </el-form-item>
+                  <el-form-item prop="password">
+                    <el-input
+                      class="center-input"
+                      v-model="regData.password"
+                      type="password"
+                      placeholder="请输入密码"
+                      show-password
+                      prefix-icon="Lock"
+                    />
+                  </el-form-item>
+                  <el-form-item prop="repassword">
+                    <el-input
+                      class="bottom-input"
+                      v-model="regData.repassword"
+                      type="password"
+                      placeholder="请确认密码"
+                      show-password
+                      prefix-icon="Lock"
+                    />
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button
+                      type="primary"
+                      class="login-btn"
+                      @click="register"
+                      :loading="regloadingflag || captchaExecutingFlag"
+                      >注册</el-button
+                    >
+                    <el-button
+                      type="primary"
+                      class="login-reg"
+                      @click="switchpage('login')"
+                      >登录</el-button
+                    >
+                  </el-form-item>
+                </div>
+              </el-form>
             </div>
-          </el-form>
-          <el-form
-            :model="regData"
-            :rules="regrules"
-            ref="regform"
-            class="login-page login-regpage"
-          >
-            <h2>创建一个新的账号来使用我们的服务</h2>
-            <div class="input-container">
-              <el-form-item prop="username">
-                <el-input
-                  class="top-input"
-                  v-model="regData.username"
-                  prefix-icon="User"
-                  placeholder="请输入用户名"
-                />
-              </el-form-item>
-              <el-form-item prop="password">
-                <el-input
-                  class="center-input"
-                  v-model="regData.password"
-                  type="password"
-                  placeholder="请输入密码"
-                  show-password
-                  prefix-icon="Lock"
-                />
-              </el-form-item>
-              <el-form-item prop="repassword">
-                <el-input
-                  class="bottom-input"
-                  v-model="regData.repassword"
-                  type="password"
-                  placeholder="请确认密码"
-                  show-password
-                  prefix-icon="Lock"
-                />
-              </el-form-item>
-              <el-form-item>
-                <el-button
-                  type="primary"
-                  class="login-btn"
-                  @click="register"
-                  :loading="regloadingflag"
-                  >注册</el-button
-                >
-                <el-button
-                  type="primary"
-                  class="login-reg"
-                  @click="switchpage('login')"
-                  >登录</el-button
-                >
-              </el-form-item>
-            </div>
-          </el-form>
-        </div>
+          </template>
+          <div class="cf-turnstile"
+            data-sitekey="0x4AAAAAAAQhC3f_WRwvJ19O"
+            data-callback="onRobotSuccess"
+            data-error-callback="onRobotError"
+            data-expired-callback="onRobotError"
+            data-before-interactive-callback="onRobotBeforeInteractive"
+            data-after-interactive-callback="onRobotAfterInteractive"
+            data-size="normal"
+            :data-theme="exportedLocalStorage.getItem('DARKMODE') === 'true' ? 'dark' : 'light'">
+          </div>
+        </el-popover>
       </el-col>
     </el-row>
   </div>
@@ -138,6 +150,10 @@ import { getTimeStr } from "@/utils/index";
 let userStore = useUserStore();
 // 使用路由
 let $router = useRouter();
+// 人机验证显示
+const robotVisible = ref(false)
+// 导出本地仓库给HTML使用
+let exportedLocalStorage = localStorage
 
 // @ts-ignore
 let validateUserName = (rule: any, value: any, callback: any) => {
@@ -268,58 +284,35 @@ let switchpage = (type: "login" | "reg") => {
 // 登录按钮加载状态
 let loadingflag = ref(false);
 let regloadingflag = ref(false);
+let captchaExecutingFlag = ref(true);
+
+// 刷新验证码
+let refreshCaptcha = () => {
+  captchaExecutingFlag.value = true;
+  // @ts-ignore
+  turnstile.reset();
+  // @ts-ignore
+  turnstile.execute();
+};
+
+// 人机验证交互前回调
+var onRobotBeforeInteractive = async () => {
+  robotVisible.value = true
+}
+
+// 人机验证交互后回调
+var onRobotAfterInteractive = async () => {
+  robotVisible.value = false
+}
 
 // 人机验证成功回调
-var robotCallback = async (args: any) => {
-  // 判断并进行注册
-  if (currentForm.value == "reg") {
-    // 进行注册
-    // 显示加载
-    regloadingflag.value = true;
-    // 已通过人机验证，进行注册
-    let regInfo = {
-      username: regData.username,
-      password: regData.password,
-      captcha_token: args,
-    };
-    try {
-      // 发起请求前获取token
-      let tokenResult = await reqNewTokenFunc();
-      // @ts-ignore
-      if (!tokenResult.success) {
-        return;
-      }
-      // 仓库发起注册请求
-      let result = await userStore.userRegLog(regInfo, currentForm.value);
-      // @ts-ignore
-      if (result.success) {
-        // 消息提示
-        ElNotification({
-          type: "success",
-          title: "注册成功",
-          // @ts-ignore
-          message: result.message,
-          duration: 3000,
-        });
-        // 注册成功，返回登录
-        switchpage("login");
-      } else {
-        // 请求失败，消息提示
-        ElNotification({
-          type: "error",
-          title: "注册失败",
-          // @ts-ignore
-          message: result.message,
-          duration: 3000,
-        });
-      }
-    } catch (error: any) {
-      console.log(error);
-    } finally {
-      // 请求完成，关闭加载
-      regloadingflag.value = false;
-    }
-  }
+var onRobotSuccess = async () => {
+  captchaExecutingFlag.value = false
+};
+
+// 人机验证错误回调
+var onRobotError = async () => {
+  refreshCaptcha()
 };
 
 // 登录事件, 登录不需要人机验证
@@ -380,15 +373,73 @@ let login = async () => {
 };
 
 let register = async () => {
+  // 尝试获取验证码
+  // @ts-ignore
+  let captchaToken = turnstile.getResponse();
+  if (!captchaToken) {
+    // 消息提示
+    ElNotification({
+      type: "error",
+      title: "注册失败",
+      message: "人机验证未通过",
+      duration: 3000,
+    });
+    // 重置人机验证
+    refreshCaptcha()
+    return;
+  }
   // 校验表单
   if (regform.value) {
     // @ts-ignore
     await regform.value.validate();
   }
-  // @ts-ignore
-  grecaptcha.reset();
-  // @ts-ignore
-  grecaptcha.execute();
+  // 显示加载
+  regloadingflag.value = true;
+  // 已通过人机验证，进行注册
+  let regInfo = {
+    username: regData.username,
+    password: regData.password,
+    captcha_token: captchaToken,
+  };
+  try {
+    // 发起请求前获取token
+    let tokenResult = await reqNewTokenFunc();
+    // @ts-ignore
+    if (!tokenResult.success) {
+      return;
+    }
+    // 仓库发起注册请求
+    let result = await userStore.userRegLog(regInfo, "reg");
+    // @ts-ignore
+    if (result.success) {
+      // 消息提示
+      ElNotification({
+        type: "success",
+        title: "注册成功",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      // 注册成功，返回登录
+      switchpage("login");
+    } else {
+      // 请求失败，消息提示
+      ElNotification({
+        type: "error",
+        title: "注册失败",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      // 重置人机验证
+      refreshCaptcha()
+    }
+  } catch (error: any) {
+    //console.log(error);
+  } finally {
+    // 请求完成，关闭加载
+    regloadingflag.value = false;
+  }
 };
 
 // 获取token
@@ -412,15 +463,16 @@ let reqNewTokenFunc = async () => {
 };
 
 onMounted(() => {
-  // 添加人机验证
-  const script = document.createElement("script");
-  script.src = "https://recaptcha.net/recaptcha/api.js";
-  script.async = true;
-  script.defer = true;
-  document.head.appendChild(script);
-
   // @ts-ignore
-  window.robotCallback = robotCallback;
+  window.onRobotBeforeInteractive = onRobotBeforeInteractive;
+  // @ts-ignore
+  window.onRobotAfterInteractive = onRobotAfterInteractive;
+  // @ts-ignore
+  window.onRobotSuccess = onRobotSuccess;
+  // @ts-ignore
+  window.onRobotError = onRobotError;
+  // @ts-ignore
+  turnstile.render('.cf-turnstile');
 
   // 登录表单输入键盘快捷键代码块
   // 用户名输入框
@@ -568,7 +620,15 @@ onMounted(() => {
 // 销毁全局变量
 onUnmounted(() => {
   // @ts-ignore
-  window.robotCallback = null;
+  turnstile.remove();
+  // @ts-ignore
+  window.onRobotBeforeInteractive = null;
+  // @ts-ignore
+  window.onRobotAfterInteractive = null;
+  // @ts-ignore
+  window.onRobotSuccess = null;
+  // @ts-ignore
+  window.onRobotError = null;
 });
 onMounted(() => {
   let darkbg = localStorage.getItem("DARKMODE") === "true";

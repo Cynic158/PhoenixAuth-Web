@@ -1,10 +1,5 @@
 <template>
   <div>
-    <div class="g-recaptcha"
-      data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
-      data-callback="robotCallback"
-      data-size="invisible">
-    </div>
     <el-card shadow="hover">
       <template #header>
         <div class="card-header">
@@ -51,7 +46,7 @@
 
     <el-card
       shadow="hover"
-      v-if="botInfo.set == false"
+      v-show="!botInfo.set"
       v-loading="createDefaultLoading || queryLoading"
       style="margin-top: 12px"
     >
@@ -64,7 +59,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >绑定您的手机账号</span
+            >绑定您的手机账号 (需要等待人机验证)</span
           >
         </div>
         <el-divider />
@@ -91,14 +86,32 @@
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
             <el-button type="primary" @click="createBotByPhone">绑定</el-button>
-            <el-button
-              v-if="!codeTimeShow"
-              type="primary"
-              @click="robotCheck"
-              :loading="codeloadingflag"
-              :disabled="codedisabled"
-              >获取验证码</el-button
+            <el-popover
+              :width="326"
+              :visible="!botInfo.set && robotVisible"
+              placement="right-end"
             >
+              <template #reference>
+                <el-button
+                  v-if="!codeTimeShow"
+                  type="primary"
+                  @click="getCode"
+                  :loading="codeloadingflag || captchaExecutingFlag"
+                  :disabled="codedisabled"
+                  >获取验证码</el-button
+                >
+              </template>
+              <div class="cf-turnstile"
+                data-sitekey="0x4AAAAAAAQhC3f_WRwvJ19O"
+                data-callback="onRobotSuccess"
+                data-error-callback="onRobotError"
+                data-expired-callback="onRobotError"
+                data-before-interactive-callback="onRobotBeforeInteractive"
+                data-after-interactive-callback="onRobotAfterInteractive"
+                data-size="normal"
+                :data-theme="exportedLocalStorage.getItem('DARKMODE') === 'true' ? 'dark' : 'light'">
+              </div>
+            </el-popover>
             <el-button v-if="codeTimeShow" type="primary" disabled>{{
               codeTimes
             }}</el-button>
@@ -210,6 +223,10 @@ import useOwnerStore from "@/store/modules/owner";
 // @ts-ignore
 import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
+// 人机验证显示
+const robotVisible = ref(false)
+// 导出本地仓库给HTML使用
+let exportedLocalStorage = localStorage
 
 // bot信息部分
 // 使用bot仓库
@@ -254,7 +271,6 @@ let getBotStatus = async () => {
       // @ts-ignore
       if (result.username) {
         alertType.value = "success";
-
         alertTitle.value =
           // @ts-ignore
           result.username +
@@ -282,7 +298,7 @@ let getBotStatus = async () => {
       });
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
     queryLoading.value = false;
     banUnbind.value = false;
@@ -456,49 +472,88 @@ let codedisabled = ref(false);
 let codeTimes = ref(60);
 // 显示倒计时
 let codeTimeShow = ref(false);
-// 人机验证成功回调
-var robotCallback = async (args: any) => {
-  getCode(args);
+// 人机验证
+let captchaExecutingFlag = ref(true);
+// 刷新验证码
+let refreshCaptcha = () => {
+  captchaExecutingFlag.value = true;
+  // @ts-ignore
+  turnstile.reset();
+  // @ts-ignore
+  turnstile.execute();
 };
-// recaptcha验证
-let robotCheck = async () => {
+
+// 人机验证成功回调
+var onRobotSuccess = async () => {
+  captchaExecutingFlag.value = false
+};
+// 人机验证交互前回调
+var onRobotBeforeInteractive = async () => {
+  robotVisible.value = true
+}
+// 人机验证交互后回调
+var onRobotAfterInteractive = async () => {
+  robotVisible.value = false
+}
+// 人机验证错误回调
+var onRobotError = async () => {
+  refreshCaptcha()
+};
+// 添加人机验证
+onMounted(() => {
+  // @ts-ignore
+  window.onRobotBeforeInteractive = onRobotBeforeInteractive;
+  // @ts-ignore
+  window.onRobotAfterInteractive = onRobotAfterInteractive;
+  // @ts-ignore
+  window.onRobotSuccess = onRobotSuccess;
+  // @ts-ignore
+  window.onRobotError = onRobotError;
+  // @ts-ignore
+  turnstile.render('.cf-turnstile');
+});
+// 销毁全局变量
+onUnmounted(() => {
+  // @ts-ignore
+  turnstile.remove();
+  // @ts-ignore
+  window.onRobotBeforeInteractive = null;
+  // @ts-ignore
+  window.onRobotAfterInteractive = null;
+  // @ts-ignore
+  window.onRobotSuccess = null;
+  // @ts-ignore
+  window.onRobotError = null;
+});
+// 获取验证码
+let getCode = async () => {
+  // @ts-ignore
+  let captchaToken = turnstile.getResponse();
+  if (!captchaToken) {
+    // 消息提示
+    ElNotification({
+      type: "error",
+      title: "请求失败",
+      message: "人机验证未通过",
+      duration: 3000,
+    });
+    // 重置人机验证
+    refreshCaptcha()
+    return;
+  }
   // 校验表单
   if (phoneform.value) {
     // @ts-ignore
     await phoneform.value.validate();
   }
-  // @ts-ignore
-  grecaptcha.reset();
-  // @ts-ignore
-  grecaptcha.execute();
-};
-// 添加人机验证
-onMounted(() => {
-  // 添加人机验证
-  const script = document.createElement("script");
-  script.src = "https://recaptcha.net/recaptcha/api.js";
-  script.async = true;
-  script.defer = true;
-  document.head.appendChild(script);
-
-  // @ts-ignore
-  window.robotCallback = robotCallback;
-});
-// 销毁全局变量
-onUnmounted(() => {
-  // @ts-ignore
-  window.robotCallback = null;
-});
-// 获取验证码
-let getCode = async (robotToken: string) => {
+  // 显示加载
+  codeloadingflag.value = true;
+  codedisabled.value = true;
+  let codeInfo = {
+    mobile: phoneData.phone,
+    captcha_token: captchaToken,
+  };
   try {
-    // 显示加载
-    codeloadingflag.value = true;
-    codedisabled.value = true;
-    let codeInfo = {
-      mobile: phoneData.phone,
-      captcha_token: robotToken,
-    };
     // 仓库发起验证码请求
     let result = await ownerStore.botPhoneCode(codeInfo);
     // @ts-ignore
@@ -530,14 +585,16 @@ let getCode = async (robotToken: string) => {
       // 请求失败，消息提示
       ElNotification({
         type: "error",
+        title: "获取验证码失败",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
       codedisabled.value = false;
+      refreshCaptcha()
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
     codedisabled.value = false;
   } finally {
     codeloadingflag.value = false;
@@ -581,7 +638,7 @@ let createBotByPhone = async () => {
       });
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
     createDefaultLoading.value = false;
   }
@@ -635,6 +692,7 @@ let signinBot = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
+        title: "签到成功",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -642,13 +700,14 @@ let signinBot = async () => {
     } else {
       ElNotification({
         type: "error",
+        title: "签到失败",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
     signLoading.value = false;
   }
