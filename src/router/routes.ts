@@ -92,6 +92,16 @@ export const permissionRoutes = [
 // 通用路由2
 export const defaultRoutes2 = [
   {
+    path: "/agents",
+    component: () => import("@/views/agents/index.vue"),
+    name: "agents",
+    meta: {
+      title: "获取服务",
+      hidden: false,
+      icon: "Shop",
+    },
+  },
+  {
     path: "/download",
     component: () => import("@/views/download/index.vue"),
     name: "download",
@@ -108,7 +118,7 @@ export const defaultRoutes2 = [
     meta: {
       title: "OpenAPI",
       hidden: false,
-      icon: "Key",
+      icon: "ElementPlus",
     },
   },
   {
