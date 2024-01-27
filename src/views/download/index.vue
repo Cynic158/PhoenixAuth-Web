@@ -2,16 +2,6 @@
   <div>
     <el-card shadow="hover">
       <template #header>
-        <div class="card-header">更改验证服务器</div>
-      </template>
-      <div>
-        <span>您可能需要在启动程序时添加额外参数来使用我们的服务</span>
-        <Precode :code="auth1" :type="'bash'"></Precode>
-        <Precode :code="auth2" :type="'bash'"></Precode>
-      </div>
-    </el-card>
-    <el-card style="margin-top: 12px" shadow="hover">
-      <template #header>
         <div class="card-header">PhoenixBuilder</div>
       </template>
       <div>
@@ -59,9 +49,6 @@
 
 <script setup lang="ts">
 // 导入代码显示
-let auth1 = `./phoenixbuilder -A https://liliya233.uk`;
-
-let auth2 = `./windows-amd64.exe -A https://liliya233.uk`;
 
 let fbbuild = `git clone git@github.com:LNSSPsd/PhoenixBuilder.git
 
