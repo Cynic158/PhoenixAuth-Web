@@ -67,7 +67,7 @@
                 ref="regform"
                 class="login-page login-regpage"
               >
-                <h2>创建一个新的账号来使用我们的服务 (需要等待人机验证)</h2>
+                <h2>创建一个新的账号来使用我们的服务 (*人机验证)</h2>
                 <div class="input-container">
                   <el-form-item prop="username">
                     <el-input

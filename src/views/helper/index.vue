@@ -99,7 +99,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >使用您提供的手机账号作为Bot</span
+            >使用您提供的手机账号作为Bot (*人机验证)</span
           >
         </div>
         <el-divider />

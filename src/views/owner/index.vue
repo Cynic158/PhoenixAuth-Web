@@ -59,7 +59,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >绑定您的手机账号 (需要等待人机验证)</span
+            >绑定您的手机账号 (*人机验证)</span
           >
         </div>
         <el-divider />
