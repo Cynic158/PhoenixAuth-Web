@@ -431,12 +431,12 @@ let register = async () => {
         message: result.message,
         duration: 3000,
       });
-      // 重置人机验证
-      refreshCaptcha()
     }
   } catch (error: any) {
     //console.log(error);
   } finally {
+    // 重置人机验证
+    refreshCaptcha()
     // 请求完成，关闭加载
     regloadingflag.value = false;
   }

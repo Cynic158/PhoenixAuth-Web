@@ -738,12 +738,12 @@ let getCode = async () => {
         duration: 3000,
       });
       codedisabled.value = false;
-      refreshCaptcha()
     }
   } catch (error: any) {
     //console.log(error);
     codedisabled.value = false;
   } finally {
+    refreshCaptcha()
     codeloadingflag.value = false;
   }
 };
