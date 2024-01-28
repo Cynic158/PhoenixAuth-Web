@@ -25,22 +25,27 @@
         <div class="card-header">使用服务</div>
       </template>
       <div>
-        <span>您可能需要在启动程序时添加额外参数来切换验证服务器</span>
+        <span>您可能需要在启动程序时添加额外参数来切换验证服务器: </span>
         <Precode :code="fbCmd" :type="'bash'"></Precode>
         <Precode :code="neoCmd" :type="'bash'"></Precode>
         <span>如果您使用的程序支持选择验证服务器, 请选择类似选项: </span>
         <Precode :code="neoSelection" :type="'bash'"></Precode>
+        <span>如果您需要切换 fastbuilder 账号, 请参考以下命令: </span>
+        <Precode :code="clearTokenCmd" :type="'bash'"></Precode>
       </div>
     </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
-let fbCmd = `./phoenixbuilder -A https://liliya233.uk`;
+let fbCmd = `# 启动通过安装脚本下载的 fastbuilder 并指定验证服务器\nfastbuilder -A https://liliya233.uk`;
 
-let neoCmd = `./windows-amd64.exe -A https://liliya233.uk`;
+let neoCmd = `# 启动当前目录下的程序并指定验证服务器, 例如 neOmega 启动器 \n./windows-amd64.exe -A https://liliya233.uk`;
 
 let neoSelection = `咕咕酱验证服务器`;
+
+let clearTokenCmd = `# 添加 -T 参数指定要使用的 fbtoken (推荐使用这种方式)\nfastbuilder -A https://liliya233.uk -T [您的 fbtoken]\n
+# 删除 fastbuilder 默认保存目录下的 fbtoken 文件 \nrm ~/.config/fastbuilder/fbtoken`;
 </script>
 
 <style scoped lang="scss">
