@@ -129,6 +129,17 @@
                 <template #label>
                   <div class="userinfo-cell-item">
                     <el-icon class="userinfo-cell-item-icon">
+                      <Connection />
+                    </el-icon>
+                    创建时间
+                  </div>
+                </template>
+                {{ queryUserInfo.create_at }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <div class="userinfo-cell-item">
+                    <el-icon class="userinfo-cell-item-icon">
                       <SwitchButton />
                     </el-icon>
                     有效期至
@@ -146,17 +157,6 @@
                   </div>
                 </template>
                 {{ queryUserInfo.unlimited_until }}
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template #label>
-                  <div class="userinfo-cell-item">
-                    <el-icon class="userinfo-cell-item-icon">
-                      <Connection />
-                    </el-icon>
-                    创建时间
-                  </div>
-                </template>
-                {{ queryUserInfo.create_at }}
               </el-descriptions-item>
               <el-descriptions-item v-if="queryUserInfo.ban_until">
                 <template #label>
