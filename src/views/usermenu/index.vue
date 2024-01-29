@@ -57,17 +57,6 @@
             <template #label>
               <div class="userinfo-cell-item">
                 <el-icon class="userinfo-cell-item-icon">
-                  <Platform />
-                </el-icon>
-                开发者权限
-              </div>
-            </template>
-            {{ userStore.devFlag }}
-          </el-descriptions-item>
-          <el-descriptions-item>
-            <template #label>
-              <div class="userinfo-cell-item">
-                <el-icon class="userinfo-cell-item-icon">
                   <Connection />
                 </el-icon>
                 创建时间
@@ -85,6 +74,17 @@
               </div>
             </template>
             {{ expireTime }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="userinfo-cell-item">
+                <el-icon class="userinfo-cell-item-icon">
+                  <Promotion />
+                </el-icon>
+                无限制至
+              </div>
+            </template>
+            {{ unlimitedTime }}
           </el-descriptions-item>
         </el-descriptions>
       </div>
@@ -380,11 +380,15 @@ onMounted(() => {
 });
 // 用户的创建时间以及过期时间
 const createTime = computed(() => {
-  let timestr = getTimeStr2(userStore.ucreate);
+  let timestr = getTimeStr2(Number(userStore.ucreate));
   return timestr;
 });
 const expireTime = computed(() => {
-  let timestr = getTimeStr2(userStore.uexpire);
+  let timestr = getTimeStr2(Number(userStore.uexpire));
+  return timestr;
+});
+const unlimitedTime = computed(() => {
+  let timestr = getTimeStr2(Number(userStore.uunlimited));
   return timestr;
 });
 

@@ -3,23 +3,32 @@ import request from "@/utils/request";
 
 // 统一管理url
 enum API {
-  CREATE_USER = "/admin/create_user",
-  BAN_USER = "/admin/ban_user",
   QUERY_USER = "/admin/query_user",
-  ACTIVATE_USER = "/admin/activate_user",
-  RENEW_USER = "/admin/renew_user",
+  BAN_USER = "/admin/ban_user",
+  UNBAN_USER = "/admin/unban_user",
+  SET_USER_PERMISSION = "/admin/set_user_permission",
+  EXTEND_USER_EXPIRE_TIME = "/admin/extend_user_expire_time",
+  EXTEND_USER_UNLIMITED_TIME = "/admin/extend_user_unlimited_time",
   GENERATE_REDEEM_CODE = "/admin/generate_redeem_code",
 }
 
 // 数据类型声明
-interface adminInfo {
+interface banInfo {
   username: string;
-  password: string;
+  seconds: number;
+  reason: string;
+}
+interface setPermissionInfo {
+  username: string;
   permission: number;
 }
-interface renewInfo {
+interface extendUserExpireTimeInfo {
   username: string;
-  renew_time: number;
+  seconds: number;
+}
+interface extendUserUnlimitedTimeInfo {
+  username: string;
+  seconds: number;
 }
 interface codeInfo {
   type: number;
@@ -28,21 +37,26 @@ interface codeInfo {
 }
 
 // 导出api
-// 请求使用管理权限新建用户
-export const reqCreateUser = (adminInfo: adminInfo) =>
-  request.post(API.CREATE_USER, adminInfo);
-// 请求使用管理权限封禁用户
-export const reqBanUser = (username: { username: string }) =>
-  request.post(API.BAN_USER, username);
 // 请求使用管理权限查询用户
 export const reqQueryUser = (username: { username: string }) =>
   request.post(API.QUERY_USER, username);
-// 请求使用管理权限解封或者激活一位用户
-export const reqActivateUser = (username: { username: string }) =>
-  request.post(API.ACTIVATE_USER, username);
-// 请求使用管理权限增加一位用户的有效期
-export const reqRenewUser = (renewInfo: renewInfo) =>
-  request.post(API.RENEW_USER, renewInfo);
+// 请求使用管理权限封禁用户
+export const reqBanUser = (banInfo: banInfo) =>
+  request.post(API.BAN_USER, banInfo);
+// 请求使用管理权限解封用户
+export const reqUnBanUser = (username: { username: string }) =>
+request.post(API.UNBAN_USER, username);
+// 请求使用管理权限设置一位用户的权限
+export const reqSetUserPermission = (permissionInfo: setPermissionInfo) =>
+  request.post(API.SET_USER_PERMISSION, permissionInfo);
+// 请求使用管理权限更新一位用户的有效期
+export const reqExtendUserExpireTime = (
+  extendUserExpireTimeInfo: extendUserExpireTimeInfo
+) => request.post(API.EXTEND_USER_EXPIRE_TIME, extendUserExpireTimeInfo);
+// 请求使用管理权限更新一位用户的无限制权限有效期
+export const reqExtendUserUnlimitedTime = (
+  extendUserUnlimitedTimeInfo: extendUserUnlimitedTimeInfo
+) => request.post(API.EXTEND_USER_UNLIMITED_TIME, extendUserUnlimitedTimeInfo);
 // 请求生成兑换码
 export const reqGenerateRedeemCode = (codeInfo: codeInfo) =>
   request.post(API.GENERATE_REDEEM_CODE, codeInfo);

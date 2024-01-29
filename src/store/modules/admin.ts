@@ -6,22 +6,31 @@ import sha256 from "crypto-js/sha256";
 
 // 管理请求api
 import {
-  reqActivateUser,
-  reqBanUser,
-  reqCreateUser,
-  reqGenerateRedeemCode,
   reqQueryUser,
-  reqRenewUser,
+  reqBanUser,
+  reqUnBanUser,
+  reqSetUserPermission,
+  reqExtendUserExpireTime,
+  reqExtendUserUnlimitedTime,
+  reqGenerateRedeemCode,
 } from "@/api/admin";
 
-interface createInfo {
+interface banInfo {
   username: string;
-  password: string;
+  seconds: number;
+  reason: string;
+}
+interface setPermissionInfo {
+  username: string;
   permission: number;
 }
-interface renewInfo {
+interface extendUserExpireTimeInfo {
   username: string;
-  renew_time: number;
+  seconds: number;
+}
+interface extendUserUnlimitedTimeInfo {
+  username: string;
+  seconds: number;
 }
 interface codeInfo {
   type: number;
@@ -31,29 +40,6 @@ interface codeInfo {
 
 // 创建仓库
 let useAdminStore = defineStore("admin", () => {
-  // 新建用户
-  let userCreate = async (createInfo: createInfo) => {
-    try {
-      // 对密码进行加密
-      const hashpassword = sha256(createInfo.password).toString();
-      createInfo.password = hashpassword;
-      let result = await reqCreateUser(createInfo);
-      return result;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-
-  // 封禁用户
-  let userBan = async (username: { username: string }) => {
-    try {
-      let result = await reqBanUser(username);
-      return result;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-
   // 查询用户
   let userQuery = async (username: { username: string }) => {
     try {
@@ -64,20 +50,56 @@ let useAdminStore = defineStore("admin", () => {
     }
   };
 
-  // 激活用户
-  let userActivate = async (username: { username: string }) => {
+  // 封禁用户
+  let userBan = async (banInfo: banInfo) => {
     try {
-      let result = await reqActivateUser(username);
+      let result = await reqBanUser(banInfo);
       return result;
     } catch (error) {
       return Promise.reject(error);
     }
   };
 
-  // 续费用户
-  let userRenew = async (renewInfo: renewInfo) => {
+  // 解封用户
+  let userUnBan = async (username: { username: string }) => {
     try {
-      let result = await reqRenewUser(renewInfo);
+      let result = await reqUnBanUser(username);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  // 设置用户权限
+  let userSetPermission = async (permissionInfo: setPermissionInfo) => {
+    try {
+      let result = await reqSetUserPermission(permissionInfo);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 更新用户有效期
+  let userExtendExpireTime = async (
+    extendUserExpireTimeInfo: extendUserExpireTimeInfo
+  ) => {
+    try {
+      let result = await reqExtendUserExpireTime(extendUserExpireTimeInfo);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 更新用户无限制权限有效期
+  let userExtendUnlimitedTime = async (
+    extendUserUnlimitedTimeInfo: extendUserUnlimitedTimeInfo
+  ) => {
+    try {
+      let result = await reqExtendUserUnlimitedTime(
+        extendUserUnlimitedTimeInfo
+      );
       return result;
     } catch (error) {
       return Promise.reject(error);
@@ -95,11 +117,12 @@ let useAdminStore = defineStore("admin", () => {
   };
 
   return {
-    userCreate,
-    userBan,
     userQuery,
-    userActivate,
-    userRenew,
+    userBan,
+    userUnBan,
+    userSetPermission,
+    userExtendExpireTime,
+    userExtendUnlimitedTime,
     genCode,
   };
 });

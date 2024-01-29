@@ -38,8 +38,8 @@ interface userInfo {
 interface userDetail {
   username: string;
   game_id: number;
+  unlimited_until: number;
   is_admin: boolean;
-  is_developer: boolean;
   create_at: number;
   expire_at: number;
   enable_ban_list_upload: boolean;
@@ -90,10 +90,10 @@ let useUserStore = defineStore("user", () => {
   let uname = ref(localStorage.getItem("UNAME") || "");
   // 游戏id
   let uid = ref(localStorage.getItem("UID") || "");
+  // 无限制至
+  let uunlimited = ref(localStorage.getItem("UUNLIMITEDFLAG") || "");
   // 是否管理员
   let adminFlag = ref(localStorage.getItem("ADMINFLAG") || "");
-  // 是否开发者
-  let devFlag = ref(localStorage.getItem("DEVFLAG") || "");
   // 用户创建时间
   let ucreate = ref(localStorage.getItem("UCREATE") || "");
   // 用户过期时间
@@ -166,16 +166,12 @@ let useUserStore = defineStore("user", () => {
     } else {
       adminFlag.value = "否";
     }
-    if (userInfo.is_developer) {
-      devFlag.value = "是";
-    } else {
-      devFlag.value = "否";
-    }
     if (userInfo.game_id == 0) {
       uid.value = "暂未获取";
     } else {
       uid.value = userInfo.game_id.toString();
     }
+    uunlimited.value = userInfo.unlimited_until.toString();
     ucreate.value = userInfo.create_at.toString();
     uexpire.value = userInfo.expire_at.toString();
     uapi.value = userInfo.api_key || "未生成";
@@ -183,8 +179,8 @@ let useUserStore = defineStore("user", () => {
 
     localStorage.setItem("UNAME", userInfo.username);
     localStorage.setItem("UID", uid.value);
+    localStorage.setItem("UUNLIMITED", uunlimited.value);
     localStorage.setItem("ADMINFLAG", adminFlag.value);
-    localStorage.setItem("DEVFLAG", devFlag.value);
     localStorage.setItem("UCREATE", ucreate.value);
     localStorage.setItem("UEXPIRE", uexpire.value);
     localStorage.setItem("BANLISTFLAG", banlistFlag.value.toString());
@@ -196,7 +192,7 @@ let useUserStore = defineStore("user", () => {
     uname.value = "";
     uid.value = "";
     adminFlag.value = "";
-    devFlag.value = "";
+    uunlimited.value = "";
     ucreate.value = "";
     uexpire.value = "";
     banlistFlag.value = false;
@@ -205,8 +201,8 @@ let useUserStore = defineStore("user", () => {
     localStorage.setItem("TOKEN", token.value);
     localStorage.setItem("UNAME", uname.value);
     localStorage.setItem("UID", uid.value);
+    localStorage.setItem("UUNLIMITED", uunlimited.value);
     localStorage.setItem("ADMINFLAG", adminFlag.value);
-    localStorage.setItem("DEVFLAG", devFlag.value);
     localStorage.setItem("UCREATE", ucreate.value);
     localStorage.setItem("UEXPIRE", uexpire.value);
     localStorage.setItem("BANLISTFLAG", "");
@@ -339,7 +335,7 @@ let useUserStore = defineStore("user", () => {
     getToken,
     userRegLog,
     adminFlag,
-    devFlag,
+    uunlimited,
     ucreate,
     uexpire,
     banlistFlag,
