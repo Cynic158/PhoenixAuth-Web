@@ -614,9 +614,11 @@ let codeUse = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
+        title: "兑换成功",
         // @ts-ignore
         message: result.message,
         duration: 3000,
+        dangerouslyUseHTMLString: true,
       });
       // 刷新信息
       getInfo();
@@ -625,6 +627,7 @@ let codeUse = async () => {
     } else {
       ElNotification({
         type: "error",
+        title: "兑换失败",
         // @ts-ignore
         message: result.message,
         duration: 3000,
