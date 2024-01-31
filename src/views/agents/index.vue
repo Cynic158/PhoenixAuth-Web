@@ -31,7 +31,8 @@
         <span>如果您使用的程序支持选择验证服务器, 请选择类似选项: </span>
         <Precode :code="neoSelection" :type="'bash'"></Precode>
         <span>如果您需要切换 fastbuilder 账号, 请参考以下命令: </span>
-        <Precode :code="clearTokenCmd" :type="'bash'"></Precode>
+        <Precode :code="clearTokenCmd1" :type="'bash'"></Precode>
+        <Precode :code="clearTokenCmd2" :type="'bash'"></Precode>
       </div>
     </el-card>
   </div>
@@ -44,8 +45,9 @@ let neoCmd = `# 启动当前目录下的程序并指定验证服务器, 例如 n
 
 let neoSelection = `咕咕酱验证服务器`;
 
-let clearTokenCmd = `# 添加 -T 参数指定要使用的 fbtoken (推荐使用这种方式)\nfastbuilder -A https://liliya233.uk -T [您的 fbtoken]\n
-# 删除 fastbuilder 默认保存目录下的 fbtoken 文件 \nrm ~/.config/fastbuilder/fbtoken`;
+let clearTokenCmd1 = `# 添加 -T 参数指定要使用的 fbtoken (推荐使用这种方式)\nfastbuilder -A https://liliya233.uk -T [您的 fbtoken]`;
+
+let clearTokenCmd2 = `# 删除 fastbuilder 默认保存目录下的 fbtoken 文件 \nrm ~/.config/fastbuilder/fbtoken`;
 </script>
 
 <style scoped lang="scss">

@@ -63,7 +63,7 @@ make current
 
 ./build/phoenixbuilder`;
 
-let neo = `curl -o install.sh https://omega-1259160345.cos.ap-nanjing.myqcloud.com/fastbuilder_launcher/install.sh && bash install.sh `;
+let neo = `curl -o install.sh https://omega-1259160345.cos.ap-nanjing.myqcloud.com/fastbuilder_launcher/install.sh && bash install.sh && rm install.sh`;
 </script>
 
 <style scoped lang="scss">
