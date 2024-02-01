@@ -197,6 +197,33 @@
       </div>
     </el-card>
 
+    <el-card
+      shadow="hover"
+      v-if="botInfo.username"
+      v-loading="autoRestartLoading || queryLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
+        <div class="card-header">自动重启 (Beta)</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >在请求进服遇到错误时, 是否尝试使用您的账号发送服务器重启指令</span
+          >
+        </div>
+        <el-divider />
+        <el-switch
+          v-model="userStore.autoRestartFlag"
+          :loading="autoRestartLoading"
+          :before-change="beforeAutoRestartChange"
+        />
+      </div>
+    </el-card>
+
     <el-dialog
       width="300px"
       v-model="unbindDialogVisible"
@@ -217,6 +244,8 @@
 </template>
 
 <script setup lang="ts">
+// 导入用户仓库
+import useUserStore from "@/store/modules/user";
 // 导入bot仓库
 import useOwnerStore from "@/store/modules/owner";
 // 导入消息通知组件
@@ -227,7 +256,8 @@ import { onMounted, onUnmounted, reactive, ref } from "vue";
 const robotVisible = ref(false)
 // 导出本地仓库给HTML使用
 let exportedLocalStorage = localStorage
-
+// 使用用户仓库
+let userStore = useUserStore();
 // bot信息部分
 // 使用bot仓库
 let ownerStore = useOwnerStore();
@@ -710,6 +740,41 @@ let signinBot = async () => {
     //console.log(error);
   } finally {
     signLoading.value = false;
+  }
+};
+
+// 自动重启
+let autoRestartLoading = ref(false);
+let beforeAutoRestartChange = async () => {
+  try {
+    autoRestartLoading.value = true;
+    let result = await userStore.userAutoRestart({
+      enable: !userStore.autoRestartFlag,
+    });
+    // @ts-ignore
+    if (result.success) {
+      ElNotification({
+        type: "success",
+        title: "设置成功",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      return true;
+    } else {
+      ElNotification({
+        type: "error",
+        title: "设置失败",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      return false;
+    }
+  } catch (error: any) {
+    //console.log(error);
+  } finally {
+    autoRestartLoading.value = false;
   }
 };
 </script>

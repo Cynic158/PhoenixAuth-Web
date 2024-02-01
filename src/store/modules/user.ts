@@ -14,6 +14,7 @@ import {
   reqDisableApiKey,
   reqGenApiKey,
   reqSetBanListUpload,
+  reqSetAutoRestartServer,
 } from "@/api/user";
 // 导入路由创建动态菜单
 import {
@@ -43,6 +44,7 @@ interface userDetail {
   create_at: number;
   expire_at: number;
   enable_ban_list_upload: boolean;
+  enable_auto_restart_server: boolean;
   api_key: string;
 }
 interface passwordInfo {
@@ -100,6 +102,8 @@ let useUserStore = defineStore("user", () => {
   let uexpire = ref(localStorage.getItem("UEXPIRE") || "");
   // 黑名单
   let banlistFlag = ref(Boolean(localStorage.getItem("BANLISTFLAG")) || false);
+  // 自动重启服务器
+  let autoRestartFlag = ref(Boolean(localStorage.getItem("AUTORESTARTFLAG")) || false);
   // API
   let uapi = ref(localStorage.getItem("UAPI") || "");
 
@@ -176,6 +180,7 @@ let useUserStore = defineStore("user", () => {
     uexpire.value = userInfo.expire_at.toString();
     uapi.value = userInfo.api_key || "未生成";
     banlistFlag.value = userInfo.enable_ban_list_upload;
+    autoRestartFlag.value = userInfo.enable_auto_restart_server;
 
     localStorage.setItem("UNAME", userInfo.username);
     localStorage.setItem("UID", uid.value);
@@ -184,6 +189,7 @@ let useUserStore = defineStore("user", () => {
     localStorage.setItem("UCREATE", ucreate.value);
     localStorage.setItem("UEXPIRE", uexpire.value);
     localStorage.setItem("BANLISTFLAG", banlistFlag.value.toString());
+    localStorage.setItem("AUTORESTARTFLAG", autoRestartFlag.value.toString());
     localStorage.setItem("UAPI", uapi.value);
   };
   // 清空用户信息函数
@@ -196,6 +202,7 @@ let useUserStore = defineStore("user", () => {
     ucreate.value = "";
     uexpire.value = "";
     banlistFlag.value = false;
+    autoRestartFlag.value = false;
     uapi.value = "";
 
     localStorage.setItem("TOKEN", token.value);
@@ -289,6 +296,17 @@ let useUserStore = defineStore("user", () => {
     }
   };
 
+  // 自动重启服务器
+  let userAutoRestart = async (enable: { enable: boolean }) => {
+    // 发起请求
+    try {
+      let result = await reqSetAutoRestartServer(enable);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   // 请求使用兑换码
   let userCode = async (code: { redeem_code: string }) => {
     // 发起请求
@@ -339,6 +357,7 @@ let useUserStore = defineStore("user", () => {
     ucreate,
     uexpire,
     banlistFlag,
+    autoRestartFlag,
     uapi,
     userDownload,
     userPassword,
@@ -346,6 +365,7 @@ let useUserStore = defineStore("user", () => {
     userGenApi,
     userDisApi,
     userBanList,
+    userAutoRestart,
   };
 });
 

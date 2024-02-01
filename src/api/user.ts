@@ -14,6 +14,7 @@ enum API {
   GEN_API_KEY = "/user/gen_api_key",
   DISABLE_API_KEY = "/user/disable_api_key",
   SET_BAN_LIST_UPLOAD = "/user/set_ban_list_upload",
+  SET_AUTO_RESTART_SERVER = "/user/set_auto_restart_server",
 }
 
 // 数据类型声明
@@ -58,3 +59,6 @@ export const reqDisableApiKey = () => request.get(API.DISABLE_API_KEY);
 // 黑名单
 export const reqSetBanListUpload = (enable: { enable: boolean }) =>
   request.post(API.SET_BAN_LIST_UPLOAD, enable);
+// 自动重启
+export const reqSetAutoRestartServer = (enable: { enable: boolean }) =>
+  request.post(API.SET_AUTO_RESTART_SERVER, enable);
