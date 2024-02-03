@@ -15,6 +15,10 @@ enum API {
   DISABLE_API_KEY = "/user/disable_api_key",
   SET_BAN_LIST_UPLOAD = "/user/set_ban_list_upload",
   SET_AUTO_RESTART_SERVER = "/user/set_auto_restart_server",
+  REQUEST_EMAIL_VERIFY_CODE = "/user/request_email_verify_code",
+  RESET_PASSWORD = "/user/reset_password",
+  EMAIL_BIND = "/user/email_bind",
+  EMAIL_UNBIND = "/user/email_unbind",
 }
 
 // 数据类型声明
@@ -24,8 +28,26 @@ interface userInfo {
   captcha_token: string;
 }
 interface passwordInfo {
-  original_password: string;
+  email_verify_code: string;
   new_password: string;
+}
+interface requestEmailVerifyCodeInfo{
+  email?: string;
+  username?: string;
+  action_type: number;
+  captcha_token: string;
+}
+interface resetPasswordInfo {
+  username: string;
+  email_verify_code: string;
+  new_password: string;
+}
+interface emailBindInfo {
+  email: string;
+  email_verify_code: string;
+}
+interface emailUnbindInfo {
+  email_verify_code: string;
 }
 
 // 导出api
@@ -62,3 +84,15 @@ export const reqSetBanListUpload = (enable: { enable: boolean }) =>
 // 自动重启
 export const reqSetAutoRestartServer = (enable: { enable: boolean }) =>
   request.post(API.SET_AUTO_RESTART_SERVER, enable);
+// 请求邮箱验证码
+export const reqRequestEmailVerifyCode = (info: requestEmailVerifyCodeInfo) =>
+  request.post(API.REQUEST_EMAIL_VERIFY_CODE, info);
+// 重置密码
+export const reqResetPassword = (info: resetPasswordInfo) =>
+  request.post(API.RESET_PASSWORD, info);
+// 绑定邮箱
+export const reqEmailBind = (info: emailBindInfo) =>
+  request.post(API.EMAIL_BIND, info);
+// 解绑邮箱
+export const reqEmailUnbind = (info: emailUnbindInfo) =>
+  request.post(API.EMAIL_UNBIND, info);

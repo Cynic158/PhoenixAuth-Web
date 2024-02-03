@@ -716,9 +716,8 @@ let getCode = async () => {
         codedisabled.value = true;
         codeTimeShow.value = true;
         const timer = setInterval(() => {
-          if (codeTimes.value > 0) {
-            codeTimes.value--;
-          } else {
+          codeTimes.value--;
+          if (codeTimes.value < 1){
             codeTimes.value = 60;
             codedisabled.value = false;
             codeTimeShow.value = false;

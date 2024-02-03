@@ -186,12 +186,12 @@
           :rules="rules"
           ref="passwordform"
         >
-          <el-form-item label="输入旧密码" prop="oldPassword">
+          <el-form-item label="输入邮箱验证码" prop="emailVerifyCode">
             <el-input
               type="password"
               show-password
-              v-model="passwordData.oldPassword"
-              placeholder="请输入旧密码"
+              v-model="passwordData.emailVerifyCode"
+              placeholder="输入邮箱验证码"
             />
           </el-form-item>
           <el-form-item label="输入新密码" prop="newPassword">
@@ -434,13 +434,13 @@ let tokenDownload = async () => {
 let passwordform = ref(null);
 // 表单数据
 let passwordData = reactive({
-  oldPassword: "",
+  emailVerifyCode: "",
   newPassword: "",
   repassword: "",
 });
 // 清空表单
 let clearForm = () => {
-  passwordData.oldPassword = "";
+  passwordData.emailVerifyCode = "";
   passwordData.newPassword = "";
   passwordData.repassword = "";
   // 清空校验提示
@@ -449,7 +449,7 @@ let clearForm = () => {
       if (passwordform.value) {
         // @ts-ignore
         passwordform.value.clearValidate([
-          "oldPassword",
+          "emailVerifyCode",
           "newPassword",
           "repassword",
         ]);
@@ -475,10 +475,10 @@ let validateRePassword = (rule: any, value: any, callback: any) => {
 };
 // 表单校验规则
 const rules = {
-  oldPassword: [
+  emailVerifyCode: [
     {
       required: true,
-      message: "请输入旧密码",
+      message: "请输入邮箱验证码",
       trigger: "blur",
     },
   ],
@@ -510,10 +510,10 @@ let changePassword = async () => {
     // 显示加载
     passwordloadingflag.value = true;
     let passwordInfo = {
-      original_password: "",
+      email_verify_code: "",
       new_password: "",
     };
-    passwordInfo.original_password = passwordData.oldPassword;
+    passwordInfo.email_verify_code = passwordData.emailVerifyCode;
     passwordInfo.new_password = passwordData.newPassword;
     // 仓库发起修改密码请求
     let result = await userStore.userPassword(passwordInfo);

@@ -15,6 +15,10 @@ import {
   reqGenApiKey,
   reqSetBanListUpload,
   reqSetAutoRestartServer,
+  reqRequestEmailVerifyCode,
+  reqResetPassword,
+  reqEmailBind,
+  reqEmailUnbind,
 } from "@/api/user";
 // 导入路由创建动态菜单
 import {
@@ -48,8 +52,26 @@ interface userDetail {
   api_key: string;
 }
 interface passwordInfo {
-  original_password: string;
+  email_verify_code: string;
   new_password: string;
+}
+interface requestEmailVerifyCodeInfo {
+  email?: string;
+  username?: string;
+  action_type: number;
+  captcha_token: string;
+}
+interface resetPasswordInfo {
+  username: string;
+  email_verify_code: string;
+  new_password: string;
+}
+interface emailBindInfo {
+  email: string;
+  email_verify_code: string;
+}
+interface emailUnbindInfo {
+  email_verify_code: string;
 }
 
 // 过滤权限路由，传入权限路由以及用户所拥有的的路由权限数组
@@ -149,10 +171,7 @@ let useUserStore = defineStore("user", () => {
   // 请求更改密码
   let userPassword = async (passwordInfo: passwordInfo) => {
     // 先对密码进行加密
-    const hashOldPassword = sha256(passwordInfo.original_password).toString();
-    const hashNewPassword = sha256(passwordInfo.new_password).toString();
-    passwordInfo.original_password = hashOldPassword;
-    passwordInfo.new_password = hashNewPassword;
+    passwordInfo.new_password = sha256(passwordInfo.new_password).toString();
     // 发起请求
     try {
       let result = await reqChangePassword(passwordInfo);
@@ -340,6 +359,53 @@ let useUserStore = defineStore("user", () => {
     }
   };
 
+  // 请求邮箱验证码
+  let userRequestEmailVerifyCode = async (info: requestEmailVerifyCodeInfo) => {
+    // 发起请求
+    try {
+      let result = await reqRequestEmailVerifyCode(info);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 请求重置密码
+  let userResetPassword = async (resetPasswordInfo: resetPasswordInfo) => {
+    // 先对密码进行加密
+    const hashpassword = sha256(resetPasswordInfo.new_password).toString();
+    resetPasswordInfo.new_password = hashpassword;
+    // 发起请求
+    try {
+      let result = await reqResetPassword(resetPasswordInfo);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 请求邮箱绑定
+  let userEmailBind = async (emailBindInfo: emailBindInfo) => {
+    // 发起请求
+    try {
+      let result = await reqEmailBind(emailBindInfo);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 请求邮箱解绑
+  let userEmailUnbind = async (emailUnbindInfo: emailUnbindInfo) => {
+    // 发起请求
+    try {
+      let result = await reqEmailUnbind(emailUnbindInfo);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   return {
     token,
     uname,
@@ -366,6 +432,10 @@ let useUserStore = defineStore("user", () => {
     userDisApi,
     userBanList,
     userAutoRestart,
+    userRequestEmailVerifyCode,
+    userResetPassword,
+    userEmailBind,
+    userEmailUnbind,
   };
 });
 
