@@ -7,8 +7,8 @@ enum API {
   BIND_EMAIL_ACCOUNT = "/owner/bind_email_account",
   UNBIND = "/owner/unbind",
   DAILY_SIGN = "/owner/daily_sign",
-  BIND_MOBILE_ACCOUNT = "/owner/bind_mobile_account",
-  GET_LOGIN_SMSCODE = "/owner/get_login_smscode",
+  BIND_MOBILE_ACCOUNT = "/owner/bind_mobile_account/verify",
+  GET_LOGIN_SMSCODE = "/owner/bind_mobile_account/get_sms",
 }
 
 // 数据类型声明
