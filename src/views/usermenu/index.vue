@@ -48,10 +48,10 @@
             <template #label>
               <div class="userinfo-cell-item">
                 <el-icon class="userinfo-cell-item-icon"> <Tools /> </el-icon>
-                系统管理权限
+                用户权限
               </div>
             </template>
-            {{ userStore.adminFlag }}
+            {{ userPermissionStr }}
           </el-descriptions-item>
           <el-descriptions-item>
             <template #label>
@@ -390,6 +390,22 @@ const expireTime = computed(() => {
 const unlimitedTime = computed(() => {
   let timestr = getTimeStr2(Number(userStore.uunlimited));
   return timestr;
+});
+const userPermissionStr = computed(() => {
+  if (userStore.upermission === "") {
+    return "未知";
+  }
+  let permission = Number(userStore.upermission)
+  switch (permission) {
+    case 0:
+      return `游客(${permission})`;
+    case 1:
+      return `激活用户(${permission})`;
+    case 2:
+      return `系统管理员(${permission})`;
+    default:
+      return `未知(${permission})`;
+  }
 });
 
 // token部分

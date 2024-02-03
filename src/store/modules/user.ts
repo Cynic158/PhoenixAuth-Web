@@ -44,6 +44,7 @@ interface userDetail {
   username: string;
   game_id: number;
   unlimited_until: number;
+  permission: number;
   is_admin: boolean;
   create_at: number;
   expire_at: number;
@@ -116,6 +117,8 @@ let useUserStore = defineStore("user", () => {
   let uid = ref(localStorage.getItem("UID") || "");
   // 无限制至
   let uunlimited = ref(localStorage.getItem("UUNLIMITEDFLAG") || "");
+  // 权限
+  let upermission = ref(localStorage.getItem("UPERMISSION") || "");
   // 是否管理员
   let adminFlag = ref(localStorage.getItem("ADMINFLAG") || "");
   // 用户创建时间
@@ -200,10 +203,12 @@ let useUserStore = defineStore("user", () => {
     uapi.value = userInfo.api_key || "未生成";
     banlistFlag.value = userInfo.enable_ban_list_upload;
     autoRestartFlag.value = userInfo.enable_auto_restart_server;
+    upermission.value = userInfo.permission.toString();
 
     localStorage.setItem("UNAME", userInfo.username);
     localStorage.setItem("UID", uid.value);
     localStorage.setItem("UUNLIMITED", uunlimited.value);
+    localStorage.setItem("UPERMISSION", upermission.value);
     localStorage.setItem("ADMINFLAG", adminFlag.value);
     localStorage.setItem("UCREATE", ucreate.value);
     localStorage.setItem("UEXPIRE", uexpire.value);
@@ -216,6 +221,7 @@ let useUserStore = defineStore("user", () => {
     token.value = "";
     uname.value = "";
     uid.value = "";
+    upermission.value = "";
     adminFlag.value = "";
     uunlimited.value = "";
     ucreate.value = "";
@@ -228,6 +234,7 @@ let useUserStore = defineStore("user", () => {
     localStorage.setItem("UNAME", uname.value);
     localStorage.setItem("UID", uid.value);
     localStorage.setItem("UUNLIMITED", uunlimited.value);
+    localStorage.setItem("UPERMISSION", upermission.value);
     localStorage.setItem("ADMINFLAG", adminFlag.value);
     localStorage.setItem("UCREATE", ucreate.value);
     localStorage.setItem("UEXPIRE", uexpire.value);
@@ -418,6 +425,7 @@ let useUserStore = defineStore("user", () => {
     btns,
     getToken,
     userRegLog,
+    upermission,
     adminFlag,
     uunlimited,
     ucreate,

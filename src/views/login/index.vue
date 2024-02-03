@@ -24,7 +24,7 @@
                 ref="forgetform"
                 class="login-page login-forgetpage"
               >
-                <h2>通过验证您绑定的邮箱来重置密码</h2>
+                <h2>通过验证您绑定的邮箱来重置密码 (*人机验证)</h2>
                 <div class="input-container">
                   <el-form-item prop="username">
                     <el-input
