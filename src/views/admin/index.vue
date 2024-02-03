@@ -539,12 +539,9 @@ let clearGenerateRedeemCodeForm = () => {
 let generateRedeemCodeLoading = ref(false);
 // 生成兑换码
 let generateCode = async () => {
-  // 校验表单
-  if (codeform.value) {
+  try {
     // @ts-ignore
     await codeform.value.validate();
-  }
-  try {
     // 显示加载
     generateRedeemCodeLoading.value = true;
     let codeInfo = {
@@ -651,12 +648,9 @@ let clearUserInfo = () => {
 };
 // 查询用户信息
 let queryUser = async () => {
-  // 校验表单
-  if (queryUserForm.value) {
+  try {
     // @ts-ignore
     await queryUserForm.value.validate();
-  }
-  try {
     // 显示加载
     queryUserLoading.value = true;
     let queryUserInfo = {
@@ -726,12 +720,9 @@ let clearBanForm = () => {
 let banLoading = ref(false);
 // 用户封禁
 let banUser = async () => {
-  // 校验表单
-  if (banform.value) {
+  try {
     // @ts-ignore
     await banform.value.validate();
-  }
-  try {
     // 显示加载
     banLoading.value = true;
     let banInfo = {
@@ -776,11 +767,11 @@ let unBanUserDialogVisible = ref(false);
 // 显示dialog
 let unBanUserDialog = async () => {
   // 校验表单
-  if (queryUserForm.value) {
+  try{
     // @ts-ignore
     await queryUserForm.value.validate();
-  }
-  unBanUserDialogVisible.value = true;
+    unBanUserDialogVisible.value = true;
+  }catch(error){}
 };
 // 解封用户
 let unBanUser = async () => {
@@ -849,12 +840,9 @@ let clearSetUserPermissionForm = () => {
 let setUserPermissionLoading = ref(false);
 // 设置用户权限
 let setUserPermission = async () => {
-  // 校验表单
-  if (setUserPermissionForm.value) {
+  try {
     // @ts-ignore
     await setUserPermissionForm.value.validate();
-  }
-  try {
     // 显示加载
     setUserPermissionLoading.value = true;
     let setUserPermissionInfo = {
@@ -926,12 +914,9 @@ let clearExtendUserExipreForm = () => {
 let extendUserExipreLoading = ref(false);
 // 用户续期
 let extendUserExipre = async () => {
-  // 校验表单
-  if (extendUserExipreForm.value) {
+  try {
     // @ts-ignore
     await extendUserExipreForm.value.validate();
-  }
-  try {
     // 显示加载
     extendUserExipreLoading.value = true;
     let extendUserExipreInfo = {
@@ -1002,12 +987,9 @@ let clearExtendUserUnlimitedForm = () => {
 let extendUserUnlimitedLoading = ref(false);
 // 无限制权限续期
 let extendUserUnlimited = async () => {
-  // 校验表单
-  if (extendUserUnlimitedForm.value) {
+  try {
     // @ts-ignore
     await extendUserUnlimitedForm.value.validate();
-  }
-  try {
     // 显示加载
     extendUserUnlimitedLoading.value = true;
     let extendUserUnlimitedInfo = {

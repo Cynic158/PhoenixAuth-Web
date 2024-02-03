@@ -399,12 +399,9 @@ let emailAlertType = ref("warning");
 let emailAlertTitle = ref("");
 // 邮箱登录
 let createBotByEmail = async () => {
-  // 校验表单
-  if (emailform.value) {
+  try {
     // @ts-ignore
     await emailform.value.validate();
-  }
-  try {
     // 显示加载
     createDefaultLoading.value = true;
     let emailInfo = {
@@ -437,7 +434,7 @@ let createBotByEmail = async () => {
       });
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
     createDefaultLoading.value = false;
   }
@@ -572,9 +569,11 @@ let getCode = async () => {
     return;
   }
   // 校验表单
-  if (phoneform.value) {
+  try {
     // @ts-ignore
     await phoneform.value.validate();
+  }catch (error: any) {
+    return;
   }
   // 显示加载
   codeloadingflag.value = true;
@@ -631,12 +630,9 @@ let getCode = async () => {
 };
 // 手机登录
 let createBotByPhone = async () => {
-  // 校验表单
-  if (phoneform.value) {
+  try {
     // @ts-ignore
     await phoneform.value.validate();
-  }
-  try {
     // 显示加载
     createDefaultLoading.value = true;
     let phoneInfo = {

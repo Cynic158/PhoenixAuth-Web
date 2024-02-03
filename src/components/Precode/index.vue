@@ -4,7 +4,7 @@
   ><code :class="'language-'+ type" v-html="Prism.highlight(code, Prism.languages[type], type)"></code></pre>
 </template>
 <script setup lang="ts">
-import { onMounted, defineProps } from "vue";
+import { onMounted } from "vue";
 // @ts-ignore
 import Prism from "prismjs";
 defineProps({

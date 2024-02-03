@@ -553,9 +553,11 @@ let requestEmailVerifyCode = async () => {
 // 请求重置密码
 let requestResetPassword = async () => {
   // 校验表单
-  if (forgetform.value) {
+  try {
     // @ts-ignore
     await forgetform.value.validate();
+  }catch (error: any) {
+    return
   }
   // 显示加载
   loadingflag.value = true;
@@ -605,9 +607,11 @@ let requestResetPassword = async () => {
 // 登录事件, 登录不需要人机验证
 let login = async () => {
   // 校验表单
-  if (loginform.value) {
+  try {
     // @ts-ignore
     await loginform.value.validate();
+  }catch (error: any) {
+    return
   }
   // 直接请求登录
   // 显示加载
@@ -676,9 +680,11 @@ let register = async () => {
     return;
   }
   // 校验表单
-  if (regform.value) {
+  try {
     // @ts-ignore
     await regform.value.validate();
+  }catch (error: any) {
+    return
   }
   // 显示加载
   loadingflag.value = true;

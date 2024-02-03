@@ -388,7 +388,7 @@ let submitNotice = async () => {
       }
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
     // 请求完成，关闭加载
     noticeloadingflag.value = false;

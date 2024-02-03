@@ -516,13 +516,9 @@ const rules = {
 };
 // 修改密码
 let changePassword = async () => {
-  // 校验表单
-  if (passwordform.value) {
+  try {
     // @ts-ignore
     await passwordform.value.validate();
-  }
-
-  try {
     // 显示加载
     passwordloadingflag.value = true;
     let passwordInfo = {
@@ -553,7 +549,7 @@ let changePassword = async () => {
       });
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
     // 请求完成，关闭加载
     passwordloadingflag.value = false;
@@ -612,12 +608,9 @@ const rules2 = {
 };
 // 使用兑换码
 let codeUse = async () => {
-  // 校验表单
-  if (codeform.value) {
+  try {
     // @ts-ignore
     await codeform.value.validate();
-  }
-  try {
     // 显示加载
     codeLoading.value = true;
     let codeInfo = {
@@ -650,7 +643,7 @@ let codeUse = async () => {
       });
     }
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   } finally {
     codeLoading.value = false;
   }
