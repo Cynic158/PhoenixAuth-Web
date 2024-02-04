@@ -35,7 +35,7 @@
                   </el-form-item>
                   <el-form-item prop="email_verify_code">
                     <el-row class="row-bg" justify="center" style="width: 100%;">
-                      <el-col :span="16"  style="padding-right: 10px;">
+                      <el-col :span="16" style="padding-right: 10px;">
                         <el-input
                           v-model="forgetData.email_verify_code"
                           prefix-icon="Lock"
@@ -348,7 +348,6 @@ const regRules = {
     { validator: validateRegRePassword, trigger: "blur" },
   ],
 };
-
 
 //登录部分
 // 表单元素
@@ -755,9 +754,22 @@ let reqNewTokenFunc = async () => {
   return Promise.resolve({ success: true });
 };
 
-onMounted(() => {
+// 销毁全局变量
+onUnmounted(() => {
   // @ts-ignore
-  window.onRobotBeforeInteractive = onRobotBeforeInteractive;
+  turnstile.remove();
+  // @ts-ignore
+  window.onRobotBeforeInteractive = null;
+  // @ts-ignore
+  window.onRobotAfterInteractive = null;
+  // @ts-ignore
+  window.onRobotSuccess = null;
+  // @ts-ignore
+  window.onRobotError = null;
+});
+onMounted(() => {
+    // @ts-ignore
+    window.onRobotBeforeInteractive = onRobotBeforeInteractive;
   // @ts-ignore
   window.onRobotAfterInteractive = onRobotAfterInteractive;
   // @ts-ignore
@@ -774,21 +786,7 @@ onMounted(() => {
   regform.value.clearValidate(["username", "password", "repassword"]);
   // @ts-ignore
   forgetform.value.clearValidate(["username", "email_verify_code", "password", "repassword"]);
-});
-// 销毁全局变量
-onUnmounted(() => {
-  // @ts-ignore
-  turnstile.remove();
-  // @ts-ignore
-  window.onRobotBeforeInteractive = null;
-  // @ts-ignore
-  window.onRobotAfterInteractive = null;
-  // @ts-ignore
-  window.onRobotSuccess = null;
-  // @ts-ignore
-  window.onRobotError = null;
-});
-onMounted(() => {
+
   let darkbg = localStorage.getItem("DARKMODE") === "true";
   if (darkbg) {
       const element = document.querySelector(".login-container");

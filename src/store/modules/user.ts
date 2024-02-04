@@ -51,6 +51,7 @@ interface userDetail {
   enable_ban_list_upload: boolean;
   enable_auto_restart_server: boolean;
   api_key: string;
+  has_email: boolean;
 }
 interface passwordInfo {
   email_verify_code: string;
@@ -131,6 +132,8 @@ let useUserStore = defineStore("user", () => {
   let autoRestartFlag = ref(Boolean(localStorage.getItem("AUTORESTARTFLAG")) || false);
   // API
   let uapi = ref(localStorage.getItem("UAPI") || "");
+  // 是否有邮箱
+  let uhasEmail = ref(Boolean(localStorage.getItem("HAS_EMAIL")) || false);
 
   // 动态路由菜单项
   let menuRoutes = ref([...defaultRoutes]);
@@ -204,6 +207,7 @@ let useUserStore = defineStore("user", () => {
     banlistFlag.value = userInfo.enable_ban_list_upload;
     autoRestartFlag.value = userInfo.enable_auto_restart_server;
     upermission.value = userInfo.permission.toString();
+    uhasEmail.value = userInfo.has_email;
 
     localStorage.setItem("UNAME", userInfo.username);
     localStorage.setItem("UID", uid.value);
@@ -215,6 +219,7 @@ let useUserStore = defineStore("user", () => {
     localStorage.setItem("BANLISTFLAG", banlistFlag.value.toString());
     localStorage.setItem("AUTORESTARTFLAG", autoRestartFlag.value.toString());
     localStorage.setItem("UAPI", uapi.value);
+    localStorage.setItem("HAS_EMAIL", uhasEmail.value.toString());
   };
   // 清空用户信息函数
   let clearUser = () => {
@@ -229,6 +234,7 @@ let useUserStore = defineStore("user", () => {
     banlistFlag.value = false;
     autoRestartFlag.value = false;
     uapi.value = "";
+    uhasEmail.value = false;
 
     localStorage.setItem("TOKEN", token.value);
     localStorage.setItem("UNAME", uname.value);
@@ -240,6 +246,7 @@ let useUserStore = defineStore("user", () => {
     localStorage.setItem("UEXPIRE", uexpire.value);
     localStorage.setItem("BANLISTFLAG", "");
     localStorage.setItem("UAPI", uapi.value);
+    localStorage.setItem("HAS_EMAIL", "");
 
     // 重置flag，使得重新登录会再次动态添加路由
     refreshFlag.value = false;
@@ -433,6 +440,7 @@ let useUserStore = defineStore("user", () => {
     banlistFlag,
     autoRestartFlag,
     uapi,
+    uhasEmail,
     userDownload,
     userPassword,
     userCode,

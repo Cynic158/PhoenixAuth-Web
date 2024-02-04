@@ -1,10 +1,28 @@
 <template>
   <div>
+    <el-popover
+      trigger="click"
+      placement="top"
+      :width="326"
+      :virtual-ref="dynamicTurnstileVirtualRef"
+      :visible="robotVisible && dynamicTurnstileVirtualRef?.value" 
+      virtual-triggering
+    >
+      <div class="cf-turnstile"
+        data-sitekey="0x4AAAAAAAQhC3f_WRwvJ19O"
+        data-callback="onRobotSuccess"
+        data-error-callback="onRobotError"
+        data-expired-callback="onRobotError"
+        data-before-interactive-callback="onRobotBeforeInteractive"
+        data-after-interactive-callback="onRobotAfterInteractive"
+        data-size="normal"
+        :data-theme="exportedLocalStorage.getItem('DARKMODE') === 'true' ? 'dark' : 'light'">
+      </div>
+    </el-popover>
     <el-card shadow="hover">
       <template #header>
         <div class="card-header">我的信息</div>
       </template>
-
       <div>
         <div class="card-footer">
           <el-icon>
@@ -107,9 +125,9 @@
 
         <el-form
           @submit.prevent
-          class="code-form-container"
+          class="limited-form-container"
           :model="codeData"
-          :rules="rules2"
+          :rules="redeemRules"
           ref="codeform"
         >
           <el-form-item label="兑换码" prop="redeem_code">
@@ -165,7 +183,131 @@
       </div>
     </el-card>
 
-    <el-card style="margin-top: 12px" shadow="hover">
+    <el-card
+      style="margin-top: 12px"
+      shadow="hover"
+      v-if="!userStore.uhasEmail" 
+    >
+      <template #header>
+        <div class="card-header">绑定邮箱</div>
+      </template>
+      <div class="card-footer">
+        <el-icon>
+          <ChatDotRound />
+        </el-icon>
+        <span style="margin-left: 12px; color: dimgray"
+          >为您的账户绑定安全邮箱, 绑定后可进行修改密码等操作</span
+        >
+      </div>
+      <el-divider />
+      <el-form
+        class="limited-form-container"
+        :model="emailBindData"
+        :rules="bindEmailRules"
+        ref="emailbindform"
+      >
+        <el-form-item label="邮箱" prop="email">
+          <el-input
+            v-model="emailBindData.email"
+            placeholder="请输入邮箱"
+          />
+        </el-form-item>
+        <el-form-item label="邮箱验证码" prop="emailVerifyCode">
+          <el-row class="row-bg" justify="center" style="width: 100%;">
+            <el-col :span="16" style="padding-right: 10px;">
+              <el-input
+                v-model="emailBindData.emailVerifyCode"
+                placeholder="输入邮箱验证码"
+              />
+            </el-col>
+            <el-col :span="8">
+              <el-button
+                ref="emailBindEmailCodeBtnRef"
+                type="primary"
+                style="width: 100%"
+                @click="sendEmailCode('emailBind')"
+                :disabled="codeTimes > 0"
+                :loading="emailCodeLoadingFlag"
+              >
+                {{ codeTimes > 0 ? `重新发送(${codeTimes}s)` : "发送验证码" }}
+              </el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item style="margin-bottom: 0">
+          <el-button
+            :loading="emailbindloadingflag"
+            type="primary"
+            @click="bindEmail"
+          >
+            绑定
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+
+    <el-card
+      style="margin-top: 12px"
+      shadow="hover"
+      v-if="userStore.uhasEmail" 
+    >
+      <template #header>
+        <div class="card-header">解绑邮箱</div>
+      </template>
+      <div class="card-footer">
+        <el-icon>
+          <ChatDotRound />
+        </el-icon>
+        <span style="margin-left: 12px; color: dimgray"
+          >解绑您的账户的安全邮箱, 解绑后无法进行修改密码等操作</span
+        >
+      </div>
+      <el-divider />
+      <el-form
+        class="limited-form-container"
+        :model="emailUnbindData"
+        :rules="unbindEmailRules"
+        ref="emailunbindform"
+      >
+        <el-form-item label="邮箱验证码" prop="emailVerifyCode">
+          <el-row class="row-bg" justify="center" style="width: 100%;">
+            <el-col :span="16" style="padding-right: 10px;">
+              <el-input
+                v-model="emailUnbindData.emailVerifyCode"
+                placeholder="输入邮箱验证码"
+              />
+            </el-col>
+            <el-col :span="8">
+              <el-button
+                ref="emailUnbindEmailCodeBtnRef"
+                type="primary"
+                style="width: 100%"
+                @click="sendEmailCode('emailUnbind')"
+                :disabled="codeTimes > 0"
+                :loading="emailCodeLoadingFlag"
+              >
+                {{ codeTimes > 0 ? `重新发送(${codeTimes}s)` : "发送验证码" }}
+              </el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item style="margin-bottom: 0">
+          <el-button
+            :loading="emailunbindloadingflag"
+            type="danger"
+            @click="unbindEmail"
+          >
+            解绑
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
+
+    <el-card
+      style="margin-top: 12px"
+      shadow="hover"
+      v-if="userStore.uhasEmail" 
+    >
       <template #header>
         <div class="card-header">修改密码</div>
       </template>
@@ -183,16 +325,30 @@
         <el-form
           class="password-form-container"
           :model="passwordData"
-          :rules="rules"
+          :rules="changePasswordRules"
           ref="passwordform"
         >
-          <el-form-item label="输入邮箱验证码" prop="emailVerifyCode">
-            <el-input
-              type="password"
-              show-password
-              v-model="passwordData.emailVerifyCode"
-              placeholder="输入邮箱验证码"
-            />
+          <el-form-item label="邮箱验证码" prop="emailVerifyCode">
+            <el-row class="row-bg" justify="center" style="width: 100%;">
+              <el-col :span="16" style="padding-right: 10px;">
+                <el-input
+                  v-model="passwordData.emailVerifyCode"
+                  placeholder="输入邮箱验证码"
+                />
+              </el-col>
+              <el-col :span="8">
+                <el-button
+                  ref="changePasswordEmailCodeBtnRef"
+                  type="primary"
+                  style="width: 100%"
+                  @click="sendEmailCode('changePassword')"
+                  :disabled="codeTimes > 0"
+                  :loading="emailCodeLoadingFlag"
+                >
+                  {{ codeTimes > 0 ? `重新发送(${codeTimes}s)` : "发送验证码" }}
+                </el-button>
+              </el-col>
+            </el-row>
           </el-form-item>
           <el-form-item label="输入新密码" prop="newPassword">
             <el-input
@@ -264,18 +420,56 @@
 import useUserStore from "@/store/modules/user";
 // 导入设置仓库
 import useSettingStore from "@/store/modules/setting";
-import { computed, onActivated, onMounted, reactive, ref } from "vue";
+import { computed, onActivated, onMounted, onUnmounted, reactive, ref } from "vue";
 // 导入时间转换函数
 import { getTimeStr2 } from "@/utils";
 // 导入消息通知组件
 // @ts-ignore
 import { ElNotification } from "element-plus";
-
+// 导出本地仓库给HTML使用
+let exportedLocalStorage = localStorage
 // 使用设置仓库的移动端适配
 let settingStore = useSettingStore();
-
 // 使用用户仓库
 let userStore = useUserStore();
+// 人机验证动态虚拟ref
+const dynamicTurnstileVirtualRef = ref();
+// 人机验证显示
+const robotVisible = ref(false);
+// 人机验证
+let captchaExecutingFlag = ref(true);
+// 修改密码发送验证码按钮ref
+const changePasswordEmailCodeBtnRef = ref();
+// 绑定邮箱发送验证码按钮ref
+const emailBindEmailCodeBtnRef = ref();
+// 解绑邮箱发送验证码按钮ref
+const emailUnbindEmailCodeBtnRef = ref();
+
+// 刷新验证码
+let refreshCaptcha = () => {
+  captchaExecutingFlag.value = true;
+  // @ts-ignore
+  turnstile.reset();
+  // @ts-ignore
+  turnstile.execute();
+};
+
+// 人机验证成功回调
+var onRobotSuccess = async () => {
+  captchaExecutingFlag.value = false
+};
+// 人机验证交互前回调
+var onRobotBeforeInteractive = async () => {
+  robotVisible.value = true
+}
+// 人机验证交互后回调
+var onRobotAfterInteractive = async () => {
+  robotVisible.value = false
+}
+// 人机验证错误回调
+var onRobotError = async () => {
+  refreshCaptcha()
+};
 
 let banloading = ref(false);
 let beforeChange = async () => {
@@ -289,6 +483,7 @@ let beforeChange = async () => {
       // userStore.banlistFlag = !userStore.banlistFlag;
       ElNotification({
         type: "success",
+        title: "操作成功",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -297,6 +492,7 @@ let beforeChange = async () => {
     } else {
       ElNotification({
         type: "error",
+        title: "操作失败",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -304,7 +500,7 @@ let beforeChange = async () => {
       return false;
     }
   } catch (error) {
-    console.log(error);
+    //console.log(error);
     return false;
   } finally {
     banloading.value = false;
@@ -322,6 +518,7 @@ let apikeyGen = async () => {
       userStore.uapi = result.api_key;
       ElNotification({
         type: "success",
+        title: "生成成功",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -330,13 +527,14 @@ let apikeyGen = async () => {
       // 获取失败
       ElNotification({
         type: "error",
+        title: "生成失败",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   } finally {
     apikeyLoading.value = false;
   }
@@ -350,6 +548,7 @@ let apikeyDis = async () => {
       userStore.uapi = "暂未获取";
       ElNotification({
         type: "success",
+        title: "删除成功",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -358,13 +557,14 @@ let apikeyDis = async () => {
       // 获取失败
       ElNotification({
         type: "error",
+        title: "删除失败",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   } finally {
     apikeyLoading.value = false;
   }
@@ -375,9 +575,6 @@ let getInfo = async () => {
   // 获取用户信息
   await userStore.userInfo();
 };
-onMounted(() => {
-  getInfo();
-});
 // 用户的创建时间以及过期时间
 const createTime = computed(() => {
   let timestr = getTimeStr2(Number(userStore.ucreate));
@@ -416,30 +613,30 @@ let tokenDownload = async () => {
   tokenLoading.value = true;
   ElNotification({
     type: "info",
-    title: "获取 FBToken",
-    message: "获取中",
+    title: "获取中",
+    message: "正在获取FBToken, 请稍后",
     duration: 3000,
   });
   try {
     let result = await userStore.userDownload();
     ElNotification({
       type: "success",
-      title: "获取 FBToken",
-      message: "获取成功",
+      title: "获取成功",
+      message: "请留意浏览器下载内容",
       duration: 3000,
     });
     // @ts-ignore
     if (result.success === false) {
       ElNotification({
         type: "error",
-        title: "获取 FBToken",
+        title: "获取失败",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   } finally {
     tokenLoading.value = false;
   }
@@ -472,7 +669,7 @@ let clearForm = () => {
       }
     }, 200);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   }
 };
 // 每次进入子页面就清空表单
@@ -489,14 +686,59 @@ let validateRePassword = (rule: any, value: any, callback: any) => {
     callback();
   }
 };
+// @ts-ignore
+let validateRedeemCode = (rule: any, value: any, callback: any) => {
+  // uuid正则
+  const codeReg =
+    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+
+  if (!codeReg.test(value)) {
+    callback(new Error("兑换码格式不正确"));
+  } else {
+    callback();
+  }
+};
 // 表单校验规则
-const rules = {
+const bindEmailRules = {
+  email: [
+    {
+      required: true,
+      message: "请输入邮箱",
+      trigger: "blur",
+    },
+    {
+      type: "email",
+      message: "请输入正确的邮箱",
+      trigger: ["blur", "change"],
+    },
+  ],
   emailVerifyCode: [
     {
       required: true,
       message: "请输入邮箱验证码",
       trigger: "blur",
     },
+    { min: 6, max: 6, message: "邮箱验证码有误", trigger: "blur" },
+  ],
+};
+const unbindEmailRules = {
+  emailVerifyCode: [
+    {
+      required: true,
+      message: "请输入邮箱验证码",
+      trigger: "blur",
+    },
+    { min: 6, max: 6, message: "邮箱验证码有误", trigger: "blur" },
+  ],
+};
+const changePasswordRules = {
+  emailVerifyCode: [
+    {
+      required: true,
+      message: "请输入邮箱验证码",
+      trigger: "blur",
+    },
+    { min: 6, max: 6, message: "邮箱验证码有误", trigger: "blur" },
   ],
   newPassword: [
     {
@@ -514,6 +756,240 @@ const rules = {
     { validator: validateRePassword, trigger: "blur" },
   ],
 };
+const redeemRules = {
+  redeem_code: [
+    {
+      required: true,
+      message: "兑换码不能为空",
+      trigger: "blur",
+    },
+    { validator: validateRedeemCode, trigger: "blur" },
+  ],
+};
+
+let emailCodeLoadingFlag = ref(false);
+let codeTimes = ref(0)
+// 发送邮箱验证码
+let sendEmailCode = async (type: String) => {
+  emailCodeLoadingFlag.value = true;
+  // 切换动态虚拟ref
+  switch (type) {
+    case "emailBind":
+      dynamicTurnstileVirtualRef.value = emailBindEmailCodeBtnRef.value;
+      break;
+    case "emailUnbind":
+      dynamicTurnstileVirtualRef.value = emailUnbindEmailCodeBtnRef.value;
+      break;
+    case "changePassword":
+      dynamicTurnstileVirtualRef.value = changePasswordEmailCodeBtnRef.value;
+      break;
+    default:
+      break;
+  }
+  // 如果人机验证正在执行
+  if (captchaExecutingFlag.value) {
+    // 等待完成
+    let result = await new Promise((resolve) => {
+      let timer = setInterval(() => {
+        // 如果人机验证完成
+        if (!captchaExecutingFlag.value) {
+          clearInterval(timer);
+          resolve(true);
+        }
+        // 如果人机需要人工交互
+        if (robotVisible.value) {
+          clearInterval(timer);
+          resolve(false);
+        }
+      }, 200);
+    });
+    // 检查结果
+    if (!result) {
+      ElNotification({
+        type: "error",
+        title: "发送失败",
+        message: "需要完成人机验证交互",
+        duration: 3000,
+      });
+      emailCodeLoadingFlag.value = false;
+      return;
+    }else{
+      // 解绑动态虚拟ref
+      dynamicTurnstileVirtualRef.value = null;
+    }
+  }
+  // 尝试获取验证码
+  // @ts-ignore
+  let captchaToken = turnstile.getResponse();
+  if (!captchaToken) {
+    // 消息提示
+    ElNotification({
+      type: "error",
+      title: "发送失败",
+      message: "人机验证未通过",
+      duration: 3000,
+    });
+    // 重置人机验证
+    refreshCaptcha()
+    return;
+  }
+  // 根据类型组装请求参数
+  let requestEmailVerifyCodeInfo = {
+    email: "",
+    action_type: 0,
+    captcha_token: captchaToken,
+  };
+  switch (type) {
+    case "emailBind":
+      requestEmailVerifyCodeInfo.action_type = 0;
+      requestEmailVerifyCodeInfo.email = emailBindData.email;
+      break;
+    case "emailUnbind":
+      requestEmailVerifyCodeInfo.action_type = 1;
+      break;
+    case "changePassword":
+      requestEmailVerifyCodeInfo.action_type = 2;
+      break;
+    default:
+      break;
+  }
+  // 发送验证码
+  try {
+    // 仓库发起邮箱验证码请求
+    let result = await userStore.userRequestEmailVerifyCode(requestEmailVerifyCodeInfo);
+    // @ts-ignore
+    if (result.success) {
+      // 请求成功，清空表单
+      clearForm();
+      // 消息提示
+      ElNotification({
+        type: "success",
+        title: "发送成功",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      // 开始倒计时
+      codeTimes.value = 60
+      let timer = setInterval(() => {
+        codeTimes.value--;
+        if (codeTimes.value < 1) {
+          clearInterval(timer);
+        }
+      }, 1000);
+    } else {
+      // 请求失败，消息提示
+      ElNotification({
+        type: "error",
+        title: "发送失败",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+    //console.log(error);
+  } finally {
+    // 请求完成，关闭加载
+    emailCodeLoadingFlag.value = false;
+    refreshCaptcha()
+  }
+};
+
+// 绑定邮箱
+let emailbindform = ref(null);
+let emailbindloadingflag = ref(false);
+let emailBindData = reactive({
+  email: "",
+  emailVerifyCode: "",
+});
+let bindEmail = async () => {
+  try {
+    // @ts-ignore
+    await emailbindform.value.validate();
+    // 显示加载
+    emailbindloadingflag.value = true;
+    // 仓库发起绑定邮箱请求
+    let result = await userStore.userEmailBind({
+      email: emailBindData.email,
+      email_verify_code: emailBindData.emailVerifyCode,
+    });
+    // @ts-ignore
+    if (result.success) {
+      // 通知
+      ElNotification({
+        type: "success",
+        title: "绑定成功",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      // 刷新信息
+      getInfo();
+    } else {
+      // 请求失败，消息提示
+      ElNotification({
+        type: "error",
+        title: "绑定失败",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+    //console.log(error);
+  } finally {
+    // 请求完成，关闭加载
+    emailbindloadingflag.value = false;
+  }
+};
+
+// 解绑邮箱
+let emailunbindform = ref(null);
+let emailunbindloadingflag = ref(false);
+let emailUnbindData = reactive({
+  emailVerifyCode: "",
+});
+let unbindEmail = async () => {
+  try {
+    // @ts-ignore
+    await emailunbindform.value.validate();
+    // 显示加载
+    emailunbindloadingflag.value = true;
+    // 仓库发起解绑邮箱请求
+    let result = await userStore.userEmailUnbind({
+      email_verify_code: emailUnbindData.emailVerifyCode,
+    });
+    // @ts-ignore
+    if (result.success) {
+      // 通知
+      ElNotification({
+        type: "success",
+        title: "解绑成功",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      // 刷新信息
+      getInfo();
+    } else {
+      // 请求失败，消息提示
+      ElNotification({
+        type: "error",
+        title: "解绑失败",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+    //console.log(error);
+  } finally {
+    // 请求完成，关闭加载
+    emailunbindloadingflag.value = false;
+  }
+};
+
 // 修改密码
 let changePassword = async () => {
   try {
@@ -536,20 +1012,23 @@ let changePassword = async () => {
       // 通知
       ElNotification({
         type: "success",
-        message: "修改成功",
+        title: "修改成功",
+        // @ts-ignore
+        message: result.message,
         duration: 3000,
       });
     } else {
       // 请求失败，消息提示
       ElNotification({
         type: "error",
+        title: "修改失败",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
   } catch (error: any) {
-    //console.log(error);
+    ////console.log(error);
   } finally {
     // 请求完成，关闭加载
     passwordloadingflag.value = false;
@@ -576,36 +1055,13 @@ let clearCodeForm = () => {
       }
     }, 200);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   }
 };
 // 每次进入子页面就清空表单
 onActivated(() => {
   clearCodeForm();
 });
-// @ts-ignore
-let validateReCode = (rule: any, value: any, callback: any) => {
-  // uuid正则
-  const codeReg =
-    /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-
-  if (!codeReg.test(value)) {
-    callback(new Error("兑换码格式不正确"));
-  } else {
-    callback();
-  }
-};
-// 表单校验规则
-const rules2 = {
-  redeem_code: [
-    {
-      required: true,
-      message: "兑换码不能为空",
-      trigger: "blur",
-    },
-    { validator: validateReCode, trigger: "blur" },
-  ],
-};
 // 使用兑换码
 let codeUse = async () => {
   try {
@@ -643,11 +1099,36 @@ let codeUse = async () => {
       });
     }
   } catch (error) {
-    //console.log(error);
+    ////console.log(error);
   } finally {
     codeLoading.value = false;
   }
 };
+onUnmounted(() => {
+  // @ts-ignore
+  turnstile.remove();
+  // @ts-ignore
+  window.onRobotBeforeInteractive = null;
+  // @ts-ignore
+  window.onRobotAfterInteractive = null;
+  // @ts-ignore
+  window.onRobotSuccess = null;
+  // @ts-ignore
+  window.onRobotError = null;
+});
+onMounted(() => {
+  // @ts-ignore
+  window.onRobotBeforeInteractive = onRobotBeforeInteractive;
+  // @ts-ignore
+  window.onRobotAfterInteractive = onRobotAfterInteractive;
+  // @ts-ignore
+  window.onRobotSuccess = onRobotSuccess;
+  // @ts-ignore
+  window.onRobotError = onRobotError;
+  // @ts-ignore
+  turnstile.render('.cf-turnstile');
+  getInfo();
+});
 </script>
 
 <style scoped lang="scss">
@@ -664,7 +1145,7 @@ let codeUse = async () => {
   }
 }
 .password-form-container,
-.code-form-container {
+.limited-form-container {
   max-width: 600px;
 }
 :deep(.el-input input:-webkit-autofill) {
