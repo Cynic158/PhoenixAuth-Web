@@ -171,7 +171,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >设置是否在进入服务器时获取黑名单并上传至验证服务器, 不会影响进服速度</span
+            >在进入服务器时获取黑名单并上传至验证服务器, 不会影响进服速度</span
           >
         </div>
         <el-divider />
@@ -180,6 +180,82 @@
           :loading="banloading"
           :before-change="beforeChange"
         />
+      </div>
+    </el-card>
+
+    <el-card
+      style="margin-top: 12px"
+      shadow="hover"
+      v-if="userStore.uhasEmail" 
+    >
+      <template #header>
+        <div class="card-header">修改密码</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >更新您的登录密码</span
+          >
+        </div>
+        <el-divider />
+
+        <el-form
+          class="password-form-container"
+          :model="passwordData"
+          :rules="changePasswordRules"
+          ref="passwordform"
+        >
+          <el-form-item label="邮箱验证码" prop="emailVerifyCode">
+            <el-row class="row-bg" justify="center" style="width: 100%;">
+              <el-col :span="16" style="padding-right: 10px;">
+                <el-input
+                  v-model="passwordData.emailVerifyCode"
+                  placeholder="输入邮箱验证码"
+                />
+              </el-col>
+              <el-col :span="8">
+                <el-button
+                  ref="changePasswordEmailCodeBtnRef"
+                  type="primary"
+                  style="width: 100%"
+                  @click="sendEmailCode('changePassword')"
+                  :disabled="codeTimes > 0"
+                  :loading="emailCodeLoadingFlag"
+                >
+                  {{ codeTimes > 0 ? `重新发送(${codeTimes}s)` : "发送验证码" }}
+                </el-button>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <el-form-item label="输入新密码" prop="newPassword">
+            <el-input
+              type="password"
+              show-password
+              v-model="passwordData.newPassword"
+              placeholder="请输入新密码"
+            />
+          </el-form-item>
+          <el-form-item label="确认新密码" prop="repassword">
+            <el-input
+              type="password"
+              show-password
+              v-model="passwordData.repassword"
+              placeholder="请确认新密码"
+            />
+          </el-form-item>
+          <el-form-item style="margin-bottom: 0">
+            <el-button
+              :loading="passwordloadingflag"
+              type="primary"
+              @click="changePassword"
+              >修改密码</el-button
+            >
+            <el-button @click="clearForm">清空表单</el-button>
+          </el-form-item>
+        </el-form>
       </div>
     </el-card>
 
@@ -301,82 +377,6 @@
           </el-button>
         </el-form-item>
       </el-form>
-    </el-card>
-
-    <el-card
-      style="margin-top: 12px"
-      shadow="hover"
-      v-if="userStore.uhasEmail" 
-    >
-      <template #header>
-        <div class="card-header">修改密码</div>
-      </template>
-      <div>
-        <div class="card-footer">
-          <el-icon>
-            <ChatDotRound />
-          </el-icon>
-          <span style="margin-left: 12px; color: dimgray"
-            >更新您的登录密码</span
-          >
-        </div>
-        <el-divider />
-
-        <el-form
-          class="password-form-container"
-          :model="passwordData"
-          :rules="changePasswordRules"
-          ref="passwordform"
-        >
-          <el-form-item label="邮箱验证码" prop="emailVerifyCode">
-            <el-row class="row-bg" justify="center" style="width: 100%;">
-              <el-col :span="16" style="padding-right: 10px;">
-                <el-input
-                  v-model="passwordData.emailVerifyCode"
-                  placeholder="输入邮箱验证码"
-                />
-              </el-col>
-              <el-col :span="8">
-                <el-button
-                  ref="changePasswordEmailCodeBtnRef"
-                  type="primary"
-                  style="width: 100%"
-                  @click="sendEmailCode('changePassword')"
-                  :disabled="codeTimes > 0"
-                  :loading="emailCodeLoadingFlag"
-                >
-                  {{ codeTimes > 0 ? `重新发送(${codeTimes}s)` : "发送验证码" }}
-                </el-button>
-              </el-col>
-            </el-row>
-          </el-form-item>
-          <el-form-item label="输入新密码" prop="newPassword">
-            <el-input
-              type="password"
-              show-password
-              v-model="passwordData.newPassword"
-              placeholder="请输入新密码"
-            />
-          </el-form-item>
-          <el-form-item label="确认新密码" prop="repassword">
-            <el-input
-              type="password"
-              show-password
-              v-model="passwordData.repassword"
-              placeholder="请确认新密码"
-            />
-          </el-form-item>
-          <el-form-item style="margin-bottom: 0">
-            <el-button
-              :loading="passwordloadingflag"
-              type="primary"
-              @click="changePassword"
-              >修改密码</el-button
-            >
-            <el-button @click="clearForm">清空表单</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
     </el-card>
 
     <el-card v-loading="apikeyLoading" style="margin-top: 12px" shadow="hover">

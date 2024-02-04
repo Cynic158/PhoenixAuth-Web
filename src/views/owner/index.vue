@@ -212,7 +212,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >在请求进服遇到错误时, 是否尝试使用您的账号发送服务器重启指令</span
+            >在请求进服遇到错误时, 尝试使用您的账号发送服务器重启指令</span
           >
         </div>
         <el-divider />
