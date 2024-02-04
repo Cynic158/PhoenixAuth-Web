@@ -3,7 +3,7 @@
     <el-card shadow="hover">
       <template #header>
         <div class="card-header">
-          <span style="margin-right: 16px">我的账号</span>
+          <span style="margin-right: 16px">游戏账号</span>
         </div>
       </template>
 
@@ -13,7 +13,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >我的账号是调用一些特殊 API 时使用的账号 (不包括进服), 且只能与绑定的游戏ID一致</span
+            >游戏账号是调用一些特殊 API 时使用的账号 (不包括进服), 且只能与绑定的游戏ID一致</span
           >
         </div>
         <el-divider />
@@ -204,7 +204,7 @@
       style="margin-top: 12px"
     >
       <template #header>
-        <div class="card-header">自动重启 (Beta)</div>
+        <div class="card-header">自动重启</div>
       </template>
       <div>
         <div class="card-footer">

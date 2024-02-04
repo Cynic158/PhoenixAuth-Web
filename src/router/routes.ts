@@ -46,7 +46,7 @@ export const defaultRoutes = [
         component: () => import("@/views/owner/index.vue"),
         name: "gameaccount",
         meta: {
-          title: "我的账号",
+          title: "游戏账号",
           hidden: false,
           icon: "SwitchFilled",
         },
