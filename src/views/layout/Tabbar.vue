@@ -161,6 +161,9 @@ const predefineColors = ref([
 ]);
 let setTheme = () => {
   let el = document.documentElement;
+  if (!themeColor.value) {
+    themeColor.value = "#409EFF";
+  }
   el.style.setProperty("--el-color-primary", themeColor.value);
   localStorage.setItem("THEMECOLOR", themeColor.value);
 };
