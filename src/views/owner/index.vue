@@ -85,7 +85,7 @@
             <el-input v-model="phoneData.code" placeholder="请输入验证码" />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" @click="createBotByPhone">绑定</el-button>
+            <el-button type="primary" native-type="submit" @click="createBotByPhone">绑定</el-button>
             <el-popover
               :width="326"
               :visible="!botInfo.set && robotVisible"
@@ -166,7 +166,7 @@
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" @click="createBotByEmail">创建</el-button>
+            <el-button type="primary" native-type="submit" @click="createBotByEmail">创建</el-button>
             <el-button @click="clearForm">清空表单</el-button>
           </el-form-item>
         </el-form>

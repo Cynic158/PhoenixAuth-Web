@@ -76,6 +76,7 @@
                   <el-form-item>
                     <el-button
                       type="primary"
+                      native-type="submit"
                       class="login-btn"
                       @click="requestResetPassword"
                       :loading="loadingflag"
@@ -127,6 +128,7 @@
                   <el-form-item>
                     <el-button
                       type="primary"
+                      native-type="submit"
                       class="login-btn"
                       @click="login"
                       :loading="loadingflag"
@@ -196,6 +198,7 @@
                   <el-form-item>
                     <el-button
                       type="primary"
+                      native-type="submit"
                       class="login-btn"
                       @click="register"
                       :loading="loadingflag || captchaExecutingFlag"

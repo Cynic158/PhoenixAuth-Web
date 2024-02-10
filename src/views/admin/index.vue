@@ -46,7 +46,7 @@
           </el-form-item>
 
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" @click="generateCode">生成</el-button>
+            <el-button type="primary" native-type="submit" @click="generateCode">生成</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -183,7 +183,7 @@
             </el-descriptions>
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" @click="queryUser">查询</el-button>
+            <el-button type="primary" native-type="submit" @click="queryUser">查询</el-button>
             <el-button
               type="danger"
               @click="unBanUserDialog"
@@ -236,7 +236,7 @@
             <el-input v-model="banData.reason" placeholder="请输入封禁原因" />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="danger" @click="banUser">提交</el-button>
+            <el-button type="danger" native-type="submit" @click="banUser">提交</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -279,7 +279,7 @@
             </el-select>
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="danger" @click="setUserPermission">提交</el-button>
+            <el-button type="danger" native-type="submit" @click="setUserPermission">提交</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -324,7 +324,7 @@
             <span>{{ extendUserExipreTimeStr }}</span>
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="danger" @click="extendUserExipre">提交</el-button>
+            <el-button type="danger" native-type="submit" @click="extendUserExipre">提交</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -369,7 +369,7 @@
             <span>{{ extendUserUnlimitedTimeStr }}</span>
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="danger" @click="extendUserUnlimited">提交</el-button>
+            <el-button type="danger" native-type="submit" @click="extendUserUnlimited">提交</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -385,7 +385,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="unBanUserDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="unBanUser">确定</el-button>
+          <el-button type="primary" native-type="submit" @click="unBanUser">确定</el-button>
         </span>
       </template>
     </el-dialog>
