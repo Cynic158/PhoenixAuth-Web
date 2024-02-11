@@ -19,6 +19,7 @@ import {
   reqResetPassword,
   reqEmailBind,
   reqEmailUnbind,
+  reqRemoveAccount,
 } from "@/api/user";
 // 导入路由创建动态菜单
 import {
@@ -73,6 +74,9 @@ interface emailBindInfo {
   email_verify_code: string;
 }
 interface emailUnbindInfo {
+  email_verify_code: string;
+}
+interface deleteAccountInfo {
   email_verify_code: string;
 }
 
@@ -294,16 +298,16 @@ let useUserStore = defineStore("user", () => {
 
   // 请求登出
   let userLogout = async () => {
-    // 发起请求
-    let result = await reqLogout();
-    // @ts-ignore
-    if (result.success) {
-      // 清空用户信息
-      clearUser();
-      return "登出成功";
-    } else {
-      // 登出失败，返回一个失败的promise
-      return Promise.reject(result);
+    try {
+      // 发起请求
+      let result = await reqLogout();
+      // @ts-ignore
+      if (result.success) {
+        clearUser();
+      }
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
     }
   };
 
@@ -420,6 +424,21 @@ let useUserStore = defineStore("user", () => {
     }
   };
 
+  // 请求删除账户
+  let userDeleteAccount = async (deleteAccountInfo: deleteAccountInfo) => {
+    // 发起请求
+    try {
+      let result = await reqRemoveAccount(deleteAccountInfo);
+      // @ts-ignore
+      if (result.success) {
+        clearUser();
+      }
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   return {
     token,
     uname,
@@ -452,6 +471,7 @@ let useUserStore = defineStore("user", () => {
     userResetPassword,
     userEmailBind,
     userEmailUnbind,
+    userDeleteAccount,
   };
 });
 

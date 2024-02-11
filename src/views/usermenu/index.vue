@@ -412,6 +412,63 @@
         >
       </div>
     </el-card>
+
+    <el-card
+      style="margin-top: 12px"
+      shadow="hover"
+      v-if="userStore.uhasEmail" 
+    >
+      <template #header>
+        <div class="card-header">删除账户</div>
+      </template>
+      <div class="card-footer">
+        <el-icon>
+          <ChatDotRound />
+        </el-icon>
+        <span style="margin-left: 12px; color: dimgray"
+          >立即删除账户的所有信息且无法恢复, 请谨慎操作</span
+        >
+      </div>
+      <el-divider />
+      <el-form
+        class="limited-form-container"
+        :model="deleteAccountData"
+        :rules="deleteAccountRules"
+        ref="deleteaccountform"
+      >
+        <el-form-item label="邮箱验证码" prop="emailVerifyCode">
+          <el-row class="row-bg" justify="center" style="width: 100%;">
+            <el-col :span="16" style="padding-right: 10px;">
+              <el-input
+                v-model="deleteAccountData.emailVerifyCode"
+                placeholder="输入邮箱验证码"
+              />
+            </el-col>
+            <el-col :span="8">
+              <el-button
+                ref="deleteAccountEmailCodeBtnRef"
+                type="primary"
+                style="width: 100%"
+                @click="sendEmailCode('deleteAccount')"
+                :disabled="codeTimes > 0"
+                :loading="emailCodeLoadingFlag"
+              >
+                {{ codeTimes > 0 ? `重新发送(${codeTimes}s)` : "发送验证码" }}
+              </el-button>
+            </el-col>
+          </el-row>
+        </el-form-item>
+        <el-form-item style="margin-bottom: 0">
+          <el-button
+            :loading="deleteaccountloadingflag"
+            type="danger"
+            @click="deleteAccount"
+          >
+            删除
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-card>
   </div>
 </template>
 
@@ -426,12 +483,16 @@ import { getTimeStr2 } from "@/utils";
 // 导入消息通知组件
 // @ts-ignore
 import { ElNotification } from "element-plus";
+// 导入路由
+import { useRouter } from "vue-router";
 // 导出本地仓库给HTML使用
 let exportedLocalStorage = localStorage
 // 使用设置仓库的移动端适配
 let settingStore = useSettingStore();
 // 使用用户仓库
 let userStore = useUserStore();
+// 使用路由
+let $router = useRouter();
 // 人机验证动态虚拟ref
 const dynamicTurnstileVirtualRef = ref();
 // 人机验证显示
@@ -444,6 +505,8 @@ const changePasswordEmailCodeBtnRef = ref();
 const emailBindEmailCodeBtnRef = ref();
 // 解绑邮箱发送验证码按钮ref
 const emailUnbindEmailCodeBtnRef = ref();
+// 删除账户发送验证码按钮ref
+const deleteAccountEmailCodeBtnRef = ref();
 
 // 刷新验证码
 let refreshCaptcha = () => {
@@ -766,6 +829,16 @@ const redeemRules = {
     { validator: validateRedeemCode, trigger: "blur" },
   ],
 };
+const deleteAccountRules = {
+  emailVerifyCode: [
+    {
+      required: true,
+      message: "请输入邮箱验证码",
+      trigger: "blur",
+    },
+    { min: 6, max: 6, message: "邮箱验证码有误", trigger: "blur" },
+  ],
+};
 
 let emailCodeLoadingFlag = ref(false);
 let codeTimes = ref(0)
@@ -782,6 +855,9 @@ let sendEmailCode = async (type: String) => {
       break;
     case "changePassword":
       dynamicTurnstileVirtualRef.value = changePasswordEmailCodeBtnRef.value;
+      break;
+    case "deleteAccount":
+      dynamicTurnstileVirtualRef.value = deleteAccountEmailCodeBtnRef.value;
       break;
     default:
       break;
@@ -849,6 +925,9 @@ let sendEmailCode = async (type: String) => {
       break;
     case "changePassword":
       requestEmailVerifyCodeInfo.action_type = 2;
+      break;
+    case "deleteAccount":
+      requestEmailVerifyCodeInfo.action_type = 4;
       break;
     default:
       break;
@@ -1104,6 +1183,53 @@ let codeUse = async () => {
     codeLoading.value = false;
   }
 };
+
+// 删除账户
+let deleteaccountform = ref(null);
+let deleteaccountloadingflag = ref(false);
+let deleteAccountData = reactive({
+  emailVerifyCode: "",
+});
+let deleteAccount = async () => {
+  try {
+    // @ts-ignore
+    await deleteaccountform.value.validate();
+    // 显示加载
+    deleteaccountloadingflag.value = true;
+    // 仓库发起解绑邮箱请求
+    let result = await userStore.userDeleteAccount({
+      email_verify_code: deleteAccountData.emailVerifyCode,
+    });
+    // @ts-ignore
+    if (result.success) {
+      // 请求成功，登出
+      $router.push("/login");
+      // 通知
+      ElNotification({
+        type: "success",
+        title: "删除成功",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    } else {
+      // 请求失败，消息提示
+      ElNotification({
+        type: "error",
+        title: "删除失败",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+    //console.log(error);
+  } finally {
+    // 请求完成，关闭加载
+    deleteaccountloadingflag.value = false;
+  }
+};
+
 onUnmounted(() => {
   // @ts-ignore
   turnstile.remove();

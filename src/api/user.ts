@@ -19,6 +19,7 @@ enum API {
   RESET_PASSWORD = "/user/reset_password",
   EMAIL_BIND = "/user/email_bind",
   EMAIL_UNBIND = "/user/email_unbind",
+  REMOVE_ACCOUNT = "/user/remove_account",
 }
 
 // 数据类型声明
@@ -47,6 +48,9 @@ interface emailBindInfo {
   email_verify_code: string;
 }
 interface emailUnbindInfo {
+  email_verify_code: string;
+}
+interface removeAccountInfo {
   email_verify_code: string;
 }
 
@@ -96,3 +100,6 @@ export const reqEmailBind = (info: emailBindInfo) =>
 // 解绑邮箱
 export const reqEmailUnbind = (info: emailUnbindInfo) =>
   request.post(API.EMAIL_UNBIND, info);
+// 删除账户
+export const reqRemoveAccount = (info: removeAccountInfo) =>
+  request.post(API.REMOVE_ACCOUNT, info);

@@ -240,23 +240,30 @@ let logoutFunc = async () => {
   dialogVisible.value = false;
   try {
     // 由仓库发起请求
-    await userStore.userLogout();
-    // 请求成功，登出
-    $router.push("/login");
-    // 消息提示
-    ElNotification({
-      type: "success",
-      title: "成功",
-      message: "已退出登录, 欢迎下次再来~",
-      duration: 3000,
-    });
-  } catch (error: any) {
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
-  }
+    let result = await userStore.userLogout();
+    // @ts-ignore
+    if (result.success){
+      // 请求成功，登出
+      $router.push("/login");
+      // 消息提示
+      ElNotification({
+        type: "success",
+        title: "登出成功",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }else{
+      // 请求失败，消息提示
+      ElNotification({
+        type: "error",
+        title: "登出失败",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {}
 };
 </script>
 
