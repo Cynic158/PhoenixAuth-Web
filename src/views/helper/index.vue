@@ -215,6 +215,30 @@
     <el-card
       shadow="hover"
       v-if="botInfo.username"
+      v-loading="signLoading || queryLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
+        <div class="card-header">每日签到</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >可以获得游戏内道具以及经验值奖励</span
+          >
+        </div>
+        <el-divider />
+
+        <el-button type="success" @click="signinBot">签到</el-button>
+      </div>
+    </el-card>
+
+    <el-card
+      shadow="hover"
+      v-if="botInfo.username"
       v-loading="queryLoading"
       style="margin-top: 12px"
     >
@@ -249,30 +273,6 @@
             <el-button type="primary" native-type="submit" @click="changeDialog">更改</el-button>
           </el-form-item>
         </el-form>
-      </div>
-    </el-card>
-
-    <el-card
-      shadow="hover"
-      v-if="botInfo.username"
-      v-loading="signLoading || queryLoading"
-      style="margin-top: 12px"
-    >
-      <template #header>
-        <div class="card-header">每日签到</div>
-      </template>
-      <div>
-        <div class="card-footer">
-          <el-icon>
-            <ChatDotRound />
-          </el-icon>
-          <span style="margin-left: 12px; color: dimgray"
-            >可以获得游戏内道具以及经验值奖励</span
-          >
-        </div>
-        <el-divider />
-
-        <el-button type="success" @click="signinBot">签到</el-button>
       </div>
     </el-card>
 
