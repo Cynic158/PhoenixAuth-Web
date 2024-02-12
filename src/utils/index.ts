@@ -110,3 +110,26 @@ export const verticalScroll = (scrollEl: Element) => {
     }, 15);
   });
 };
+export const getPasswordLevel = (str: string) => {
+  if (str === null || str === undefined) {
+      return 0;
+  }
+  let length: number = str.length;
+  let matches: boolean = /^[a-zA-Z]+$/.test(str);
+  let matches2: boolean = /^\d+$/.test(str);
+  let matches3: boolean = /^[^0-9a-zA-Z]+$/.test(str);
+  let matches4: boolean = /[a-zA-Z]/.test(str);
+  let matches5: boolean = /[^a-zA-Z]/.test(str);
+  let matches6: boolean = /\d/.test(str);
+  let matches7: boolean = /[^\d]/.test(str);
+  if (length > 0) {
+      if (length < 6 || ((matches && length < 8) || matches2 || matches3)) {
+          return 1;
+      }
+      if ((!matches || length < 8) && !((matches4 && matches5 && length < 8) || (matches6 && matches7 && length < 8))) {
+          return ((matches4 && matches5 && length >= 8) || (matches6 && matches7 && length >= 8)) ? 3 : 0;
+      }
+      return 2;
+  }
+  return 0;
+};

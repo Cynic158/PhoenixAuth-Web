@@ -497,6 +497,7 @@ let createBotByEmail = async () => {
     let emailInfo = {
       username: "",
       password: "",
+      password_level: -1,
     };
     emailInfo.username = emailData.username;
     emailInfo.password = emailData.password;

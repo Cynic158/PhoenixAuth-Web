@@ -17,6 +17,7 @@ enum API {
 interface emailInfo {
   username: string;
   password: string;
+  password_level: number;
 }
 
 interface phoneInfo {

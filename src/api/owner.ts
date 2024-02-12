@@ -17,6 +17,7 @@ enum API {
 interface emailInfo {
   username: string;
   password: string;
+  password_level: number;
 }
 
 interface phoneInfo {
@@ -31,7 +32,6 @@ interface codeInfo {
 
 interface giftCodeIndo{
   code: string;
-
 }
 
 // 导出api
