@@ -674,12 +674,6 @@ let tokenLoading = ref(false);
 // 请求phoenixtoken
 let tokenDownload = async () => {
   tokenLoading.value = true;
-  ElNotification({
-    type: "info",
-    title: "Info",
-    message: "正在获取FBToken, 请稍后",
-    duration: 3000,
-  });
   try {
     let result = await userStore.userDownload();
     ElNotification({
