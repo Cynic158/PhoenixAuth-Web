@@ -9,6 +9,8 @@ enum API {
   DAILY_SIGN = "/owner/daily_sign",
   BIND_MOBILE_ACCOUNT = "/owner/bind_mobile_account/verify",
   GET_LOGIN_SMSCODE = "/owner/bind_mobile_account/get_sms",
+  GET_MAIL_REWARD = "/owner/get_mail_reward",
+  USE_GIFT_CODE = "/owner/use_gift_code",
 }
 
 // 数据类型声明
@@ -27,6 +29,11 @@ interface codeInfo {
   captcha_token: string;
 }
 
+interface giftCodeIndo{
+  code: string;
+
+}
+
 // 导出api
 // 请求机器人游戏信息
 export const reqGetStatus = () => request.get(API.GET_STATUS);
@@ -43,3 +50,8 @@ export const reqSignIn = () => request.get(API.DAILY_SIGN);
 // 获取验证码
 export const reqGetLoginSmscode = (codeInfo: codeInfo) =>
   request.post(API.GET_LOGIN_SMSCODE, codeInfo);
+// 获取邮件奖励
+export const reqGetMailReward = () => request.get(API.GET_MAIL_REWARD);
+// 使用礼包码
+export const reqUseGiftCode = (giftCodeIndo: giftCodeIndo) =>
+  request.post(API.USE_GIFT_CODE, giftCodeIndo);

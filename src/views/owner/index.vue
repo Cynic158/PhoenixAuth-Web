@@ -13,7 +13,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >游戏账号是调用一些特殊 API 时使用的账号 (不包括进服), 且只能与绑定的游戏ID一致</span
+            >游戏账号是调用部分功能所使用的账号 (不包括进服), 且只能与绑定的游戏ID一致</span
           >
         </div>
         <el-divider />
@@ -193,7 +193,7 @@
         </div>
         <el-divider />
 
-        <el-button type="success" @click="signinBot">签到</el-button>
+        <el-button type="success" round @click="signinBot">签到</el-button>
       </div>
     </el-card>
 
@@ -212,7 +212,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >在请求进服遇到错误时, 尝试使用您的账号发送服务器重启指令</span
+            >在请求进服时, 如果短时间遇到多次错误则尝试向服务器发送重启指令</span
           >
         </div>
         <el-divider />
@@ -221,6 +221,78 @@
           :loading="autoRestartLoading"
           :before-change="beforeAutoRestartChange"
         />
+      </div>
+    </el-card>
+
+    <el-card
+      shadow="hover"
+      v-if="botInfo.username"
+      v-loading="getMailRewardLoading || queryLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
+        <div class="card-header">邮件领取</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >将所有邮件状态变为已读, 且领取邮件奖励</span
+          >
+        </div>
+        <el-divider />
+
+        <el-button type="success" round @click="getMailReward">领取</el-button>
+      </div>
+    </el-card>
+
+    <el-card 
+      v-loading="giftCodeLoading || queryLoading"
+      style="margin-top: 12px"
+      shadow="hover"
+      v-if="botInfo.username"
+    >
+      <template #header>
+        <div class="card-header">礼包兑换码</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >使用游戏内礼包兑换码</span
+          >
+        </div>
+        <el-divider />
+        <el-alert
+          v-if="giftCodeAlertTitle"
+          style="margin-bottom: 16px"
+          :title="giftCodeAlertTitle"
+          :type="giftCodeAlertType"
+          show-icon
+          :closable="false"
+        />
+
+        <el-form
+          @submit.prevent
+          class="limited-form-container"
+          :model="giftCodeData"
+          :rules="giftCodeRules"
+          ref="giftCodeform"
+        >
+          <el-form-item label="礼包兑换码" prop="code">
+            <el-input
+              v-model="giftCodeData.code"
+              placeholder="请输入礼包兑换码"
+            />
+          </el-form-item>
+          <el-form-item style="margin-bottom: 0">
+            <el-button type="primary" native-type="submit" @click="useGiftCode">兑换</el-button>
+          </el-form-item>
+        </el-form>
       </div>
     </el-card>
 
@@ -360,7 +432,7 @@ let clearForm = () => {
       }
     }, 200);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   }
 };
 // @ts-ignore
@@ -370,6 +442,18 @@ let validateEmail = (rule: any, value: any, callback: any) => {
 
   if (!emailRegex.test(value)) {
     callback(new Error("邮箱格式不正确"));
+  } else {
+    callback();
+  }
+};
+// @ts-ignore
+let validateGiftCode = (rule: any, value: any, callback: any) => {
+  // uuid正则
+  const codeReg =
+    /^[0-9a-z]{10}$/;
+
+  if (!codeReg.test(value)) {
+    callback(new Error("礼包兑换码格式不正确"));
   } else {
     callback();
   }
@@ -390,6 +474,11 @@ const rules = {
       message: "密码不能为空",
       trigger: "blur",
     },
+  ],
+};
+const giftCodeRules = {
+  code: [
+    { required: true, validator: validateGiftCode, trigger: "blur" },
   ],
 };
 // 邮箱卡片提示
@@ -461,7 +550,7 @@ let clearPhoneForm = () => {
       }
     }, 200);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   }
 };
 // @ts-ignore
@@ -699,7 +788,7 @@ let unbindBot = async () => {
       });
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
     unbindLoading.value = false;
     unbindDialogVisible.value = false;
@@ -772,6 +861,89 @@ let beforeAutoRestartChange = async () => {
     autoRestartLoading.value = false;
   }
 };
+
+// 领取邮件奖励
+let getMailRewardLoading = ref(false);
+let getMailReward = async () => {
+  try {
+    getMailRewardLoading.value = true;
+    let result = await ownerStore.botGetMailReward();
+    // @ts-ignore
+    if (result.success) {
+      ElNotification({
+        type: "success",
+        title: "成功",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    } else {
+      ElNotification({
+        type: "error",
+        title: "失败",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+    //console.log(error);
+  } finally {
+    getMailRewardLoading.value = false;
+  }
+};
+
+// 礼包码
+let giftCodeAlertType = ref("success");
+// 提示消息
+let giftCodeAlertTitle = ref("");
+// 礼包码卡片loading
+let giftCodeLoading = ref(false);
+// 表单元素
+let giftCodeform = ref(null);
+// 表单数据
+let giftCodeData = reactive({
+  code: "",
+});
+// 清空表单
+let clearGiftCodeForm = () => {
+  giftCodeData.code = "";
+  try {
+    setTimeout(() => {
+      if (giftCodeform.value) {
+        // @ts-ignore
+        codeform.value.clearValidate(["code"]);
+      }
+    }, 200);
+  } catch (error) {}
+};
+// 使用兑换码
+let useGiftCode = async () => {
+  try {
+    // @ts-ignore
+    await giftCodeform.value.validate();
+    // 显示加载
+    giftCodeLoading.value = true;
+    // 仓库发起请求
+    let result = await ownerStore.botUseGiftCode({
+      code: giftCodeData.code,
+    });
+    // @ts-ignore
+    if (result.success) {
+      giftCodeAlertType.value = "success";
+      // 清空表单
+      clearGiftCodeForm();
+    } else {
+      giftCodeAlertType.value = "warning";
+    }
+    // @ts-ignore
+    giftCodeAlertTitle.value = result.message;
+  } catch (error) {
+    //console.log(error);
+  } finally {
+    giftCodeLoading.value = false;
+  }
+};
 </script>
 
 <style scoped>
@@ -794,5 +966,8 @@ let beforeAutoRestartChange = async () => {
 }
 :deep(.el-input input:-webkit-autofill) {
   -webkit-text-fill-color: #000000 !important;
+}
+.limited-form-container {
+  max-width: 600px;
 }
 </style>

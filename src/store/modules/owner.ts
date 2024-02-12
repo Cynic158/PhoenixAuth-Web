@@ -12,6 +12,8 @@ import {
   reqSignIn,
   reqBindMobileAccount,
   reqGetLoginSmscode,
+  reqGetMailReward,
+  reqUseGiftCode,
 } from "@/api/owner";
 
 interface emailInfo {
@@ -27,6 +29,10 @@ interface phoneInfo {
 interface codeInfo {
   mobile: string;
   captcha_token: string;
+}
+
+interface giftCodeIndo {
+  code: string;
 }
 
 // 创建仓库
@@ -94,6 +100,26 @@ let useOwnerStore = defineStore("owner", () => {
     }
   };
 
+  // 获取邮件奖励
+  let botGetMailReward = async () => {
+    try {
+      let result = await reqGetMailReward();
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 使用礼包码
+  let botUseGiftCode = async (giftCodeIndo: giftCodeIndo) => {
+    try {
+      let result = await reqUseGiftCode(giftCodeIndo);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   return {
     getBot,
     botCreateByEmail,
@@ -101,6 +127,8 @@ let useOwnerStore = defineStore("owner", () => {
     botSignIn,
     botCreateByPhone,
     botPhoneCode,
+    botGetMailReward,
+    botUseGiftCode,
   };
 });
 

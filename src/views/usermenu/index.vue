@@ -118,7 +118,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >使用兑换码更新您的账号</span
+            >使用兑换码更新您的用户中心账户</span
           >
         </div>
         <el-divider />

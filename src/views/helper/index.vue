@@ -232,7 +232,7 @@
         </div>
         <el-divider />
 
-        <el-button type="success" @click="signinBot">签到</el-button>
+        <el-button type="success" round @click="signinBot">签到</el-button>
       </div>
     </el-card>
 
