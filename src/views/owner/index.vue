@@ -393,7 +393,8 @@ let getBotStatus = async () => {
     } else {
       // 获取失败
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -516,7 +517,8 @@ let createBotByEmail = async () => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -648,8 +650,8 @@ let getCode = async () => {
   if (!captchaToken) {
     // 消息提示
     ElNotification({
-      type: "error",
-      title: "请求失败",
+      type: "warning",
+      title: "Warning",
       message: "人机验证未通过",
       duration: 3000,
     });
@@ -701,8 +703,8 @@ let getCode = async () => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
-        title: "获取验证码失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -745,7 +747,8 @@ let createBotByPhone = async () => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -775,13 +778,15 @@ let unbindBot = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     } else {
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -806,15 +811,15 @@ let signinBot = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
-        title: "签到成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     } else {
       ElNotification({
-        type: "error",
-        title: "签到失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -839,7 +844,7 @@ let beforeAutoRestartChange = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
-        title: "设置成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -847,8 +852,8 @@ let beforeAutoRestartChange = async () => {
       return true;
     } else {
       ElNotification({
-        type: "error",
-        title: "设置失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -872,15 +877,15 @@ let getMailReward = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
-        title: "成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     } else {
       ElNotification({
-        type: "error",
-        title: "失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,

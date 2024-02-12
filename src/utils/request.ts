@@ -67,8 +67,8 @@ request.interceptors.response.use(
           const jsonData = JSON.parse(reader.result?.toString() || "{}");
           // 在这里处理返回的 JSON 数据，例如显示错误信息
           ElNotification({
-            type: "error",
-            title: "错误",
+            type: "warning",
+            title: "Warning",
             message: jsonData.message || "请先登录",
             duration: 3000,
           });
@@ -85,8 +85,8 @@ request.interceptors.response.use(
           reader.readAsText(error.response.data);
         } else {
           ElNotification({
-            type: "error",
-            title: "错误",
+            type: "warning",
+            title: "Warning",
             message: error.response.data.message || "请先登录",
             duration: 3000,
           });
@@ -106,8 +106,8 @@ request.interceptors.response.use(
           const jsonData = JSON.parse(reader.result?.toString() || "{}");
           // 显示错误信息
           ElNotification({
-            type: "error",
-            title: "错误",
+            type: "warning",
+            title: "Warning",
             message: jsonData.message || "无权访问",
             duration: 3000,
           });
@@ -117,8 +117,8 @@ request.interceptors.response.use(
         } else {
           // 显示错误信息
           ElNotification({
-            type: "error",
-            title: "错误",
+            type: "warning",
+            title: "Warning",
             message: error.response.data.message || "无权访问",
             duration: 3000,
           });

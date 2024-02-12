@@ -546,7 +546,7 @@ let beforeChange = async () => {
       // userStore.banlistFlag = !userStore.banlistFlag;
       ElNotification({
         type: "success",
-        title: "操作成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -554,8 +554,8 @@ let beforeChange = async () => {
       return true;
     } else {
       ElNotification({
-        type: "error",
-        title: "操作失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -581,7 +581,7 @@ let apikeyGen = async () => {
       userStore.uapi = result.api_key;
       ElNotification({
         type: "success",
-        title: "生成成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -589,8 +589,8 @@ let apikeyGen = async () => {
     } else {
       // 获取失败
       ElNotification({
-        type: "error",
-        title: "生成失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -611,7 +611,7 @@ let apikeyDis = async () => {
       userStore.uapi = "暂未获取";
       ElNotification({
         type: "success",
-        title: "删除成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -619,8 +619,8 @@ let apikeyDis = async () => {
     } else {
       // 获取失败
       ElNotification({
-        type: "error",
-        title: "删除失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -676,7 +676,7 @@ let tokenDownload = async () => {
   tokenLoading.value = true;
   ElNotification({
     type: "info",
-    title: "获取中",
+    title: "Info",
     message: "正在获取FBToken, 请稍后",
     duration: 3000,
   });
@@ -684,15 +684,15 @@ let tokenDownload = async () => {
     let result = await userStore.userDownload();
     ElNotification({
       type: "success",
-      title: "获取成功",
+      title: "Success",
       message: "请留意浏览器下载内容",
       duration: 3000,
     });
     // @ts-ignore
     if (result.success === false) {
       ElNotification({
-        type: "error",
-        title: "获取失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -882,8 +882,8 @@ let sendEmailCode = async (type: String) => {
     // 检查结果
     if (!result) {
       ElNotification({
-        type: "error",
-        title: "发送失败",
+        type: "warning",
+        title: "Warning",
         message: "需要完成人机验证交互",
         duration: 3000,
       });
@@ -900,8 +900,8 @@ let sendEmailCode = async (type: String) => {
   if (!captchaToken) {
     // 消息提示
     ElNotification({
-      type: "error",
-      title: "发送失败",
+      type: "warning",
+      title: "Warning",
       message: "人机验证未通过",
       duration: 3000,
     });
@@ -943,7 +943,7 @@ let sendEmailCode = async (type: String) => {
       // 消息提示
       ElNotification({
         type: "success",
-        title: "发送成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -959,8 +959,8 @@ let sendEmailCode = async (type: String) => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
-        title: "发送失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -998,7 +998,7 @@ let bindEmail = async () => {
       // 通知
       ElNotification({
         type: "success",
-        title: "绑定成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -1008,8 +1008,8 @@ let bindEmail = async () => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
-        title: "绑定失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -1044,7 +1044,7 @@ let unbindEmail = async () => {
       // 通知
       ElNotification({
         type: "success",
-        title: "解绑成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -1054,8 +1054,8 @@ let unbindEmail = async () => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
-        title: "解绑失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -1091,7 +1091,7 @@ let changePassword = async () => {
       // 通知
       ElNotification({
         type: "success",
-        title: "修改成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -1099,8 +1099,8 @@ let changePassword = async () => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
-        title: "修改失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -1158,7 +1158,7 @@ let codeUse = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
-        title: "兑换成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -1170,8 +1170,8 @@ let codeUse = async () => {
       clearCodeForm();
     } else {
       ElNotification({
-        type: "error",
-        title: "兑换失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -1207,7 +1207,7 @@ let deleteAccount = async () => {
       // 通知
       ElNotification({
         type: "success",
-        title: "删除成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -1215,8 +1215,8 @@ let deleteAccount = async () => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
-        title: "删除失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,

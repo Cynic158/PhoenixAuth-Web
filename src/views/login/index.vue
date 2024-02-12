@@ -481,8 +481,8 @@ let requestEmailVerifyCode = async () => {
   if (!captchaToken) {
     // 消息提示
     ElNotification({
-      type: "error",
-      title: "发送失败",
+      type: "warning",
+      title: "Warning",
       message: "人机验证未通过",
       duration: 3000,
     });
@@ -494,8 +494,8 @@ let requestEmailVerifyCode = async () => {
   if (!forgetData.username) {
     // 消息提示
     ElNotification({
-      type: "error",
-      title: "发送失败",
+      type: "warning",
+      title: "Warning",
       message: "请先输入用户名",
       duration: 3000,
     });
@@ -520,7 +520,7 @@ let requestEmailVerifyCode = async () => {
       // 消息提示
       ElNotification({
         type: "success",
-        title: "发送成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -536,8 +536,8 @@ let requestEmailVerifyCode = async () => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
-        title: "发送失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -582,7 +582,7 @@ let requestResetPassword = async () => {
       // 消息提示
       ElNotification({
         type: "success",
-        title: "重置成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -592,8 +592,8 @@ let requestResetPassword = async () => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
-        title: "重置失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -642,7 +642,8 @@ let login = async () => {
       ElNotification({
         type: "success",
         title: timestr,
-        message: "登录成功, 即将跳转至主页",
+        // @ts-ignore
+        message: result.message,
         duration: 3000,
       });
       // 请求成功，进入首页，且无需解锁登录按钮
@@ -651,8 +652,8 @@ let login = async () => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
-        title: "登录失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -672,8 +673,8 @@ let register = async () => {
   if (!captchaToken) {
     // 消息提示
     ElNotification({
-      type: "error",
-      title: "注册失败",
+      type: "warning",
+      title: "Warning",
       message: "人机验证未通过",
       duration: 3000,
     });
@@ -710,7 +711,7 @@ let register = async () => {
       // 消息提示
       ElNotification({
         type: "success",
-        title: "注册成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -720,8 +721,8 @@ let register = async () => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
-        title: "注册失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -746,8 +747,8 @@ let reqNewTokenFunc = async () => {
     } catch (error) {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
-        title: "错误",
+        type: "warning",
+        title: "Warning",
         message: "无法连接到服务器, 请检查网络连接",
         duration: 3000,
       });

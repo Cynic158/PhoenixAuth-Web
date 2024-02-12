@@ -248,7 +248,7 @@ let logoutFunc = async () => {
       // 消息提示
       ElNotification({
         type: "success",
-        title: "登出成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -256,8 +256,8 @@ let logoutFunc = async () => {
     }else{
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
-        title: "登出失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,

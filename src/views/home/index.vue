@@ -192,28 +192,33 @@ let currentPage = ref(1);
 let getAnnList = async (page_num: number) => {
   // 显示开始加载
   loading.value = true;
-  // 发起请求
-  let result = await annStore.getAnn({ page_num, page_size: 5 });
-  // @ts-ignore
-  if (result.success) {
-    // 获取成功
-    // 更新列表
+  try{
+    // 发起请求
+    let result = await annStore.getAnn({ page_num, page_size: 5 });
     // @ts-ignore
-    annList.value = result.announcements;
-    // 更新总数
-    // @ts-ignore
-    annTotal.value = result.total;
-    // 回滚到顶部
-    let scrollEl = document.querySelector(".el-main");
-    await verticalScroll(scrollEl as Element);
+    if (result.success) {
+      // 获取成功
+      // 更新列表
+      // @ts-ignore
+      annList.value = result.announcements;
+      // 更新总数
+      // @ts-ignore
+      annTotal.value = result.total;
+      // 回滚到顶部
+      let scrollEl = document.querySelector(".el-main");
+      await verticalScroll(scrollEl as Element);
+    } else {
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  }catch(err){
+  }finally{
     loading.value = false;
-  } else {
-    loading.value = false;
-    ElNotification({
-      type: "error",
-      message: "列表数据获取失败",
-      duration: 3000,
-    });
   }
 };
 // 页码发生变化就获取新的列表
@@ -346,7 +351,7 @@ let submitNotice = async () => {
         getAnnList(1);
         ElNotification({
           type: "success",
-          title: "公告创建成功",
+          title: "Success",
           // @ts-ignore
           message: result.message,
           duration: 3000,
@@ -354,8 +359,8 @@ let submitNotice = async () => {
       } else {
         // 请求失败，消息提示
         ElNotification({
-          type: "error",
-          title: "公告创建失败",
+          type: "warning",
+          title: "Warning",
           // @ts-ignore
           message: result.message,
           duration: 3000,
@@ -371,7 +376,7 @@ let submitNotice = async () => {
         getAnnList(1);
         ElNotification({
           type: "success",
-          title: "公告更新成功",
+          title: "Success",
           // @ts-ignore
           message: result.message,
           duration: 3000,
@@ -379,8 +384,8 @@ let submitNotice = async () => {
       } else {
         // 请求失败，消息提示
         ElNotification({
-          type: "error",
-          title: "公告更新失败",
+          type: "warning",
+          title: "Warning",
           // @ts-ignore
           message: result.message,
           duration: 3000,
@@ -432,14 +437,17 @@ let deleteNotice = async () => {
       }
       ElNotification({
         type: "success",
-        message: "删除成功",
+        title: "Success",
+        // @ts-ignore
+        message: result.message,
         duration: 3000,
       });
     } else {
       deleteDialogVisible.value = false;
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,

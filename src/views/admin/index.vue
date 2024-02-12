@@ -554,8 +554,8 @@ let generateCode = async () => {
     // @ts-ignore
     if (result.message) {
       ElNotification({
-        type: "error",
-        title: "失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -563,7 +563,7 @@ let generateCode = async () => {
     } else {
       ElNotification({
         type: "success",
-        title: "成功",
+        title: "Success",
         message: "请及时下载兑换码",
         duration: 3000,
       });
@@ -662,7 +662,7 @@ let queryUser = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
-        title: "成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -671,8 +671,8 @@ let queryUser = async () => {
       setUserInfo(result.user);
     } else {
       ElNotification({
-        type: "error",
-        title: "失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -736,7 +736,7 @@ let banUser = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
-        title: "成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -747,8 +747,8 @@ let banUser = async () => {
       queryUser();
     } else {
       ElNotification({
-        type: "error",
-        title: "失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -789,7 +789,7 @@ let unBanUser = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
-        title: "成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -798,8 +798,8 @@ let unBanUser = async () => {
       queryUser();
     } else {
       ElNotification({
-        type: "error",
-        title: "失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -856,7 +856,7 @@ let setUserPermission = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
-        title: "设置成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -868,8 +868,8 @@ let setUserPermission = async () => {
       clearSetUserPermissionForm();
     } else {
       ElNotification({
-        type: "error",
-        title: "设置失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -929,7 +929,7 @@ let extendUserExipre = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
-        title: "成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -941,8 +941,8 @@ let extendUserExipre = async () => {
       clearExtendUserExipreForm();
     } else {
       ElNotification({
-        type: "error",
-        title: "失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -1002,7 +1002,7 @@ let extendUserUnlimited = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
-        title: "成功",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -1014,8 +1014,8 @@ let extendUserUnlimited = async () => {
       clearExtendUserUnlimitedForm();
     } else {
       ElNotification({
-        type: "error",
-        title: "失败",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
