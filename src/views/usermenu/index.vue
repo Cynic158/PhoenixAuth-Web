@@ -399,7 +399,7 @@
           type="primary"
           round
           @click="apikeyGen"
-          v-if="userStore.uapi === '' || userStore.uapi === '暂未获取'"
+          v-if="userStore.uapi === '' || userStore.uapi === '-'"
           >生成</el-button
         >
         <el-button
@@ -407,7 +407,7 @@
           type="danger"
           round
           @click="apikeyDis"
-          v-if="userStore.uapi !== '' && userStore.uapi !== '暂未获取'"
+          v-if="userStore.uapi !== '' && userStore.uapi !== '-'"
           >删除</el-button
         >
       </div>
@@ -608,7 +608,7 @@ let apikeyDis = async () => {
     let result = await userStore.userDisApi();
     // @ts-ignore
     if (result.success) {
-      userStore.uapi = "暂未获取";
+      userStore.uapi = "-";
       ElNotification({
         type: "success",
         title: "Success",
