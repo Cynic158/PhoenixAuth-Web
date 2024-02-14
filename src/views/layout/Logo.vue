@@ -1,6 +1,5 @@
 <template>
   <div class="logo-container">
-    <!-- <img :src="setting.logoImage" alt=""> -->
     <svg-icon
       name="icon"
       width="40px"
