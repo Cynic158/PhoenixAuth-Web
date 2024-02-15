@@ -160,8 +160,8 @@
         <Precode
           v-if="tokenContent"
           :code="tokenContent"
-          :type="'text'"
-          style="margin-bottom: 16px"
+          :type="'plaintext'"
+          style="margin-bottom: 24px"
         />
         <el-form
           @submit.prevent
@@ -417,13 +417,17 @@
           >
         </div>
         <el-divider />
-        <Precode :code="userStore.uapi" :type="'bash'"></Precode>
+        <Precode
+          v-if="userStore.uapi"
+          :code="userStore.uapi"
+          :type="'plaintext'"
+        />
         <el-button
           style="margin-top: 12px"
           type="primary"
           round
           @click="apikeyGen"
-          v-if="userStore.uapi === '' || userStore.uapi === '-'"
+          v-if="!userStore.uapi"
           >生成</el-button
         >
         <el-button
@@ -431,7 +435,7 @@
           type="danger"
           round
           @click="apikeyDis"
-          v-if="userStore.uapi !== '' && userStore.uapi !== '-'"
+          v-if="userStore.uapi"
           >删除</el-button
         >
       </div>
@@ -509,8 +513,6 @@ import { getTimeStr2 } from "@/utils";
 import { ElNotification } from "element-plus";
 // 导入路由
 import { useRouter } from "vue-router";
-// 导入 Prism
-import Prism from "prismjs";
 // 导出本地仓库给HTML使用
 let exportedLocalStorage = localStorage
 // 使用设置仓库的移动端适配
@@ -634,7 +636,7 @@ let apikeyDis = async () => {
     let result = await userStore.userDisApi();
     // @ts-ignore
     if (result.success) {
-      userStore.uapi = "-";
+      userStore.uapi = "";
       ElNotification({
         type: "success",
         title: "Success",
@@ -735,7 +737,6 @@ let tokenDownload = async () => {
     //console.log(error);
   } finally {
     tokenLoading.value = false;
-    Prism.highlightAll();
   }
 };
 

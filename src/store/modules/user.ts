@@ -210,7 +210,7 @@ let useUserStore = defineStore("user", () => {
     uunlimited.value = userInfo.unlimited_until.toString();
     ucreate.value = userInfo.create_at.toString();
     uexpire.value = userInfo.expire_at.toString();
-    uapi.value = userInfo.api_key || "-";
+    uapi.value = userInfo.api_key;
     banlistFlag.value = userInfo.enable_ban_list_upload;
     autoRestartFlag.value = userInfo.enable_auto_restart_server;
     upermission.value = userInfo.permission.toString();
