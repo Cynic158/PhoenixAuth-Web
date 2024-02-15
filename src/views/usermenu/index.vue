@@ -256,6 +256,7 @@
               show-password
               v-model="passwordData.newPassword"
               placeholder="请输入新密码"
+              autocomplete="new-password"
             />
           </el-form-item>
           <el-form-item label="确认新密码" prop="repassword">
@@ -264,6 +265,7 @@
               show-password
               v-model="passwordData.repassword"
               placeholder="请确认新密码"
+              autocomplete="new-password"
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">

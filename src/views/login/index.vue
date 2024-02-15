@@ -62,6 +62,7 @@
                       placeholder="请输入新密码"
                       show-password
                       prefix-icon="Lock"
+                      autocomplete="new-password"
                     />
                   </el-form-item>
                   <el-form-item prop="repassword">
@@ -71,6 +72,7 @@
                       placeholder="请确认新密码"
                       show-password
                       prefix-icon="Lock"
+                      autocomplete="new-password"
                     />
                   </el-form-item>
                   <el-form-item>
@@ -184,6 +186,7 @@
                       placeholder="请输入密码"
                       show-password
                       prefix-icon="Lock"
+                      autocomplete="new-password"
                     />
                   </el-form-item>
                   <el-form-item prop="repassword">
@@ -193,6 +196,7 @@
                       placeholder="请确认密码"
                       show-password
                       prefix-icon="Lock"
+                      autocomplete="new-password"
                     />
                   </el-form-item>
                   <el-form-item>
