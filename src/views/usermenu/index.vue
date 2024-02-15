@@ -122,7 +122,6 @@
           >
         </div>
         <el-divider />
-
         <el-form
           @submit.prevent
           class="limited-form-container"
@@ -160,7 +159,7 @@
         <Precode
           v-if="tokenContent"
           :code="tokenContent"
-          :type="'plaintext'"
+          :type="'bash'"
           style="margin-bottom: 24px"
         />
         <el-form
@@ -420,7 +419,7 @@
         <Precode
           v-if="userStore.uapi"
           :code="userStore.uapi"
-          :type="'plaintext'"
+          :type="'bash'"
         />
         <el-button
           style="margin-top: 12px"

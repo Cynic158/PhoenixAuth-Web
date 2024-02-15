@@ -1,7 +1,7 @@
 <template>
   <pre
     class="code-container"
-  ><code :class="'language-'+ type" v-html="Prism.highlight(code, Prism.languages[type], type)"></code></pre>
+  ><code :class="'language-'+type" v-html="Prism.highlight(code, Prism.languages[type], type)"></code></pre>
 </template>
 <script setup lang="ts">
 import { onMounted } from "vue";
@@ -13,11 +13,11 @@ defineProps({
   },
   type: {
     type: String,
-    default: "html",
+    default: "bash",
   },
 });
 onMounted(() => {
-  Prism.highlightAll(); //切换菜单重新渲染
+  Prism.highlightAll(true); //切换菜单重新渲染
 });
 </script>
 

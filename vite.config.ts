@@ -53,7 +53,7 @@ export default ({ mode }) =>
     plugins: [
       vue(),
       prismjsPlugin({
-        languages: ["json", "js", "bash", "shell"],
+        languages: ["bash"],
         //  languages: 'all',
         plugins: ["line-numbers", "copy-to-clipboard"], //配置显示行号插件
         theme: "solarizedlight", //主题名称
