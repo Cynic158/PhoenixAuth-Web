@@ -29,7 +29,9 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.23.10",
+    "@types/crypto-js": "^4.2.2",
     "@types/intl": "^1.2.2",
+    "@types/prismjs": "^1.26.3",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "@vitejs/plugin-vue": "^4.6.2",

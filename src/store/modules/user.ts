@@ -33,8 +33,8 @@ import router from "@/router";
 // @ts-ignore
 import cloneDeep from "lodash/cloneDeep";
 // 导入加密
-// @ts-ignore
 import sha256 from "crypto-js/sha256";
+import md5 from "crypto-js/md5";
 
 interface userInfo {
   username: string;
@@ -57,6 +57,9 @@ interface userDetail {
 interface passwordInfo {
   email_verify_code: string;
   new_password: string;
+}
+interface fbtokenInfo{
+  hashed_ip: string;
 }
 interface requestEmailVerifyCodeInfo {
   email?: string;
@@ -312,10 +315,13 @@ let useUserStore = defineStore("user", () => {
   };
 
   // 请求phoenixtoken
-  let userDownload = async () => {
+  let userReqFBToken = async (fbtokenInfo: fbtokenInfo) => {
     // 发起请求
     try {
-      let result = await reqGetPhoenixToken();
+      if (fbtokenInfo.hashed_ip !== ""){
+        fbtokenInfo.hashed_ip = md5(fbtokenInfo.hashed_ip).toString();
+      }
+      let result = await reqGetPhoenixToken(fbtokenInfo);
       return result;
     } catch (error) {
       return Promise.reject(error);
@@ -460,7 +466,7 @@ let useUserStore = defineStore("user", () => {
     autoRestartFlag,
     uapi,
     uhasEmail,
-    userDownload,
+    userReqFBToken,
     userPassword,
     userCode,
     userGenApi,

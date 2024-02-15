@@ -28,6 +28,9 @@ interface userInfo {
   password: string;
   captcha_token: string;
 }
+interface fbtokenInfo{
+  hashed_ip: string;
+}
 interface passwordInfo {
   email_verify_code: string;
   new_password: string;
@@ -68,10 +71,8 @@ export const reqGetStatus = () => request.get(API.GET_STATUS);
 // 请求登出
 export const reqLogout = () => request.get(API.LOGOUT);
 // 请求phoenixtoken
-export const reqGetPhoenixToken = () =>
-  request.get(API.GET_PHOENIX_TOKEN, {
-    responseType: "blob",
-  });
+export const reqGetPhoenixToken = (fbtokenInfo: fbtokenInfo) =>
+  request.post(API.GET_PHOENIX_TOKEN, fbtokenInfo);
 // 请求更改密码
 export const reqChangePassword = (passwordInfo: passwordInfo) =>
   request.post(API.CHANGE_PASSWORD, passwordInfo);

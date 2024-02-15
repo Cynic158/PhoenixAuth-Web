@@ -396,7 +396,6 @@
 // 导入管理仓库
 import useAdminStore from "@/store/modules/admin";
 // 导入消息通知组件
-// @ts-ignore
 import { ElNotification } from "element-plus";
 import { reactive, ref, computed } from "vue";
 // 导入时间转换函数

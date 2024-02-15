@@ -319,7 +319,6 @@
 // 导入bot仓库
 import useHelperStore from "@/store/modules/helper";
 // 导入消息通知组件
-// @ts-ignore
 import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 // 人机验证显示

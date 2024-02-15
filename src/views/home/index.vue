@@ -160,7 +160,6 @@ import useSettingStore from "@/store/modules/setting";
 import useAnnouncementStore from "@/store/modules/announcement";
 import { onMounted, reactive, ref } from "vue";
 // 导入通知
-// @ts-ignore
 import { ElNotification, ElMessageBox } from "element-plus";
 // 导入缓动函数
 import { verticalScroll } from "@/utils";

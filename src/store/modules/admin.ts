@@ -1,8 +1,5 @@
 // 管理仓库
 import { defineStore } from "pinia";
-// 导入加密
-// @ts-ignore
-import sha256 from "crypto-js/sha256";
 
 // 管理请求api
 import {

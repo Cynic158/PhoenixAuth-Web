@@ -247,7 +247,6 @@ import useUserStore from "@/store/modules/user";
 // 使用路由
 import { useRouter } from "vue-router";
 // element的消息通知组件
-// @ts-ignore
 import { ElNotification } from "element-plus";
 // 获取时间字符串函数
 import { getTimeStr } from "@/utils/index";

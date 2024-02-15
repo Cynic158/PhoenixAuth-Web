@@ -109,7 +109,6 @@ import BreadCrumb from "./BreadCrumb.vue";
 // 导入标签页
 import Tabs from "./Tabs.vue";
 // element的消息通知组件
-// @ts-ignore
 import { ElNotification } from "element-plus";
 import { nextTick, ref } from "vue";
 

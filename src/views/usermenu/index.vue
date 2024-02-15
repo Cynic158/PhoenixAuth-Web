@@ -137,7 +137,7 @@
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" @click="codeUse">兑换</el-button>
+            <el-button type="primary" native-type="submit" @click="codeUse">兑换</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -153,11 +153,32 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >为 PhoenixBuilder 或者其他程序提供的登录凭证</span
+            >为 PhoenixBuilder 或者其他程序提供的登录凭证, 可选择添加 IP 限制</span
           >
         </div>
         <el-divider />
-        <el-button type="primary" round @click="tokenDownload">获取</el-button>
+        <Precode
+          v-if="tokenContent"
+          :code="tokenContent"
+          :type="'text'"
+          style="margin-bottom: 16px"
+        />
+        <el-form
+          @submit.prevent
+          class="limited-form-container"
+          :model="tokenData"
+          ref="tokenform"
+        >
+          <el-form-item label="IP地址" prop="hashedIp">
+            <el-input
+              v-model="tokenData.hashedIp"
+              placeholder="请输入 IP 地址"
+            />
+          </el-form-item>
+          <el-form-item style="margin-bottom: 0">
+            <el-button type="primary" native-type="submit" @click="tokenDownload">获取</el-button>
+          </el-form-item>
+        </el-form>
       </div>
     </el-card>
 
@@ -250,6 +271,7 @@
             <el-button
               :loading="passwordloadingflag"
               type="primary"
+              native-type="submit"
               @click="changePassword"
               >修改密码</el-button
             >
@@ -314,6 +336,7 @@
           <el-button
             :loading="emailbindloadingflag"
             type="primary"
+            native-type="submit"
             @click="bindEmail"
           >
             绑定
@@ -371,6 +394,7 @@
           <el-button
             :loading="emailunbindloadingflag"
             type="danger"
+            native-type="submit"
             @click="unbindEmail"
           >
             解绑
@@ -462,6 +486,7 @@
           <el-button
             :loading="deleteaccountloadingflag"
             type="danger"
+            native-type="submit"
             @click="deleteAccount"
           >
             删除
@@ -481,10 +506,11 @@ import { computed, onActivated, onMounted, onUnmounted, reactive, ref } from "vu
 // 导入时间转换函数
 import { getTimeStr2 } from "@/utils";
 // 导入消息通知组件
-// @ts-ignore
 import { ElNotification } from "element-plus";
 // 导入路由
 import { useRouter } from "vue-router";
+// 导入 Prism
+import Prism from "prismjs";
 // 导出本地仓库给HTML使用
 let exportedLocalStorage = localStorage
 // 使用设置仓库的移动端适配
@@ -669,21 +695,33 @@ const userPermissionStr = computed(() => {
 });
 
 // token部分
+// 表单元素
+let tokenform = ref(null);
+// 表单数据
+let tokenData = reactive({
+  hashedIp: "",
+});
+// Alert Title
+let tokenContent = ref("");
 // token获取loading
 let tokenLoading = ref(false);
 // 请求phoenixtoken
 let tokenDownload = async () => {
   tokenLoading.value = true;
   try {
-    let result = await userStore.userDownload();
-    ElNotification({
-      type: "success",
-      title: "Success",
-      message: "请留意浏览器下载内容",
-      duration: 3000,
+    let result = await userStore.userReqFBToken({
+      hashed_ip: tokenData.hashedIp,
     });
     // @ts-ignore
-    if (result.success === false) {
+    if (!result.message) {
+      ElNotification({
+        type: "success",
+        title: "Success",
+        message: "请留意浏览器下载内容",
+        duration: 3000,
+      });
+      tokenContent.value = result.toString();
+    }else{
       ElNotification({
         type: "warning",
         title: "Warning",
@@ -691,11 +729,13 @@ let tokenDownload = async () => {
         message: result.message,
         duration: 3000,
       });
+      tokenContent.value = "";
     }
   } catch (error) {
     //console.log(error);
   } finally {
     tokenLoading.value = false;
+    Prism.highlightAll();
   }
 };
 

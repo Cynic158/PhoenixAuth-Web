@@ -321,7 +321,6 @@ import useUserStore from "@/store/modules/user";
 // 导入bot仓库
 import useOwnerStore from "@/store/modules/owner";
 // 导入消息通知组件
-// @ts-ignore
 import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 // 人机验证显示
