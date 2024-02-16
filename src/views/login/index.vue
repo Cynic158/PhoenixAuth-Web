@@ -50,7 +50,7 @@
                           :loading="loadingflag || captchaExecutingFlag"
                           @click="requestEmailVerifyCode"
                         >
-                          {{ codeTimes > 0 ? `重新发送(${codeTimes}s)` : "发送验证码" }}
+                          {{ codeTimes > 0 ? `${codeTimes}s` : "发送" }}
                         </el-button>
                       </el-col>
                     </el-row>
