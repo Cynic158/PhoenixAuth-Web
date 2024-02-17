@@ -35,14 +35,14 @@
                   </el-form-item>
                   <el-form-item prop="email_verify_code">
                     <el-row class="row-bg" justify="center" style="width: 100%;">
-                      <el-col :span="16" style="padding-right: 10px;">
+                      <el-col :span="20" style="padding-right: 10px;">
                         <el-input
                           v-model="forgetData.email_verify_code"
                           prefix-icon="Lock"
                           placeholder="请输入邮箱验证码"
                         />
                       </el-col>
-                      <el-col :span="8">
+                      <el-col :span="4">
                         <el-button
                           type="primary"
                           style="width: 100%"
