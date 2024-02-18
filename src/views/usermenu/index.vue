@@ -263,7 +263,7 @@
 
     <el-card
       shadow="hover"
-      :loading="webAuthnLoading"
+      v-loading="webAuthnLoading"
       style="margin-top: 12px"
     >
       <template #header>
