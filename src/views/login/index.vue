@@ -19,6 +19,7 @@
             <div class="login-form">
               <h1>Welcome</h1>
               <el-form
+                @submit.prevent
                 :model="forgetData"
                 :rules="forgetRules"
                 ref="forgetform"
@@ -77,7 +78,7 @@
                   </el-form-item>
                   <el-form-item>
                     <el-button
-                      type="primary"
+                      type="warning"
                       native-type="submit"
                       class="login-btn"
                       @click="requestResetPassword"
@@ -104,6 +105,7 @@
               </el-form>
 
               <el-form
+                @submit.prevent
                 :model="loginData"
                 :rules="loginRules"
                 ref="loginform"
@@ -129,12 +131,23 @@
                   </el-form-item>
                   <el-form-item>
                     <el-button
-                      type="primary"
+                      type="warning"
                       native-type="submit"
                       class="login-btn"
                       @click="login"
                       :loading="loadingflag"
                       >登录</el-button
+                    >
+                  </el-form-item>
+                  <el-form-item
+                    v-if="browserSupportsWebAuthn()"
+                  >
+                    <el-button
+                      type="success"
+                      class="login-btn"
+                      @click="webauthnLogin"
+                      :loading="loadingflag"
+                      >通行密钥</el-button
                     >
                   </el-form-item>
                   <el-form-item>
@@ -165,6 +178,7 @@
                 </div>
               </el-form>
               <el-form
+                @submit.prevent
                 :model="regData"
                 :rules="regRules"
                 ref="regform"
@@ -201,7 +215,7 @@
                   </el-form-item>
                   <el-form-item>
                     <el-button
-                      type="primary"
+                      type="warning"
                       native-type="submit"
                       class="login-btn"
                       @click="register"
@@ -248,6 +262,8 @@
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 // 导入用户仓库
 import useUserStore from "@/store/modules/user";
+// 导入WebAuthn仓库
+import useWebAuthnStore from "@/store/modules/webauthn";
 // 使用路由
 import { useRouter } from "vue-router";
 // element的消息通知组件
@@ -256,9 +272,12 @@ import { ElNotification } from "element-plus";
 import { getTimeStr } from "@/utils/index";
 // 导入暗黑模式背景图
 //import darkimg from "../../assets/images/bg_dark.webp";
+import { browserSupportsWebAuthn, startAuthentication } from '@simplewebauthn/browser';
 
 // 使用user仓库
 let userStore = useUserStore();
+// 使用WebAuthn仓库
+let webAuthnStore = useWebAuthnStore();
 // 使用路由
 let $router = useRouter();
 // 人机验证显示
@@ -412,7 +431,7 @@ let switchpage = (type: "login" | "reg" | "forget") => {
   switch(type){
     case "reg":
       // @ts-ignore
-      document.querySelector(".login-form").style.height = "394px";
+      document.querySelector(".login-form").style.height = "384px";
       // @ts-ignore
       document.querySelector(".login-forgetpage").style.left = "-200%";
       // @ts-ignore
@@ -422,7 +441,7 @@ let switchpage = (type: "login" | "reg" | "forget") => {
       break;
     case "login":
       // @ts-ignore
-      document.querySelector(".login-form").style.height = "344px";
+      document.querySelector(".login-form").style.height = browserSupportsWebAuthn() ? "384px" : "344px";
       // @ts-ignore
       document.querySelector(".login-forgetpage").style.left = "-100%";
       // @ts-ignore
@@ -432,7 +451,7 @@ let switchpage = (type: "login" | "reg" | "forget") => {
       break;
     case "forget":
       // @ts-ignore
-      document.querySelector(".login-form").style.height = "444px";
+      document.querySelector(".login-form").style.height = "434px";
       // @ts-ignore
       document.querySelector(".login-forgetpage").style.left = "32px";
       // @ts-ignore
@@ -669,6 +688,67 @@ let login = async () => {
   loadingflag.value = false;
 };
 
+// WebAuthn登录
+let webauthnLogin = async () => {
+  // 检查浏览器是否支持WebAuthn
+  if (!browserSupportsWebAuthn()){
+    ElNotification({
+      type: "warning",
+      title: "Warning",
+      message: "当前浏览器不支持WebAuthn",
+      duration: 3000,
+    });
+    return;
+  }
+  loadingflag.value = true;
+  try {
+    // 发起请求前获取token
+    let tokenResult = await reqNewTokenFunc();
+    // @ts-ignore
+    if (!tokenResult.success) {
+      loadingflag.value = false;
+      return;
+    }
+    // 仓库请求登录 WebAuthn Options
+    let result = await webAuthnStore.loginOptions();
+    // 向验证器发起挑战
+    // @ts-ignore
+    let attResp = await startAuthentication(result.publicKey);
+    // 仓库发起验证注册请求
+    let registerResult = await webAuthnStore.loginVerification(attResp);
+    // @ts-ignore
+    if (registerResult.success){
+      ElNotification({
+        type: "success",
+        title: "Success",
+        // @ts-ignore
+        message: registerResult.message,
+        duration: 3000,
+      });
+      // 请求成功，进入首页，且无需解锁登录按钮
+      $router.push("/");
+    }else{
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        // @ts-ignore
+        message: registerResult.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+    ElNotification({
+      type: "warning",
+      title: "Warning",
+      message: error.message,
+      duration: 3000,
+    });
+  } finally {
+    // 请求完成，关闭加载
+    loadingflag.value = false;
+  }
+}
+
 let register = async () => {
   // 尝试获取验证码
   // @ts-ignore
@@ -775,8 +855,8 @@ onUnmounted(() => {
   window.onRobotError = null;
 });
 onMounted(() => {
-    // @ts-ignore
-    window.onRobotBeforeInteractive = onRobotBeforeInteractive;
+  // @ts-ignore
+  window.onRobotBeforeInteractive = onRobotBeforeInteractive;
   // @ts-ignore
   window.onRobotAfterInteractive = onRobotAfterInteractive;
   // @ts-ignore
@@ -804,6 +884,9 @@ onMounted(() => {
         document.documentElement.className = "dark";
       }
   }
+
+  // 初始化卡片
+  switchpage("login");
 });
 </script>
 
@@ -861,8 +944,6 @@ onMounted(() => {
   position: relative;
   .login-form {
     width: 80%;
-    //height: 294px;
-    height: 344px;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -914,18 +995,8 @@ onMounted(() => {
     }
     .login-btn {
       width: 100%;
-      background-color: $login-form-btn;
       border: 0;
       transition: all 0.3s;
-      &:hover {
-        background-color: $login-form-btn-hover;
-      }
-      &:focus {
-        background-color: $login-form-btn-hover;
-      }
-      &:active {
-        background-color: $login-form-btn-active;
-      }
     }
   }
 }

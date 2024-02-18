@@ -181,28 +181,6 @@
       </div>
     </el-card>
 
-    <el-card style="margin-top: 12px" shadow="hover">
-      <template #header>
-        <div class="card-header">上传黑名单</div>
-      </template>
-      <div>
-        <div class="card-footer">
-          <el-icon>
-            <ChatDotRound />
-          </el-icon>
-          <span style="margin-left: 12px; color: dimgray"
-            >在进入服务器时获取黑名单并上传至验证服务器, 不会影响进服速度</span
-          >
-        </div>
-        <el-divider />
-        <el-switch
-          v-model="userStore.banlistFlag"
-          :loading="banloading"
-          :before-change="beforeChange"
-        />
-      </div>
-    </el-card>
-
     <el-card
       style="margin-top: 12px"
       shadow="hover"
@@ -223,6 +201,7 @@
         <el-divider />
 
         <el-form
+          @submit.prevent
           class="password-form-container"
           :model="passwordData"
           :rules="changePasswordRules"
@@ -283,6 +262,50 @@
     </el-card>
 
     <el-card
+      shadow="hover"
+      :loading="webAuthnLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
+        <div class="card-header">通行密钥</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >管理绑定至您账户的通行密钥</span
+          >
+        </div>
+        <el-divider />
+        <el-table :data="webAuthnInfoList" class="limited-form-container" max-height="250">
+          <el-table-column fixed prop="create_at_str" label="创建时间" width="160" />
+          <el-table-column prop="raw_id" label="RawID" width="480"/>
+          <el-table-column fixed="right" label="操作" width="60">
+            <template #default="scope">
+              <el-button
+                link
+                type="primary"
+                size="small"
+                @click.prevent="removeWebAuthn(scope?.row?.id)"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-button 
+          style="width: 100%; margin-top: 10px;" 
+          class="limited-form-container" 
+          @click.prevent="addWebAuthn"
+          >
+            添加
+          </el-button>
+      </div>
+    </el-card>
+
+    <el-card
       style="margin-top: 12px"
       shadow="hover"
       v-if="!userStore.uhasEmail" 
@@ -300,6 +323,7 @@
       </div>
       <el-divider />
       <el-form
+        @submit.prevent
         class="limited-form-container"
         :model="emailBindData"
         :rules="bindEmailRules"
@@ -346,6 +370,66 @@
       </el-form>
     </el-card>
 
+    <el-card v-loading="apikeyLoading" style="margin-top: 12px" shadow="hover">
+      <template #header>
+        <div class="card-header">API Key</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >为 API 调用提供的用户凭证, API Key 会给予调用者控制您账户的权限, 请勿随意泄露</span
+          >
+        </div>
+        <el-divider />
+        <Precode
+          v-if="userStore.uapi"
+          :code="userStore.uapi"
+          :type="'bash'"
+        />
+        <el-button
+          style="margin-top: 12px"
+          type="primary"
+          round
+          @click="apikeyGen"
+          v-if="!userStore.uapi"
+          >生成</el-button
+        >
+        <el-button
+          style="margin-top: 12px"
+          type="danger"
+          round
+          @click="apikeyDis"
+          v-if="userStore.uapi"
+          >删除</el-button
+        >
+      </div>
+    </el-card>
+
+    <el-card style="margin-top: 12px" shadow="hover">
+      <template #header>
+        <div class="card-header">上传黑名单</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >在进入服务器时获取黑名单并上传至验证服务器, 不会影响进服速度</span
+          >
+        </div>
+        <el-divider />
+        <el-switch
+          v-model="userStore.banlistFlag"
+          :loading="banloading"
+          :before-change="beforeChange"
+        />
+      </div>
+    </el-card>
+
     <el-card
       style="margin-top: 12px"
       shadow="hover"
@@ -364,6 +448,7 @@
       </div>
       <el-divider />
       <el-form
+        @submit.prevent
         class="limited-form-container"
         :model="emailUnbindData"
         :rules="unbindEmailRules"
@@ -404,44 +489,6 @@
       </el-form>
     </el-card>
 
-    <el-card v-loading="apikeyLoading" style="margin-top: 12px" shadow="hover">
-      <template #header>
-        <div class="card-header">API Key</div>
-      </template>
-      <div>
-        <div class="card-footer">
-          <el-icon>
-            <ChatDotRound />
-          </el-icon>
-          <span style="margin-left: 12px; color: dimgray"
-            >为 API 调用提供的用户凭证, API Key 会给予调用者控制您账户的权限, 请勿随意泄露</span
-          >
-        </div>
-        <el-divider />
-        <Precode
-          v-if="userStore.uapi"
-          :code="userStore.uapi"
-          :type="'bash'"
-        />
-        <el-button
-          style="margin-top: 12px"
-          type="primary"
-          round
-          @click="apikeyGen"
-          v-if="!userStore.uapi"
-          >生成</el-button
-        >
-        <el-button
-          style="margin-top: 12px"
-          type="danger"
-          round
-          @click="apikeyDis"
-          v-if="userStore.uapi"
-          >删除</el-button
-        >
-      </div>
-    </el-card>
-
     <el-card
       style="margin-top: 12px"
       shadow="hover"
@@ -460,6 +507,7 @@
       </div>
       <el-divider />
       <el-form
+        @submit.prevent
         class="limited-form-container"
         :model="deleteAccountData"
         :rules="deleteAccountRules"
@@ -508,18 +556,24 @@ import useUserStore from "@/store/modules/user";
 // 导入设置仓库
 import useSettingStore from "@/store/modules/setting";
 import { computed, onActivated, onMounted, onUnmounted, reactive, ref } from "vue";
+// 导入WebAuthn仓库
+import useWebAuthnStore from "@/store/modules/webauthn";
 // 导入时间转换函数
 import { getTimeStr2 } from "@/utils";
 // 导入消息通知组件
 import { ElNotification } from "element-plus";
 // 导入路由
 import { useRouter } from "vue-router";
+// 导入WebAuthn
+import { startRegistration, browserSupportsWebAuthn } from '@simplewebauthn/browser';
 // 导出本地仓库给HTML使用
 let exportedLocalStorage = localStorage
 // 使用设置仓库的移动端适配
 let settingStore = useSettingStore();
 // 使用用户仓库
 let userStore = useUserStore();
+// 使用WebAuthn仓库
+let webAuthnStore = useWebAuthnStore();
 // 使用路由
 let $router = useRouter();
 // 人机验证动态虚拟ref
@@ -775,8 +829,6 @@ let clearForm = () => {
 onActivated(() => {
   clearForm();
 });
-// 修改按钮加载状态
-let passwordloadingflag = ref(false);
 // @ts-ignore
 let validateRePassword = (rule: any, value: any, callback: any) => {
   if (value !== passwordData.newPassword) {
@@ -1106,6 +1158,8 @@ let unbindEmail = async () => {
 };
 
 // 修改密码
+// 修改按钮加载状态
+let passwordloadingflag = ref(false);
 let changePassword = async () => {
   try {
     // @ts-ignore
@@ -1149,6 +1203,126 @@ let changePassword = async () => {
     passwordloadingflag.value = false;
   }
 };
+
+// WebAuthn信息列表数组
+interface webAuthnInfo {
+  id: number;
+  create_at: number;
+  raw_id: string;
+  create_at_str: string;
+}
+let webAuthnInfoList = ref<webAuthnInfo[]>([]);
+let webAuthnLoading = ref(false);
+
+// 获取WebAuthn列表信息
+let getWebAuthnList = async () => {
+  webAuthnLoading.value = true;
+  try {
+    // 仓库请求WebAuthn列表
+    let result = await webAuthnStore.queryByUser()
+    // 将credentials的create_at格式化为时间字符串
+    // @ts-ignore
+    for (let item of result.credentials){
+      item.create_at_str = getTimeStr2(item.create_at)
+    }
+    // @ts-ignore
+    webAuthnInfoList.value = result.credentials
+  } catch (error: any) {
+    //console.log(error);
+  } finally {
+    // 请求完成，关闭加载
+    webAuthnLoading.value = false;
+  }
+};
+
+// 添加通行密钥
+let addWebAuthn = async () => {
+  // 检查浏览器是否支持WebAuthn
+  if (!browserSupportsWebAuthn()){
+    ElNotification({
+      type: "warning",
+      title: "Warning",
+      message: "当前浏览器不支持WebAuthn",
+      duration: 3000,
+    });
+    return;
+  }
+  webAuthnLoading.value = true;
+  try {
+    // 仓库请求注册 WebAuthn Options
+    let result = await webAuthnStore.registerOptions();
+    // 向验证器发起挑战
+    // @ts-ignore
+    let attResp = await startRegistration(result.publicKey);
+    // 仓库发起验证注册请求
+    let registerResult = await webAuthnStore.registerVerification(attResp);
+    // @ts-ignore
+    if (registerResult.success){
+      ElNotification({
+        type: "success",
+        title: "Success",
+        // @ts-ignore
+        message: registerResult.message,
+        duration: 3000,
+      });
+      // 请求刷新列表
+      getWebAuthnList()
+    } else {
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        // @ts-ignore
+        message: registerResult.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+    ElNotification({
+      type: "warning",
+      title: "Warning",
+      message: error.message,
+      duration: 3000,
+    });
+  } finally {
+    // 请求完成，关闭加载
+    webAuthnLoading.value = false;
+  }
+};
+
+// 移除 WenAuthn
+let removeWebAuthn = async (credentialID: number) => {
+  webAuthnLoading.value = true;
+  try {
+    // 仓库请求删除 WebAuthn
+    let result = await webAuthnStore.removeById({
+      credential_id: credentialID,
+    });
+    // @ts-ignore
+    if (result.success){
+      ElNotification({
+        type: "success",
+        title: "Success",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      // 请求刷新列表
+      getWebAuthnList()
+    } else {
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+  } finally {
+    // 请求完成，关闭加载
+    webAuthnLoading.value = false;
+  }
+}
 
 // 兑换码
 // 兑换码卡片loading
@@ -1290,6 +1464,8 @@ onMounted(() => {
   // @ts-ignore
   turnstile.render('.cf-turnstile');
   getInfo();
+  // 获取credentials列表
+  getWebAuthnList()
 });
 </script>
 

@@ -18,6 +18,7 @@
         <el-divider />
 
         <el-form
+          @submit.prevent
           class="form-container"
           :model="generateRedeemCodeData"
           :rules="generateRedeemCodeFormRule"
@@ -214,6 +215,7 @@
         </div>
         <el-divider />
         <el-form
+          @submit.prevent
           class="form-container"
           :model="banData"
           :rules="banFormRule"
@@ -260,6 +262,7 @@
         <el-divider />
 
         <el-form
+          @submit.prevent
           class="form-container"
           :model="setUserPermissionData"
           :rules="setUserPermissionRule"
@@ -305,6 +308,7 @@
         <el-divider />
 
         <el-form
+          @submit.prevent
           class="form-container"
           :model="extendUserExipreData"
           :rules="extendRule"
@@ -350,6 +354,7 @@
         <el-divider />
 
         <el-form
+          @submit.prevent
           class="form-container"
           :model="extendUserUnlimitedData"
           :rules="extendRule"

@@ -112,6 +112,7 @@
           :closable="false"
         />
         <el-form
+          @submit.prevent
           class="phone-form-container"
           :model="phoneData"
           :rules="phoneRules"
@@ -188,6 +189,7 @@
         />
 
         <el-form
+          @submit.prevent
           class="email-form-container"
           :model="emailData"
           :rules="rules"
