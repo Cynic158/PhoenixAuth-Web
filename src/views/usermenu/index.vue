@@ -159,7 +159,7 @@
         <Precode
           v-if="tokenContent"
           :code="tokenContent"
-          :type="'bash'"
+          :type="'none'"
           style="margin-bottom: 24px"
         />
         <el-form
@@ -387,7 +387,7 @@
         <Precode
           v-if="userStore.uapi"
           :code="userStore.uapi"
-          :type="'bash'"
+          :type="'none'"
         />
         <el-button
           style="margin-top: 12px"

@@ -1,5 +1,4 @@
 import { defineConfig, loadEnv } from "vite";
-// @ts-ignore
 import { createHtmlPlugin } from "vite-plugin-html";
 import vue from "@vitejs/plugin-vue";
 import AutoImport from "unplugin-auto-import/vite";
@@ -53,9 +52,14 @@ export default ({ mode }) =>
     plugins: [
       vue(),
       prismjsPlugin({
-        languages: ["bash"],
-        //  languages: 'all',
-        plugins: ["line-numbers", "copy-to-clipboard"], //配置显示行号插件
+        languages: [
+          "bash",
+        ],
+        plugins: [
+          'toolbar', 
+          'show-language', 
+          'copy-to-clipboard',
+        ], 
         theme: "solarizedlight", //主题名称
         css: true,
       }),
