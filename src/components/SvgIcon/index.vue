@@ -8,7 +8,6 @@
 </template>
 
 <script setup lang="ts">
-// @ts-ignore
 defineProps({
   //xlink:href属性值的前缀
   prefix: {

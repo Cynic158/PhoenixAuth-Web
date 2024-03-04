@@ -79,16 +79,19 @@ let foldFlag = false;
 // 折叠透明度函数
 let closeOpacity = () => {
   // 将所有菜单项的标题隐藏
-  document.querySelectorAll(".el-menu-vertical-demo span").forEach((item) => {
-    // @ts-ignore
+  (
+    document.querySelectorAll(
+      ".el-menu-vertical-demo span"
+    ) as NodeListOf<HTMLSpanElement>
+  ).forEach((item) => {
     item.style.opacity = "0";
   });
   // 关闭节流阀
   setTimeout(() => {
     foldFlag = false;
     if (settingStore.mmenuFlag == true) {
-      // @ts-ignore
-      document.querySelector(".el-aside").style.left = "-64px";
+      (document.querySelector(".el-aside") as HTMLDivElement).style.left =
+        "-64px";
     }
     // 禁止横向滚动事件
     function addScrollListener() {
@@ -116,12 +119,14 @@ let closeOpacity = () => {
 // 打开透明度函数
 let openOpacity = () => {
   if (settingStore.mmenuFlag == true) {
-    // @ts-ignore
-    document.querySelector(".el-aside").style.left = "0";
+    (document.querySelector(".el-aside") as HTMLDivElement).style.left = "0";
   }
   // 将所有菜单项的标题显示
-  document.querySelectorAll(".el-menu-vertical-demo span").forEach((item) => {
-    // @ts-ignore
+  (
+    document.querySelectorAll(
+      ".el-menu-vertical-demo span"
+    ) as NodeListOf<HTMLSpanElement>
+  ).forEach((item) => {
     item.style.opacity = "1";
   });
   // 关闭节流阀
@@ -174,14 +179,13 @@ let foldMenu = async () => {
       }
     });
     // 回滚到顶部
-    // @ts-ignore
-    let scrollEl = document.querySelector(".el-menu .el-scrollbar").children[0];
+    let scrollEl = document.querySelector(".el-menu .el-scrollbar")!
+      .children[0];
     await verticalScroll(scrollEl as Element);
     if (flag) {
       // 如果有，就关上然后延时500毫秒来触发透明度函数
       activeItemArr.forEach((item) => {
-        // @ts-ignore
-        item.firstElementChild.click();
+        (item.firstElementChild as HTMLDivElement).click();
       });
       setTimeout(() => {
         closeOpacity();
@@ -213,13 +217,15 @@ onMounted(() => {
     }
   );
   //添加移动端点击其他地方菜单也会收起
-  window.addEventListener("touchstart", function (event) {
+  window.addEventListener("touchstart", function (event: TouchEvent) {
     if (settingStore.mmenuFlag == true) {
       let menu = document.querySelector(".el-aside");
 
       // Check if the click is outside the modal
-      // @ts-ignore
-      if (!menu.contains(event.target) && settingStore.isCollapse == false) {
+      if (
+        !menu!.contains(event.target as Node | null) &&
+        settingStore.isCollapse == false
+      ) {
         // Clicked outside the modal, close it
         foldMenu();
       }

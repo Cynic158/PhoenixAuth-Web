@@ -131,14 +131,16 @@ let setDark = () => {
   document.documentElement.className = dark.value ? "dark" : "";
   localStorage.setItem("DARKMODE", dark.value.toString());
 };
-if (window.innerWidth<=768){
+if (window.innerWidth <= 768) {
   // 移动端暗黑模式设置函数
-  let setupMobileDarkmode = function(){
-    dark.value = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  let setupMobileDarkmode = function () {
+    dark.value = window.matchMedia("(prefers-color-scheme: dark)").matches;
     setDark();
-  }
+  };
   // 监听移动端系统主题变化
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', setupMobileDarkmode);
+  window
+    .matchMedia("(prefers-color-scheme: dark)")
+    .addEventListener("change", setupMobileDarkmode);
   // 移动端首次触发
   setupMobileDarkmode();
 } else {
@@ -184,7 +186,7 @@ let setTabbar = (val: number) => {
   localStorage.setItem("TABBAR", val.toString());
 };
 // 首次触发
-switch(Number(localStorage.getItem("TABBAR")) || 0){
+switch (Number(localStorage.getItem("TABBAR")) || 0) {
   case 0: {
     setTabbar(0);
     selectTabbar = ref("面包屑");
@@ -240,24 +242,21 @@ let logoutFunc = async () => {
   try {
     // 由仓库发起请求
     let result = await userStore.userLogout();
-    // @ts-ignore
-    if (result.success){
+    if (result.success) {
       // 请求成功，登出
       $router.push("/login");
       // 消息提示
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
-    }else{
+    } else {
       // 请求失败，消息提示
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });

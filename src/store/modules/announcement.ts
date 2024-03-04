@@ -2,22 +2,17 @@
 import { defineStore } from "pinia";
 
 // 公告请求api
-import { reqQueryByPage, reqCreate, reqDelete, reqEdit } from "@/api/announcement";
-
-interface pageInfo {
-  page_num: number;
-  page_size: number;
-}
-interface announcementInfo {
-  ID: number;
-  title: string;
-  content: string;
-}
+import {
+  reqQueryByPage,
+  reqCreate,
+  reqDelete,
+  reqEdit,
+} from "@/api/announcement";
 
 // 创建仓库
 let useAnnouncementStore = defineStore("announcement", () => {
   // 获取公告数组
-  let getAnn = async (pageInfo: pageInfo) => {
+  let getAnn = async (pageInfo: AnnPageInfo) => {
     try {
       let result = await reqQueryByPage(pageInfo);
       return result;
@@ -27,7 +22,7 @@ let useAnnouncementStore = defineStore("announcement", () => {
   };
 
   // 创建公告
-  let annCreate = async (announcementInfo: announcementInfo) => {
+  let annCreate = async (announcementInfo: AnnouncementInfo) => {
     try {
       let result = await reqCreate(announcementInfo);
       return result;
@@ -37,7 +32,7 @@ let useAnnouncementStore = defineStore("announcement", () => {
   };
 
   // 编辑公告
-  let annEdit = async (announcementInfo: announcementInfo) => {
+  let annEdit = async (announcementInfo: AnnouncementInfo) => {
     try {
       let result = await reqEdit(announcementInfo);
       return result;

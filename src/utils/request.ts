@@ -1,5 +1,4 @@
 import axios from "axios";
-// @ts-ignore
 import { ElMessage, ElNotification } from "element-plus";
 // 导入用户仓库
 import useUserStore from "@/store/modules/user";
@@ -38,7 +37,6 @@ request.interceptors.response.use(
       const filenameInfo = response.headers["content-disposition"];
       const filename = filenameInfo.match(/filename=(.+?)(;|$)/)[1];
       // 创建 Blob
-      // @ts-ignore
       const blob = new Blob([response.data], {
         type: "application/octet-stream",
       });

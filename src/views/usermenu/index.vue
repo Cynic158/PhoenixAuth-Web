@@ -5,10 +5,11 @@
       placement="top"
       :width="326"
       :virtual-ref="dynamicTurnstileVirtualRef"
-      :visible="robotVisible && dynamicTurnstileVirtualRef?.value" 
+      :visible="robotVisible && dynamicTurnstileVirtualRef?.value"
       virtual-triggering
     >
-      <div class="cf-turnstile"
+      <div
+        class="cf-turnstile"
         data-sitekey="0x4AAAAAAAQhC3f_WRwvJ19O"
         data-callback="onRobotSuccess"
         data-error-callback="onRobotError"
@@ -16,8 +17,10 @@
         data-before-interactive-callback="onRobotBeforeInteractive"
         data-after-interactive-callback="onRobotAfterInteractive"
         data-size="normal"
-        :data-theme="exportedLocalStorage.getItem('DARKMODE') === 'true' ? 'dark' : 'light'">
-      </div>
+        :data-theme="
+          exportedLocalStorage.getItem('DARKMODE') === 'true' ? 'dark' : 'light'
+        "
+      ></div>
     </el-popover>
     <el-card shadow="hover">
       <template #header>
@@ -136,7 +139,9 @@
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" native-type="submit" @click="codeUse">兑换</el-button>
+            <el-button type="primary" native-type="submit" @click="codeUse"
+              >兑换</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -152,7 +157,8 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >为 PhoenixBuilder 或者其他程序提供的登录凭证, 可选择添加 IP 限制</span
+            >为 PhoenixBuilder 或者其他程序提供的登录凭证, 可选择添加 IP
+            限制</span
           >
         </div>
         <el-divider />
@@ -175,17 +181,18 @@
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" native-type="submit" @click="tokenDownload">获取</el-button>
+            <el-button
+              type="primary"
+              native-type="submit"
+              @click="tokenDownload"
+              >获取</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
     </el-card>
 
-    <el-card
-      style="margin-top: 12px"
-      shadow="hover"
-      v-if="userStore.uhasEmail" 
-    >
+    <el-card style="margin-top: 12px" shadow="hover" v-if="userStore.uhasEmail">
       <template #header>
         <div class="card-header">修改密码</div>
       </template>
@@ -208,8 +215,8 @@
           ref="passwordform"
         >
           <el-form-item label="邮箱验证码" prop="emailVerifyCode">
-            <el-row class="row-bg" justify="center" style="width: 100%;">
-              <el-col :span="20" style="padding-right: 10px;">
+            <el-row class="row-bg" justify="center" style="width: 100%">
+              <el-col :span="20" style="padding-right: 10px">
                 <el-input
                   v-model="passwordData.emailVerifyCode"
                   placeholder="输入邮箱验证码"
@@ -279,9 +286,18 @@
           >
         </div>
         <el-divider />
-        <el-table :data="webAuthnInfoList" class="limited-form-container" max-height="250">
-          <el-table-column fixed prop="create_at_str" label="创建时间" width="160" />
-          <el-table-column prop="raw_id" label="RawID" width="480"/>
+        <el-table
+          :data="webAuthnInfoList"
+          class="limited-form-container"
+          max-height="250"
+        >
+          <el-table-column
+            fixed
+            prop="create_at_str"
+            label="创建时间"
+            width="160"
+          />
+          <el-table-column prop="raw_id" label="RawID" width="480" />
           <el-table-column fixed="right" label="操作" width="60">
             <template #default="scope">
               <el-button
@@ -295,20 +311,20 @@
             </template>
           </el-table-column>
         </el-table>
-        <el-button 
-          style="width: 100%; margin-top: 10px;" 
-          class="limited-form-container" 
+        <el-button
+          style="width: 100%; margin-top: 10px"
+          class="limited-form-container"
           @click.prevent="addWebAuthn"
-          >
-            添加
-          </el-button>
+        >
+          添加
+        </el-button>
       </div>
     </el-card>
 
     <el-card
       style="margin-top: 12px"
       shadow="hover"
-      v-if="!userStore.uhasEmail" 
+      v-if="!userStore.uhasEmail"
     >
       <template #header>
         <div class="card-header">绑定邮箱</div>
@@ -330,14 +346,11 @@
         ref="emailbindform"
       >
         <el-form-item label="邮箱" prop="email">
-          <el-input
-            v-model="emailBindData.email"
-            placeholder="请输入邮箱"
-          />
+          <el-input v-model="emailBindData.email" placeholder="请输入邮箱" />
         </el-form-item>
         <el-form-item label="邮箱验证码" prop="emailVerifyCode">
-          <el-row class="row-bg" justify="center" style="width: 100%;">
-            <el-col :span="20" style="padding-right: 10px;">
+          <el-row class="row-bg" justify="center" style="width: 100%">
+            <el-col :span="20" style="padding-right: 10px">
               <el-input
                 v-model="emailBindData.emailVerifyCode"
                 placeholder="输入邮箱验证码"
@@ -380,15 +393,12 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >为 API 调用提供的用户凭证, API Key 会给予调用者控制您账户的权限, 请勿随意泄露</span
+            >为 API 调用提供的用户凭证, API Key 会给予调用者控制您账户的权限,
+            请勿随意泄露</span
           >
         </div>
         <el-divider />
-        <Precode
-          v-if="userStore.uapi"
-          :code="userStore.uapi"
-          :type="'none'"
-        />
+        <Precode v-if="userStore.uapi" :code="userStore.uapi" :type="'none'" />
         <el-button
           style="margin-top: 12px"
           type="primary"
@@ -430,11 +440,7 @@
       </div>
     </el-card>
 
-    <el-card
-      style="margin-top: 12px"
-      shadow="hover"
-      v-if="userStore.uhasEmail" 
-    >
+    <el-card style="margin-top: 12px" shadow="hover" v-if="userStore.uhasEmail">
       <template #header>
         <div class="card-header">解绑邮箱</div>
       </template>
@@ -455,8 +461,8 @@
         ref="emailunbindform"
       >
         <el-form-item label="邮箱验证码" prop="emailVerifyCode">
-          <el-row class="row-bg" justify="center" style="width: 100%;">
-            <el-col :span="20" style="padding-right: 10px;">
+          <el-row class="row-bg" justify="center" style="width: 100%">
+            <el-col :span="20" style="padding-right: 10px">
               <el-input
                 v-model="emailUnbindData.emailVerifyCode"
                 placeholder="输入邮箱验证码"
@@ -489,11 +495,7 @@
       </el-form>
     </el-card>
 
-    <el-card
-      style="margin-top: 12px"
-      shadow="hover"
-      v-if="userStore.uhasEmail" 
-    >
+    <el-card style="margin-top: 12px" shadow="hover" v-if="userStore.uhasEmail">
       <template #header>
         <div class="card-header">删除账户</div>
       </template>
@@ -514,8 +516,8 @@
         ref="deleteaccountform"
       >
         <el-form-item label="邮箱验证码" prop="emailVerifyCode">
-          <el-row class="row-bg" justify="center" style="width: 100%;">
-            <el-col :span="20" style="padding-right: 10px;">
+          <el-row class="row-bg" justify="center" style="width: 100%">
+            <el-col :span="20" style="padding-right: 10px">
               <el-input
                 v-model="deleteAccountData.emailVerifyCode"
                 placeholder="输入邮箱验证码"
@@ -555,7 +557,14 @@
 import useUserStore from "@/store/modules/user";
 // 导入设置仓库
 import useSettingStore from "@/store/modules/setting";
-import { computed, onActivated, onMounted, onUnmounted, reactive, ref } from "vue";
+import {
+  computed,
+  onActivated,
+  onMounted,
+  onUnmounted,
+  reactive,
+  ref,
+} from "vue";
 // 导入WebAuthn仓库
 import useWebAuthnStore from "@/store/modules/webauthn";
 // 导入时间转换函数
@@ -565,9 +574,12 @@ import { ElNotification } from "element-plus";
 // 导入路由
 import { useRouter } from "vue-router";
 // 导入WebAuthn
-import { startRegistration, browserSupportsWebAuthn } from '@simplewebauthn/browser';
+import {
+  startRegistration,
+  browserSupportsWebAuthn,
+} from "@simplewebauthn/browser";
 // 导出本地仓库给HTML使用
-let exportedLocalStorage = localStorage
+let exportedLocalStorage = localStorage;
 // 使用设置仓库的移动端适配
 let settingStore = useSettingStore();
 // 使用用户仓库
@@ -594,27 +606,25 @@ const deleteAccountEmailCodeBtnRef = ref();
 // 刷新验证码
 let refreshCaptcha = () => {
   captchaExecutingFlag.value = true;
-  // @ts-ignore
   turnstile.reset();
-  // @ts-ignore
   turnstile.execute();
 };
 
 // 人机验证成功回调
 var onRobotSuccess = async () => {
-  captchaExecutingFlag.value = false
+  captchaExecutingFlag.value = false;
 };
 // 人机验证交互前回调
 var onRobotBeforeInteractive = async () => {
-  robotVisible.value = true
-}
+  robotVisible.value = true;
+};
 // 人机验证交互后回调
 var onRobotAfterInteractive = async () => {
-  robotVisible.value = false
-}
+  robotVisible.value = false;
+};
 // 人机验证错误回调
 var onRobotError = async () => {
-  refreshCaptcha()
+  refreshCaptcha();
 };
 
 let banloading = ref(false);
@@ -624,13 +634,11 @@ let beforeChange = async () => {
     let result = await userStore.userBanList({
       enable: !userStore.banlistFlag,
     });
-    // @ts-ignore
     if (result.success) {
       // userStore.banlistFlag = !userStore.banlistFlag;
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -639,7 +647,6 @@ let beforeChange = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -658,14 +665,11 @@ let apikeyGen = async () => {
   apikeyLoading.value = true;
   try {
     let result = await userStore.userGenApi();
-    // @ts-ignore
     if (result.success) {
-      // @ts-ignore
       userStore.uapi = result.api_key;
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -674,7 +678,6 @@ let apikeyGen = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -689,13 +692,11 @@ let apikeyDis = async () => {
   apikeyLoading.value = true;
   try {
     let result = await userStore.userDisApi();
-    // @ts-ignore
     if (result.success) {
       userStore.uapi = "";
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -704,7 +705,6 @@ let apikeyDis = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -738,7 +738,7 @@ const userPermissionStr = computed(() => {
   if (userStore.upermission === "") {
     return "未知";
   }
-  let permission = Number(userStore.upermission)
+  let permission = Number(userStore.upermission);
   switch (permission) {
     case 0:
       return `游客(${permission})`;
@@ -769,7 +769,6 @@ let tokenDownload = async () => {
     let result = await userStore.userReqFBToken({
       hashed_ip: tokenData.hashedIp,
     });
-    // @ts-ignore
     if (!result.message) {
       ElNotification({
         type: "success",
@@ -778,11 +777,10 @@ let tokenDownload = async () => {
         duration: 3000,
       });
       tokenContent.value = result.toString();
-    }else{
+    } else {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -797,7 +795,7 @@ let tokenDownload = async () => {
 
 // 修改密码部分
 // 表单元素
-let passwordform = ref(null);
+let passwordform: EleFormRef = ref(null);
 // 表单数据
 let passwordData = reactive({
   emailVerifyCode: "",
@@ -813,7 +811,6 @@ let clearForm = () => {
   try {
     setTimeout(() => {
       if (passwordform.value) {
-        // @ts-ignore
         passwordform.value.clearValidate([
           "emailVerifyCode",
           "newPassword",
@@ -829,7 +826,6 @@ let clearForm = () => {
 onActivated(() => {
   clearForm();
 });
-// @ts-ignore
 let validateRePassword = (rule: any, value: any, callback: any) => {
   if (value !== passwordData.newPassword) {
     callback(new Error("输入的密码不相同"));
@@ -837,7 +833,6 @@ let validateRePassword = (rule: any, value: any, callback: any) => {
     callback();
   }
 };
-// @ts-ignore
 let validateRedeemCode = (rule: any, value: any, callback: any) => {
   // uuid正则
   const codeReg =
@@ -929,7 +924,7 @@ const deleteAccountRules = {
 };
 
 let emailCodeLoadingFlag = ref(false);
-let codeTimes = ref(0)
+let codeTimes = ref(0);
 // 发送邮箱验证码
 let sendEmailCode = async (type: String) => {
   emailCodeLoadingFlag.value = true;
@@ -977,13 +972,12 @@ let sendEmailCode = async (type: String) => {
       });
       emailCodeLoadingFlag.value = false;
       return;
-    }else{
+    } else {
       // 解绑动态虚拟ref
       dynamicTurnstileVirtualRef.value = null;
     }
   }
   // 尝试获取验证码
-  // @ts-ignore
   let captchaToken = turnstile.getResponse();
   if (!captchaToken) {
     // 消息提示
@@ -994,7 +988,7 @@ let sendEmailCode = async (type: String) => {
       duration: 3000,
     });
     // 重置人机验证
-    refreshCaptcha()
+    refreshCaptcha();
     return;
   }
   // 根据类型组装请求参数
@@ -1023,8 +1017,9 @@ let sendEmailCode = async (type: String) => {
   // 发送验证码
   try {
     // 仓库发起邮箱验证码请求
-    let result = await userStore.userRequestEmailVerifyCode(requestEmailVerifyCodeInfo);
-    // @ts-ignore
+    let result = await userStore.userRequestEmailVerifyCode(
+      requestEmailVerifyCodeInfo
+    );
     if (result.success) {
       // 请求成功，清空表单
       clearForm();
@@ -1032,12 +1027,11 @@ let sendEmailCode = async (type: String) => {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
       // 开始倒计时
-      codeTimes.value = 60
+      codeTimes.value = 60;
       let timer = setInterval(() => {
         codeTimes.value--;
         if (codeTimes.value < 1) {
@@ -1049,7 +1043,6 @@ let sendEmailCode = async (type: String) => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -1059,12 +1052,12 @@ let sendEmailCode = async (type: String) => {
   } finally {
     // 请求完成，关闭加载
     emailCodeLoadingFlag.value = false;
-    refreshCaptcha()
+    refreshCaptcha();
   }
 };
 
 // 绑定邮箱
-let emailbindform = ref(null);
+let emailbindform: EleFormRef = ref(null);
 let emailbindloadingflag = ref(false);
 let emailBindData = reactive({
   email: "",
@@ -1072,8 +1065,7 @@ let emailBindData = reactive({
 });
 let bindEmail = async () => {
   try {
-    // @ts-ignore
-    await emailbindform.value.validate();
+    await emailbindform.value!.validate();
     // 显示加载
     emailbindloadingflag.value = true;
     // 仓库发起绑定邮箱请求
@@ -1081,13 +1073,11 @@ let bindEmail = async () => {
       email: emailBindData.email,
       email_verify_code: emailBindData.emailVerifyCode,
     });
-    // @ts-ignore
     if (result.success) {
       // 通知
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -1098,7 +1088,6 @@ let bindEmail = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -1112,28 +1101,25 @@ let bindEmail = async () => {
 };
 
 // 解绑邮箱
-let emailunbindform = ref(null);
+let emailunbindform: EleFormRef = ref(null);
 let emailunbindloadingflag = ref(false);
 let emailUnbindData = reactive({
   emailVerifyCode: "",
 });
 let unbindEmail = async () => {
   try {
-    // @ts-ignore
-    await emailunbindform.value.validate();
+    await emailunbindform.value!.validate();
     // 显示加载
     emailunbindloadingflag.value = true;
     // 仓库发起解绑邮箱请求
     let result = await userStore.userEmailUnbind({
       email_verify_code: emailUnbindData.emailVerifyCode,
     });
-    // @ts-ignore
     if (result.success) {
       // 通知
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -1144,7 +1130,6 @@ let unbindEmail = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -1162,8 +1147,7 @@ let unbindEmail = async () => {
 let passwordloadingflag = ref(false);
 let changePassword = async () => {
   try {
-    // @ts-ignore
-    await passwordform.value.validate();
+    await passwordform.value!.validate();
     // 显示加载
     passwordloadingflag.value = true;
     let passwordInfo = {
@@ -1174,7 +1158,6 @@ let changePassword = async () => {
     passwordInfo.new_password = passwordData.newPassword;
     // 仓库发起修改密码请求
     let result = await userStore.userPassword(passwordInfo);
-    // @ts-ignore
     if (result.success) {
       // 请求成功，清空表单
       clearForm();
@@ -1182,7 +1165,6 @@ let changePassword = async () => {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -1191,7 +1173,6 @@ let changePassword = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -1205,13 +1186,7 @@ let changePassword = async () => {
 };
 
 // WebAuthn信息列表数组
-interface webAuthnInfo {
-  id: number;
-  create_at: number;
-  raw_id: string;
-  create_at_str: string;
-}
-let webAuthnInfoList = ref<webAuthnInfo[]>([]);
+let webAuthnInfoList = ref<WebAuthnInfo[]>([]);
 let webAuthnLoading = ref(false);
 
 // 获取WebAuthn列表信息
@@ -1219,14 +1194,12 @@ let getWebAuthnList = async () => {
   webAuthnLoading.value = true;
   try {
     // 仓库请求WebAuthn列表
-    let result = await webAuthnStore.queryByUser()
+    let result = await webAuthnStore.queryByUser();
     // 将credentials的create_at格式化为时间字符串
-    // @ts-ignore
-    for (let item of result.credentials){
-      item.create_at_str = getTimeStr2(item.create_at)
+    for (let item of result.credentials) {
+      item.create_at_str = getTimeStr2(item.create_at);
     }
-    // @ts-ignore
-    webAuthnInfoList.value = result.credentials
+    webAuthnInfoList.value = result.credentials;
   } catch (error: any) {
     //console.log(error);
   } finally {
@@ -1238,7 +1211,7 @@ let getWebAuthnList = async () => {
 // 添加通行密钥
 let addWebAuthn = async () => {
   // 检查浏览器是否支持WebAuthn
-  if (!browserSupportsWebAuthn()){
+  if (!browserSupportsWebAuthn()) {
     ElNotification({
       type: "warning",
       title: "Warning",
@@ -1252,26 +1225,22 @@ let addWebAuthn = async () => {
     // 仓库请求注册 WebAuthn Options
     let result = await webAuthnStore.registerOptions();
     // 向验证器发起挑战
-    // @ts-ignore
     let attResp = await startRegistration(result.publicKey);
     // 仓库发起验证注册请求
     let registerResult = await webAuthnStore.registerVerification(attResp);
-    // @ts-ignore
-    if (registerResult.success){
+    if (registerResult.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: registerResult.message,
         duration: 3000,
       });
       // 请求刷新列表
-      getWebAuthnList()
+      getWebAuthnList();
     } else {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: registerResult.message,
         duration: 3000,
       });
@@ -1297,22 +1266,19 @@ let removeWebAuthn = async (credentialID: number) => {
     let result = await webAuthnStore.removeById({
       credential_id: credentialID,
     });
-    // @ts-ignore
-    if (result.success){
+    if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
       // 请求刷新列表
-      getWebAuthnList()
+      getWebAuthnList();
     } else {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -1322,13 +1288,13 @@ let removeWebAuthn = async (credentialID: number) => {
     // 请求完成，关闭加载
     webAuthnLoading.value = false;
   }
-}
+};
 
 // 兑换码
 // 兑换码卡片loading
 let codeLoading = ref(false);
 // 表单元素
-let codeform = ref(null);
+let codeform: EleFormRef = ref(null);
 // 表单数据
 let codeData = reactive({
   redeem_code: "",
@@ -1339,7 +1305,6 @@ let clearCodeForm = () => {
   try {
     setTimeout(() => {
       if (codeform.value) {
-        // @ts-ignore
         codeform.value.clearValidate(["redeem_code"]);
       }
     }, 200);
@@ -1354,8 +1319,7 @@ onActivated(() => {
 // 使用兑换码
 let codeUse = async () => {
   try {
-    // @ts-ignore
-    await codeform.value.validate();
+    await codeform.value!.validate();
     // 显示加载
     codeLoading.value = true;
     let codeInfo = {
@@ -1364,12 +1328,10 @@ let codeUse = async () => {
     codeInfo.redeem_code = codeData.redeem_code;
     // 仓库发起请求
     let result = await userStore.userCode(codeInfo);
-    // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
         dangerouslyUseHTMLString: true,
@@ -1382,7 +1344,6 @@ let codeUse = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -1395,22 +1356,20 @@ let codeUse = async () => {
 };
 
 // 删除账户
-let deleteaccountform = ref(null);
+let deleteaccountform: EleFormRef = ref(null);
 let deleteaccountloadingflag = ref(false);
 let deleteAccountData = reactive({
   emailVerifyCode: "",
 });
 let deleteAccount = async () => {
   try {
-    // @ts-ignore
-    await deleteaccountform.value.validate();
+    await deleteaccountform.value!.validate();
     // 显示加载
     deleteaccountloadingflag.value = true;
     // 仓库发起解绑邮箱请求
     let result = await userStore.userDeleteAccount({
       email_verify_code: deleteAccountData.emailVerifyCode,
     });
-    // @ts-ignore
     if (result.success) {
       // 请求成功，登出
       $router.push("/login");
@@ -1418,7 +1377,6 @@ let deleteAccount = async () => {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -1427,7 +1385,6 @@ let deleteAccount = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -1441,31 +1398,21 @@ let deleteAccount = async () => {
 };
 
 onUnmounted(() => {
-  // @ts-ignore
   turnstile.remove();
-  // @ts-ignore
   window.onRobotBeforeInteractive = null;
-  // @ts-ignore
   window.onRobotAfterInteractive = null;
-  // @ts-ignore
   window.onRobotSuccess = null;
-  // @ts-ignore
   window.onRobotError = null;
 });
 onMounted(() => {
-  // @ts-ignore
   window.onRobotBeforeInteractive = onRobotBeforeInteractive;
-  // @ts-ignore
   window.onRobotAfterInteractive = onRobotAfterInteractive;
-  // @ts-ignore
   window.onRobotSuccess = onRobotSuccess;
-  // @ts-ignore
   window.onRobotError = onRobotError;
-  // @ts-ignore
-  turnstile.render('.cf-turnstile');
+  turnstile.render(".cf-turnstile");
   getInfo();
   // 获取credentials列表
-  getWebAuthnList()
+  getWebAuthnList();
 });
 </script>
 

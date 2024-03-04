@@ -3,7 +3,6 @@ import { createRouter, createWebHashHistory } from "vue-router";
 // 导入通用路由
 import { defaultRoutes } from "./routes";
 // 引入进度条
-// @ts-ignore
 import NProgress from "nprogress";
 // nprogress样式文件
 import "nprogress/nprogress.css";
@@ -11,7 +10,6 @@ import "nprogress/nprogress.css";
 import useUserStore from "@/store/modules/user";
 import pinia from "@/store/index";
 // 导入通知组件
-// @ts-ignore
 import { ElNotification } from "element-plus";
 
 NProgress.configure({
@@ -38,7 +36,6 @@ let router = createRouter({
 let userStore = useUserStore(pinia);
 
 //当路由开始跳转时
-// @ts-ignore
 router.beforeEach(async (to, from, next) => {
   // 开启进度条
   NProgress.start();

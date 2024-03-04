@@ -38,8 +38,6 @@ import Menu from "./Menu.vue";
 import Tabbar from "./Tabbar.vue";
 // 导入参数仓库
 import useSettingStore from "@/store/modules/setting";
-// 导入用户仓库
-// import useUserStore from "@/store/modules/user";
 
 // 使用参数仓库的刷新状态
 let settingStore = useSettingStore();
@@ -119,7 +117,7 @@ onUnmounted(() => {
     overflow: hidden;
     transition: all 0.3s;
   }
-  .right-header{
+  .right-header {
     position: sticky;
     top: 0;
     left: 0;

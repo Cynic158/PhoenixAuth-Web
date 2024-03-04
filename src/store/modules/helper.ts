@@ -1,7 +1,6 @@
 // bot 仓库
 import { defineStore } from "pinia";
 // 导入md5
-// @ts-ignore
 import md5 from "crypto-js/md5";
 // 导入工具函数
 import { getPasswordLevel } from "@/utils";
@@ -17,22 +16,6 @@ import {
   reqBindMobileAccount,
   reqGetLoginSmscode,
 } from "@/api/helper";
-
-interface emailInfo {
-  username: string;
-  password: string;
-  password_level: number;
-}
-
-interface phoneInfo {
-  mobile: string;
-  smscode: string;
-}
-
-interface codeInfo {
-  mobile: string;
-  captcha_token: string;
-}
 
 // 创建仓库
 let useHelperStore = defineStore("helper", () => {
@@ -57,7 +40,7 @@ let useHelperStore = defineStore("helper", () => {
   };
 
   // 邮箱创建
-  let botCreateByEmail = async (emailInfo: emailInfo) => {
+  let botCreateByEmail = async (emailInfo: HelperEmailInfo) => {
     try {
       // 计算密码强度
       emailInfo.password_level = getPasswordLevel(emailInfo.password);
@@ -71,7 +54,7 @@ let useHelperStore = defineStore("helper", () => {
   };
 
   // 手机创建
-  let botCreateByPhone = async (phoneInfo: phoneInfo) => {
+  let botCreateByPhone = async (phoneInfo: HelperPhoneInfo) => {
     try {
       let result = await reqBindMobileAccount(phoneInfo);
       return result;
@@ -81,7 +64,7 @@ let useHelperStore = defineStore("helper", () => {
   };
 
   // 获取验证码
-  let botPhoneCode = async (codeInfo: codeInfo) => {
+  let botPhoneCode = async (codeInfo: HelperCodeInfo) => {
     try {
       let result = await reqGetLoginSmscode(codeInfo);
       return result;

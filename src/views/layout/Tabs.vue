@@ -25,14 +25,9 @@ import { useRoute, useRouter } from "vue-router";
 import { horizontalScroll } from "@/utils";
 import { onMounted, watch } from "vue";
 
-interface tabType {
-  path: string;
-  title: string;
-}
-
 // 使用参数仓库的标签对象数组
 let settingStore = useSettingStore();
-let tabArr = settingStore.tabArr as Array<tabType>;
+let tabArr = settingStore.tabArr as Array<SettingTab>;
 // 获取当前路由路径
 let $route = useRoute();
 // 获取路由
@@ -54,8 +49,7 @@ let routertab = (path: string) => {
 
 onMounted(() => {
   // 获取滚动条以及标签组
-  // @ts-ignore
-  let scrollEl = document.querySelector(".tags-container .el-scrollbar")
+  let scrollEl = document.querySelector(".tags-container .el-scrollbar")!
     .children[0];
   let tagContainer = document.querySelector(".tag-container");
   watch(
@@ -74,7 +68,10 @@ onMounted(() => {
           title: $route.meta.title as string,
         });
         setTimeout(() => {
-          horizontalScroll(scrollEl as Element, tagContainer as Element);
+          horizontalScroll(
+            scrollEl as HTMLDivElement,
+            tagContainer as HTMLDivElement
+          );
         }, 400);
       }
     },

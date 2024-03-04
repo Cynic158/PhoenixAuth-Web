@@ -125,7 +125,12 @@
             <el-input v-model="phoneData.code" placeholder="请输入验证码" />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" native-type="submit" @click="createBotByPhone">创建</el-button>
+            <el-button
+              type="primary"
+              native-type="submit"
+              @click="createBotByPhone"
+              >创建</el-button
+            >
             <el-popover
               :width="326"
               :visible="!botInfo.set && robotVisible"
@@ -141,7 +146,8 @@
                   >获取验证码</el-button
                 >
               </template>
-              <div class="cf-turnstile"
+              <div
+                class="cf-turnstile"
                 data-sitekey="0x4AAAAAAAQhC3f_WRwvJ19O"
                 data-callback="onRobotSuccess"
                 data-error-callback="onRobotError"
@@ -149,8 +155,12 @@
                 data-before-interactive-callback="onRobotBeforeInteractive"
                 data-after-interactive-callback="onRobotAfterInteractive"
                 data-size="normal"
-                :data-theme="exportedLocalStorage.getItem('DARKMODE') === 'true' ? 'dark' : 'light'">
-              </div>
+                :data-theme="
+                  exportedLocalStorage.getItem('DARKMODE') === 'true'
+                    ? 'dark'
+                    : 'light'
+                "
+              ></div>
             </el-popover>
             <el-button v-if="codeTimeShow" type="primary" disabled>{{
               codeTimes
@@ -208,7 +218,12 @@
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" native-type="submit" @click="createBotByEmail">创建</el-button>
+            <el-button
+              type="primary"
+              native-type="submit"
+              @click="createBotByEmail"
+              >创建</el-button
+            >
             <el-button @click="clearForm">清空表单</el-button>
           </el-form-item>
         </el-form>
@@ -273,7 +288,9 @@
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" native-type="submit" @click="changeDialog">更改</el-button>
+            <el-button type="primary" native-type="submit" @click="changeDialog"
+              >更改</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -324,10 +341,11 @@ import useHelperStore from "@/store/modules/helper";
 // 导入消息通知组件
 import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
+import type { AxiosResponse } from "axios";
 // 人机验证显示
-const robotVisible = ref(false)
+const robotVisible = ref(false);
 // 导出本地仓库给HTML使用
-let exportedLocalStorage = localStorage
+let exportedLocalStorage = localStorage;
 
 // bot信息部分
 // 使用bot仓库
@@ -339,14 +357,7 @@ let botInfo = reactive({
   username: "",
 });
 // 设置bot信息
-interface robotInfo {
-  success: boolean;
-  message: string;
-  set: boolean;
-  realname_url: string;
-  username: string;
-}
-let setBotInfo = (info: robotInfo) => {
+let setBotInfo = (info: HelperRobotInfo | AxiosResponse<any, any>) => {
   botInfo.set = info.set;
   botInfo.realname_url = info.realname_url;
   botInfo.username = info.username;
@@ -371,22 +382,16 @@ let getBotStatus = async () => {
     queryLoading.value = true;
     banUnbind.value = true;
     let result = await helperStore.getBot();
-    // @ts-ignore
     if (result.success) {
       // 获取成功
-      // @ts-ignore
       setBotInfo(result);
-      // @ts-ignore
       if (result.username) {
         alertType.value = "success";
         alertTitle.value =
-          // @ts-ignore
           result.username +
-          // @ts-ignore
           ` [Lv.${result.lv} (${result.exp}/${result.total_exp})]`;
       } else {
         alertType.value = "warning";
-        // @ts-ignore
         alertTitle.value = result.message;
       }
       if (showUnbind.value == false) {
@@ -401,7 +406,6 @@ let getBotStatus = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -431,23 +435,19 @@ let createBotByDefault = async () => {
   try {
     createDefaultLoading.value = true;
     let result = await helperStore.botCreate();
-    // @ts-ignore
     if (result.success) {
       // 获取成功
-      // @ts-ignore
       if (result.need_verify) {
         createAlertType.value = "warning";
       } else {
         createAlertType.value = "success";
       }
-      // @ts-ignore
       createAlertTitle.value = result.message;
     } else {
       // 获取失败
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -462,7 +462,7 @@ let createBotByDefault = async () => {
 
 // 邮箱创建
 // 表单元素
-let emailform = ref(null);
+let emailform: EleFormRef = ref(null);
 // 表单数据
 let emailData = reactive({
   username: "",
@@ -476,7 +476,6 @@ let clearForm = () => {
   try {
     setTimeout(() => {
       if (emailform.value) {
-        // @ts-ignore
         emailform.value.clearValidate(["username", "password"]);
       }
     }, 200);
@@ -484,7 +483,6 @@ let clearForm = () => {
     console.log(error);
   }
 };
-// @ts-ignore
 let validateEmail = (rule: any, value: any, callback: any) => {
   // 邮箱正则表达式
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -521,8 +519,7 @@ let emailAlertTitle = ref("");
 // 邮箱登录
 let createBotByEmail = async () => {
   try {
-    // @ts-ignore
-    await emailform.value.validate();
+    await emailform.value!.validate();
     // 显示加载
     createDefaultLoading.value = true;
     let emailInfo = {
@@ -534,23 +531,19 @@ let createBotByEmail = async () => {
     emailInfo.password = emailData.password;
     // 仓库发起邮箱登录请求
     let result = await helperStore.botCreateByEmail(emailInfo);
-    // @ts-ignore
     if (result.success) {
       // 获取成功
-      // @ts-ignore
       if (result.need_verify) {
         emailAlertType.value = "warning";
       } else {
         emailAlertType.value = "success";
       }
-      // @ts-ignore
       emailAlertTitle.value = result.message;
     } else {
       // 请求失败，消息提示
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -565,7 +558,7 @@ let createBotByEmail = async () => {
 
 // 手机创建
 // 表单元素
-let phoneform = ref(null);
+let phoneform: EleFormRef = ref(null);
 // 表单数据
 let phoneData = reactive({
   phone: "",
@@ -579,7 +572,6 @@ let clearPhoneForm = () => {
   try {
     setTimeout(() => {
       if (phoneform.value) {
-        // @ts-ignore
         phoneform.value.clearValidate(["phone"]);
       }
     }, 200);
@@ -587,7 +579,6 @@ let clearPhoneForm = () => {
     console.log(error);
   }
 };
-// @ts-ignore
 let validatePhone = (rule: any, value: any, callback: any) => {
   // 手机正则表达式
   const phoneRegex = /^1[3456789]\d{9}$/;
@@ -627,57 +618,44 @@ let captchaExecutingFlag = ref(true);
 // 刷新验证码
 let refreshCaptcha = () => {
   captchaExecutingFlag.value = true;
-  // @ts-ignore
   turnstile.reset();
-  // @ts-ignore
   turnstile.execute();
 };
 
 // 人机验证成功回调
 var onRobotSuccess = async () => {
-  captchaExecutingFlag.value = false
+  captchaExecutingFlag.value = false;
 };
 // 人机验证交互前回调
 var onRobotBeforeInteractive = async () => {
-  robotVisible.value = true
-}
+  robotVisible.value = true;
+};
 // 人机验证交互后回调
 var onRobotAfterInteractive = async () => {
-  robotVisible.value = false
-}
+  robotVisible.value = false;
+};
 // 人机验证错误回调
 var onRobotError = async () => {
-  refreshCaptcha()
+  refreshCaptcha();
 };
 // 添加人机验证
 onMounted(() => {
-  // @ts-ignore
   window.onRobotBeforeInteractive = onRobotBeforeInteractive;
-  // @ts-ignore
   window.onRobotAfterInteractive = onRobotAfterInteractive;
-  // @ts-ignore
   window.onRobotSuccess = onRobotSuccess;
-  // @ts-ignore
   window.onRobotError = onRobotError;
-  // @ts-ignore
-  turnstile.render('.cf-turnstile');
+  turnstile.render(".cf-turnstile");
 });
 // 销毁全局变量
 onUnmounted(() => {
-  // @ts-ignore
   turnstile.remove();
-  // @ts-ignore
   window.onRobotBeforeInteractive = null;
-  // @ts-ignore
   window.onRobotAfterInteractive = null;
-  // @ts-ignore
   window.onRobotSuccess = null;
-  // @ts-ignore
   window.onRobotError = null;
 });
 // 获取验证码
 let getCode = async () => {
-  // @ts-ignore
   let captchaToken = turnstile.getResponse();
   if (!captchaToken) {
     // 消息提示
@@ -688,14 +666,13 @@ let getCode = async () => {
       duration: 3000,
     });
     // 重置人机验证
-    refreshCaptcha()
+    refreshCaptcha();
     return;
   }
   // 校验表单
   try {
-    // @ts-ignore
-    await phoneform.value.validate();
-  }catch (error: any) {
+    await phoneform.value!.validate();
+  } catch (error: any) {
     return;
   }
   // 显示加载
@@ -708,10 +685,8 @@ let getCode = async () => {
   try {
     // 仓库发起验证码请求
     let result = await helperStore.botPhoneCode(codeInfo);
-    // @ts-ignore
     if (result.success) {
       // 获取成功
-      // @ts-ignore
       if (result.need_verify) {
         phoneAlertType.value = "warning";
         codedisabled.value = false;
@@ -722,7 +697,7 @@ let getCode = async () => {
         codeTimeShow.value = true;
         const timer = setInterval(() => {
           codeTimes.value--;
-          if (codeTimes.value < 1){
+          if (codeTimes.value < 1) {
             codeTimes.value = 60;
             codedisabled.value = false;
             codeTimeShow.value = false;
@@ -730,14 +705,12 @@ let getCode = async () => {
           }
         }, 1000);
       }
-      // @ts-ignore
       phoneAlertTitle.value = result.message;
     } else {
       // 请求失败，消息提示
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -747,15 +720,14 @@ let getCode = async () => {
     //console.log(error);
     codedisabled.value = false;
   } finally {
-    refreshCaptcha()
+    refreshCaptcha();
     codeloadingflag.value = false;
   }
 };
 // 手机登录
 let createBotByPhone = async () => {
   try {
-    // @ts-ignore
-    await phoneform.value.validate();
+    await phoneform.value!.validate();
     // 显示加载
     createDefaultLoading.value = true;
     let phoneInfo = {
@@ -766,24 +738,20 @@ let createBotByPhone = async () => {
     phoneInfo.smscode = phoneData.code;
     // 仓库发起手机登录请求
     let result = await helperStore.botCreateByPhone(phoneInfo);
-    // @ts-ignore
     if (result.success) {
       // 获取成功
-      // @ts-ignore
       if (result.need_verify) {
         phoneAlertType.value = "warning";
       } else {
         phoneAlertType.value = "success";
         getBotStatus();
       }
-      // @ts-ignore
       phoneAlertTitle.value = result.message;
     } else {
       // 请求失败，消息提示
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -809,12 +777,10 @@ let unbindBot = async () => {
   try {
     unbindLoading.value = true;
     let result = await helperStore.botUnbind();
-    // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -822,7 +788,6 @@ let unbindBot = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -846,7 +811,7 @@ let changeDialog = () => {
   changeDialogVisible.value = true;
 };
 // 表单元素
-let botnameform = ref(null);
+let botnameform: EleFormRef = ref(null);
 // 表单数据
 let botnameData = reactive({
   username: "",
@@ -858,7 +823,6 @@ let clearChangeForm = () => {
   try {
     setTimeout(() => {
       if (botnameform.value) {
-        // @ts-ignore
         botnameform.value.clearValidate(["username"]);
       }
     }, 200);
@@ -878,20 +842,17 @@ const rules2 = {
 };
 let changeBotName = async () => {
   try {
-    // @ts-ignore
-    await botnameform.value.validate();
+    await botnameform.value!.validate();
     changeLoading.value = true;
     let botname = {
       username: "",
     };
     botname.username = botnameData.username;
     let result = await helperStore.botChangeName(botname);
-    // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -900,7 +861,6 @@ let changeBotName = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -920,12 +880,10 @@ let signinBot = async () => {
   try {
     signLoading.value = true;
     let result = await helperStore.botSignIn();
-    // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -933,7 +891,6 @@ let signinBot = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });

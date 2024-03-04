@@ -22,59 +22,24 @@ enum API {
   REMOVE_ACCOUNT = "/user/remove_account",
 }
 
-// 数据类型声明
-interface userInfo {
-  username: string;
-  password: string;
-  captcha_token: string;
-}
-interface fbtokenInfo{
-  hashed_ip: string;
-}
-interface passwordInfo {
-  email_verify_code: string;
-  new_password: string;
-}
-interface requestEmailVerifyCodeInfo{
-  email?: string;
-  username?: string;
-  action_type: number;
-  captcha_token: string;
-}
-interface resetPasswordInfo {
-  username: string;
-  email_verify_code: string;
-  new_password: string;
-}
-interface emailBindInfo {
-  email: string;
-  email_verify_code: string;
-}
-interface emailUnbindInfo {
-  email_verify_code: string;
-}
-interface removeAccountInfo {
-  email_verify_code: string;
-}
-
 // 导出api
 // 请求token
 export const reqNewToken = () => request.get(API.NEWTOKEN);
 // 请求注册
-export const reqRegister = (regInfo: userInfo) =>
+export const reqRegister = (regInfo: UserInfo) =>
   request.post(API.REGISTER, regInfo);
 // 请求登录
-export const reqLogin = (loginInfo: userInfo) =>
+export const reqLogin = (loginInfo: UserInfo) =>
   request.post(API.LOGIN, loginInfo);
 // 请求用户信息
 export const reqGetStatus = () => request.get(API.GET_STATUS);
 // 请求登出
 export const reqLogout = () => request.get(API.LOGOUT);
 // 请求phoenixtoken
-export const reqGetPhoenixToken = (fbtokenInfo: fbtokenInfo) =>
+export const reqGetPhoenixToken = (fbtokenInfo: UserFbtokenInfo) =>
   request.post(API.GET_PHOENIX_TOKEN, fbtokenInfo);
 // 请求更改密码
-export const reqChangePassword = (passwordInfo: passwordInfo) =>
+export const reqChangePassword = (passwordInfo: UserPasswordInfo) =>
   request.post(API.CHANGE_PASSWORD, passwordInfo);
 // 请求使用兑换码
 export const reqUseRedeemCode = (code: { redeem_code: string }) =>
@@ -90,17 +55,17 @@ export const reqSetBanListUpload = (enable: { enable: boolean }) =>
 export const reqSetAutoRestartServer = (enable: { enable: boolean }) =>
   request.post(API.SET_AUTO_RESTART_SERVER, enable);
 // 请求邮箱验证码
-export const reqRequestEmailVerifyCode = (info: requestEmailVerifyCodeInfo) =>
+export const reqRequestEmailVerifyCode = (info: UserEmailVerifyCodeInfo) =>
   request.post(API.REQUEST_EMAIL_VERIFY_CODE, info);
 // 重置密码
-export const reqResetPassword = (info: resetPasswordInfo) =>
+export const reqResetPassword = (info: UserResetPasswordInfo) =>
   request.post(API.RESET_PASSWORD, info);
 // 绑定邮箱
-export const reqEmailBind = (info: emailBindInfo) =>
+export const reqEmailBind = (info: UserEmailBindInfo) =>
   request.post(API.EMAIL_BIND, info);
 // 解绑邮箱
-export const reqEmailUnbind = (info: emailUnbindInfo) =>
+export const reqEmailUnbind = (info: UserEmailUnbindInfo) =>
   request.post(API.EMAIL_UNBIND, info);
 // 删除账户
-export const reqRemoveAccount = (info: removeAccountInfo) =>
+export const reqRemoveAccount = (info: UserRemoveAccountInfo) =>
   request.post(API.REMOVE_ACCOUNT, info);

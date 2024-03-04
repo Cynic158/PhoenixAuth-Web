@@ -20,15 +20,14 @@ let iframeLoaded = ref(false);
 let iframeLoadedFunc = () => {
   // iframe加载完成后触发的回调
   iframeLoaded.value = true;
-  var myIframe = document.getElementById("listIframe");
-  // @ts-ignore
+  var myIframe = document.getElementById("listIframe") as HTMLIFrameElement;
   var iframeContentWindow = myIframe.contentWindow || myIframe.contentDocument;
-  iframeContentWindow.addEventListener("click", () => {
+  iframeContentWindow!.addEventListener("click", () => {
     if (settingStore.mmenuFlag == true && settingStore.isCollapse == false) {
       settingStore.reqCollapse++;
     }
   });
-  iframeContentWindow.addEventListener("touchstart", () => {
+  iframeContentWindow!.addEventListener("touchstart", () => {
     if (settingStore.mmenuFlag == true && settingStore.isCollapse == false) {
       settingStore.reqCollapse++;
     }
@@ -43,7 +42,7 @@ let iframeLoadedFunc = () => {
   position: relative;
   @supports (-webkit-touch-callout: none) {
     height: -webkit-fill-available;
-    padding-bottom: 60px; 
+    padding-bottom: 60px;
   }
 }
 .list-iframe-container {

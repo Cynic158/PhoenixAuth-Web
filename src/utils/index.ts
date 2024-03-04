@@ -1,4 +1,4 @@
-import { DateTimeFormatOptions } from 'intl';
+import { DateTimeFormatOptions } from "intl";
 // 用于时间业务
 export const getTimeStr = () => {
   // 获取当前时间
@@ -31,8 +31,15 @@ export const getTimeStr = () => {
 };
 export const getTimeStr2 = (time: number) => {
   let date = new Date(time);
-  let options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' } as DateTimeFormatOptions;
-  return Intl.DateTimeFormat('zh-CH', options).format(date);
+  let options = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  } as DateTimeFormatOptions;
+  return Intl.DateTimeFormat("zh-CH", options).format(date);
 };
 export const getTimeStr3 = (time: number) => {
   if (isNaN(time) || time <= 0) {
@@ -64,14 +71,16 @@ export const getTimeStr3 = (time: number) => {
 };
 
 // 缓动函数
-export const horizontalScroll = (scrollEl: Element, targetEl: Element) => {
+export const horizontalScroll = (
+  scrollEl: HTMLDivElement,
+  targetEl: HTMLDivElement
+) => {
   // 由于setInterval是异步的，所以需要promise达成同步效果
   return new Promise((resolve) => {
     // 横向滚动缓动
     // 设置循环定时器
     let scrollHorizontal = setInterval(() => {
       // 当滚动到达顶部时
-      // @ts-ignore
       let scrollSize = targetEl.scrollWidth - scrollEl.offsetWidth;
       // 防止误差
       if (scrollEl.scrollLeft >= scrollSize - 2) {
@@ -80,10 +89,8 @@ export const horizontalScroll = (scrollEl: Element, targetEl: Element) => {
         resolve("ok");
       }
       // 缓动算法
-      // @ts-ignore
       let step = (scrollSize - scrollEl.scrollLeft) / 10;
       step = step > 0 ? Math.ceil(step) : Math.floor(step);
-      // @ts-ignore
       scrollEl.scrollTo(scrollEl.scrollLeft + step, 0);
     }, 15);
   });
@@ -95,24 +102,21 @@ export const verticalScroll = (scrollEl: Element) => {
     // 设置循环定时器
     let scrollVertical = setInterval(() => {
       // 当滚动到达右部时
-      // @ts-ignore
       if (scrollEl.scrollTop == 0) {
         // 清除定时器
         clearInterval(scrollVertical);
         resolve("ok");
       }
       // 缓动算法
-      // @ts-ignore
       let step = (0 - scrollEl.scrollTop) / 10;
       step = step > 0 ? Math.ceil(step) : Math.floor(step);
-      // @ts-ignore
       scrollEl.scrollTo(0, scrollEl.scrollTop + step);
     }, 15);
   });
 };
 export const getPasswordLevel = (str: string) => {
   if (str === null || str === undefined) {
-      return 0;
+    return 0;
   }
   let length: number = str.length;
   let matches: boolean = /^[a-zA-Z]+$/.test(str);
@@ -123,13 +127,22 @@ export const getPasswordLevel = (str: string) => {
   let matches6: boolean = /\d/.test(str);
   let matches7: boolean = /[^\d]/.test(str);
   if (length > 0) {
-      if (length < 6 || ((matches && length < 8) || matches2 || matches3)) {
-          return 1;
-      }
-      if ((!matches || length < 8) && !((matches4 && matches5 && length < 8) || (matches6 && matches7 && length < 8))) {
-          return ((matches4 && matches5 && length >= 8) || (matches6 && matches7 && length >= 8)) ? 3 : 0;
-      }
-      return 2;
+    if (length < 6 || (matches && length < 8) || matches2 || matches3) {
+      return 1;
+    }
+    if (
+      (!matches || length < 8) &&
+      !(
+        (matches4 && matches5 && length < 8) ||
+        (matches6 && matches7 && length < 8)
+      )
+    ) {
+      return (matches4 && matches5 && length >= 8) ||
+        (matches6 && matches7 && length >= 8)
+        ? 3
+        : 0;
+    }
+    return 2;
   }
   return 0;
 };

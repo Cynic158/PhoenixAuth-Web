@@ -12,29 +12,6 @@ import {
   reqGenerateRedeemCode,
 } from "@/api/admin";
 
-interface banInfo {
-  username: string;
-  seconds: number;
-  reason: string;
-}
-interface setPermissionInfo {
-  username: string;
-  permission: number;
-}
-interface extendUserExpireTimeInfo {
-  username: string;
-  seconds: number;
-}
-interface extendUserUnlimitedTimeInfo {
-  username: string;
-  seconds: number;
-}
-interface codeInfo {
-  type: number;
-  count: number;
-  note?: string;
-}
-
 // 创建仓库
 let useAdminStore = defineStore("admin", () => {
   // 查询用户
@@ -48,7 +25,7 @@ let useAdminStore = defineStore("admin", () => {
   };
 
   // 封禁用户
-  let userBan = async (banInfo: banInfo) => {
+  let userBan = async (banInfo: AdminBanInfo) => {
     try {
       let result = await reqBanUser(banInfo);
       return result;
@@ -65,10 +42,10 @@ let useAdminStore = defineStore("admin", () => {
     } catch (error) {
       return Promise.reject(error);
     }
-  }
+  };
 
   // 设置用户权限
-  let userSetPermission = async (permissionInfo: setPermissionInfo) => {
+  let userSetPermission = async (permissionInfo: AdminPermissionInfo) => {
     try {
       let result = await reqSetUserPermission(permissionInfo);
       return result;
@@ -79,7 +56,7 @@ let useAdminStore = defineStore("admin", () => {
 
   // 更新用户有效期
   let userExtendExpireTime = async (
-    extendUserExpireTimeInfo: extendUserExpireTimeInfo
+    extendUserExpireTimeInfo: AdminExtendUserExpireTimeInfo
   ) => {
     try {
       let result = await reqExtendUserExpireTime(extendUserExpireTimeInfo);
@@ -91,7 +68,7 @@ let useAdminStore = defineStore("admin", () => {
 
   // 更新用户无限制权限有效期
   let userExtendUnlimitedTime = async (
-    extendUserUnlimitedTimeInfo: extendUserUnlimitedTimeInfo
+    extendUserUnlimitedTimeInfo: AdminExtendUserUnlimitedTimeInfo
   ) => {
     try {
       let result = await reqExtendUserUnlimitedTime(
@@ -104,7 +81,7 @@ let useAdminStore = defineStore("admin", () => {
   };
 
   // 生成兑换码
-  let genCode = async (codeInfo: codeInfo) => {
+  let genCode = async (codeInfo: AdminCodeInfo) => {
     try {
       let result = await reqGenerateRedeemCode(codeInfo);
       return result;

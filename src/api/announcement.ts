@@ -9,26 +9,15 @@ enum API {
   DELETE = "/announcement/delete",
 }
 
-// 数据类型声明
-interface pageInfo {
-  page_num: number;
-  page_size: number;
-}
-interface announcementInfo {
-  ID: number;
-  title: string;
-  content: string;
-}
-
 // 导出api
 // 请求公告数据
-export const reqQueryByPage = (pageInfo: pageInfo) =>
+export const reqQueryByPage = (pageInfo: AnnPageInfo) =>
   request.post(API.QUERY_BY_PAGE, pageInfo);
 // 创建公告
-export const reqCreate = (announcementInfo: announcementInfo) =>
+export const reqCreate = (announcementInfo: AnnouncementInfo) =>
   request.post(API.CREATE, announcementInfo);
 // 编辑公告
-export const reqEdit = (announcementInfo: announcementInfo) =>
-request.post(API.EDIT, announcementInfo);
+export const reqEdit = (announcementInfo: AnnouncementInfo) =>
+  request.post(API.EDIT, announcementInfo);
 // 删除公告
 export const reqDelete = (id: { id: number }) => request.post(API.DELETE, id);

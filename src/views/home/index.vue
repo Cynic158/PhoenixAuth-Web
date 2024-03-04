@@ -37,7 +37,9 @@
             :style="{ width: settingStore.pageSmall ? '100%' : 'auto' }"
           >
             <span>Author: {{ item.author_name }}</span>
-            <div style="display: inline-flex; align-items: center; flex-wrap: wrap">
+            <div
+              style="display: inline-flex; align-items: center; flex-wrap: wrap"
+            >
               <el-button
                 style="margin-left: 8px"
                 @click="editDialog(item.ID, item.title, item.content)"
@@ -78,16 +80,10 @@
           ref="noticeform"
         >
           <el-form-item label="公告ID" v-if="noticeData.ID != 0">
-            <el-input 
-              v-model="noticeData.ID"
-              disabled
-            />
+            <el-input v-model="noticeData.ID" disabled />
           </el-form-item>
           <el-form-item label="标题" prop="title">
-            <el-input 
-              v-model="noticeData.title"
-              placeholder="请输入标题"
-            />
+            <el-input v-model="noticeData.title" placeholder="请输入标题" />
           </el-form-item>
           <el-form-item label="内容" prop="content">
             <el-input
@@ -101,11 +97,7 @@
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogVisible = false">取消</el-button>
-            <el-button
-              type="warning"
-              @click="previewNotice"
-              >预览</el-button
-            >
+            <el-button type="warning" @click="previewNotice">预览</el-button>
             <el-button
               :loading="noticeloadingflag"
               type="primary"
@@ -176,14 +168,7 @@ let annStore = useAnnouncementStore();
 // 列表加载flag
 let loading = ref(false);
 // 公告列表数组
-interface annObj {
-  ID: number;
-  title: string;
-  content: string;
-  author_name: string;
-  formatted_create_time: string;
-}
-let annList = ref<annObj[]>([]);
+let annList = ref<AnnOnj[]>([]);
 // 公告总数
 let annTotal = ref(0);
 // 当前页码
@@ -192,17 +177,14 @@ let currentPage = ref(1);
 let getAnnList = async (page_num: number) => {
   // 显示开始加载
   loading.value = true;
-  try{
+  try {
     // 发起请求
     let result = await annStore.getAnn({ page_num, page_size: 5 });
-    // @ts-ignore
     if (result.success) {
       // 获取成功
       // 更新列表
-      // @ts-ignore
       annList.value = result.announcements;
       // 更新总数
-      // @ts-ignore
       annTotal.value = result.total;
       // 回滚到顶部
       let scrollEl = document.querySelector(".el-main");
@@ -211,13 +193,12 @@ let getAnnList = async (page_num: number) => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
-  }catch(err){
-  }finally{
+  } catch (err) {
+  } finally {
     loading.value = false;
   }
 };
@@ -263,7 +244,7 @@ let createdialog = () => {
   clearForm();
 };
 // 表单元素
-let noticeform = ref(null);
+let noticeform: EleFormRef = ref(null);
 // 表单数据
 let noticeData = reactive({
   ID: 0,
@@ -279,7 +260,6 @@ let clearForm = () => {
   try {
     setTimeout(() => {
       if (noticeform.value) {
-        // @ts-ignore
         noticeform.value.clearValidate(["title"]);
       }
     }, 100);
@@ -308,28 +288,24 @@ const rules = {
 };
 // 预览公告
 let previewNotice = async () => {
-  try{
-    // @ts-ignore
-    await noticeform.value.validate();
-    ElMessageBox.alert(
-      noticeData.content,
-      noticeData.title,
-      {
-        dangerouslyUseHTMLString: true,
-        showConfirmButton: false,
-        closeOnClickModal: true,
-        showClose: false,
-        callback: () => { /* Do nothing */ },
-      }
-    )
-  }catch(error: any){}
+  try {
+    await noticeform.value!.validate();
+    ElMessageBox.alert(noticeData.content, noticeData.title, {
+      dangerouslyUseHTMLString: true,
+      showConfirmButton: false,
+      closeOnClickModal: true,
+      showClose: false,
+      callback: () => {
+        /* Do nothing */
+      },
+    });
+  } catch (error: any) {}
 };
 // 创建公告
 let submitNotice = async () => {
   try {
     // 校验表单
-    // @ts-ignore
-    await noticeform.value.validate();
+    await noticeform.value!.validate();
     // 显示加载
     noticeloadingflag.value = true;
     let noticeInfo = {
@@ -341,10 +317,9 @@ let submitNotice = async () => {
     noticeInfo.title = noticeData.title;
     noticeInfo.content = noticeData.content;
     // 如果id为0，说明是新公告，将调用创建接口，否则调用编辑接口
-    if (noticeData.ID == 0){
+    if (noticeData.ID == 0) {
       // 仓库发起请求
       let result = await annStore.annCreate(noticeInfo);
-      // @ts-ignore
       if (result.success) {
         dialogVisible.value = false;
         // 刷新列表
@@ -352,7 +327,6 @@ let submitNotice = async () => {
         ElNotification({
           type: "success",
           title: "Success",
-          // @ts-ignore
           message: result.message,
           duration: 3000,
         });
@@ -361,15 +335,13 @@ let submitNotice = async () => {
         ElNotification({
           type: "warning",
           title: "Warning",
-          // @ts-ignore
           message: result.message,
           duration: 3000,
         });
       }
-    }else{
+    } else {
       // 仓库发起请求
       let result = await annStore.annEdit(noticeInfo);
-      // @ts-ignore
       if (result.success) {
         dialogVisible.value = false;
         // 刷新列表
@@ -377,7 +349,6 @@ let submitNotice = async () => {
         ElNotification({
           type: "success",
           title: "Success",
-          // @ts-ignore
           message: result.message,
           duration: 3000,
         });
@@ -386,7 +357,6 @@ let submitNotice = async () => {
         ElNotification({
           type: "warning",
           title: "Warning",
-          // @ts-ignore
           message: result.message,
           duration: 3000,
         });
@@ -424,7 +394,6 @@ let deleteNotice = async () => {
     deleteloadingflag.value = true;
     // 仓库发起请求
     let result = await annStore.annDelete(deleteid.value);
-    // @ts-ignore
     if (result.success) {
       deleteDialogVisible.value = false;
       //  刷新列表
@@ -438,7 +407,6 @@ let deleteNotice = async () => {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -448,7 +416,6 @@ let deleteNotice = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });

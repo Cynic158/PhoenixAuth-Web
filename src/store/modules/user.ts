@@ -30,58 +30,11 @@ import {
 } from "@/router/routes";
 import { ref } from "vue";
 import router from "@/router";
-// @ts-ignore
 import cloneDeep from "lodash/cloneDeep";
 // 导入加密
 import sha256 from "crypto-js/sha256";
 import md5 from "crypto-js/md5";
-
-interface userInfo {
-  username: string;
-  password: string;
-  captcha_token: string;
-}
-interface userDetail {
-  username: string;
-  game_id: number;
-  unlimited_until: number;
-  permission: number;
-  is_admin: boolean;
-  create_at: number;
-  expire_at: number;
-  enable_ban_list_upload: boolean;
-  enable_auto_restart_server: boolean;
-  api_key: string;
-  has_email: boolean;
-}
-interface passwordInfo {
-  email_verify_code: string;
-  new_password: string;
-}
-interface fbtokenInfo{
-  hashed_ip: string;
-}
-interface requestEmailVerifyCodeInfo {
-  email?: string;
-  username?: string;
-  action_type: number;
-  captcha_token: string;
-}
-interface resetPasswordInfo {
-  username: string;
-  email_verify_code: string;
-  new_password: string;
-}
-interface emailBindInfo {
-  email: string;
-  email_verify_code: string;
-}
-interface emailUnbindInfo {
-  email_verify_code: string;
-}
-interface deleteAccountInfo {
-  email_verify_code: string;
-}
+import type { AxiosResponse } from "axios";
 
 // 过滤权限路由，传入权限路由以及用户所拥有的的路由权限数组
 function filterRoute(asyncRoutes: any, permission: any) {
@@ -136,7 +89,9 @@ let useUserStore = defineStore("user", () => {
   // 黑名单
   let banlistFlag = ref(Boolean(localStorage.getItem("BANLISTFLAG")) || false);
   // 自动重启服务器
-  let autoRestartFlag = ref(Boolean(localStorage.getItem("AUTORESTARTFLAG")) || false);
+  let autoRestartFlag = ref(
+    Boolean(localStorage.getItem("AUTORESTARTFLAG")) || false
+  );
   // API
   let uapi = ref(localStorage.getItem("UAPI") || "");
   // 是否有邮箱
@@ -153,8 +108,7 @@ let useUserStore = defineStore("user", () => {
   let getToken = async () => {
     let result = await reqNewToken();
     if (result) {
-      // @ts-ignore
-      token.value = result;
+      token.value = result as any;
       return "success";
     } else {
       return Promise.reject("fail");
@@ -162,7 +116,7 @@ let useUserStore = defineStore("user", () => {
   };
 
   // 请求登录或者注册
-  let userRegLog = async (userInfo: userInfo, type: "login" | "reg") => {
+  let userRegLog = async (userInfo: UserInfo, type: "login" | "reg") => {
     // 先对密码进行加密
     const hashpassword = sha256(userInfo.password).toString();
     userInfo.password = hashpassword;
@@ -182,7 +136,7 @@ let useUserStore = defineStore("user", () => {
   };
 
   // 请求更改密码
-  let userPassword = async (passwordInfo: passwordInfo) => {
+  let userPassword = async (passwordInfo: UserPasswordInfo) => {
     // 先对密码进行加密
     passwordInfo.new_password = sha256(passwordInfo.new_password).toString();
     // 发起请求
@@ -195,7 +149,7 @@ let useUserStore = defineStore("user", () => {
   };
 
   // 持久化用户信息
-  let setUser = (userInfo: userDetail) => {
+  let setUser = (userInfo: UserDetail | AxiosResponse<any, any>) => {
     uname.value = userInfo.username;
     if (userInfo.is_admin) {
       adminFlag.value = "是";
@@ -263,14 +217,11 @@ let useUserStore = defineStore("user", () => {
   let userInfo = async () => {
     // 发起请求
     let result = await reqGetStatus();
-    // @ts-ignore
     if (result.success) {
       // 获取成功，存储用户信息
-      // @ts-ignore
       setUser(result);
       // 根据得到的用户路由权限来渲染动态路由
       let filterArr: Array<string> = [];
-      // @ts-ignore
       if (result.is_admin) {
         filterArr = ["admin"];
       }
@@ -304,7 +255,6 @@ let useUserStore = defineStore("user", () => {
     try {
       // 发起请求
       let result = await reqLogout();
-      // @ts-ignore
       if (result.success) {
         clearUser();
       }
@@ -315,10 +265,10 @@ let useUserStore = defineStore("user", () => {
   };
 
   // 请求phoenixtoken
-  let userReqFBToken = async (fbtokenInfo: fbtokenInfo) => {
+  let userReqFBToken = async (fbtokenInfo: UserFbtokenInfo) => {
     // 发起请求
     try {
-      if (fbtokenInfo.hashed_ip !== ""){
+      if (fbtokenInfo.hashed_ip !== "") {
         fbtokenInfo.hashed_ip = md5(fbtokenInfo.hashed_ip).toString();
       }
       let result = await reqGetPhoenixToken(fbtokenInfo);
@@ -384,7 +334,7 @@ let useUserStore = defineStore("user", () => {
   };
 
   // 请求邮箱验证码
-  let userRequestEmailVerifyCode = async (info: requestEmailVerifyCodeInfo) => {
+  let userRequestEmailVerifyCode = async (info: UserEmailVerifyCodeInfo) => {
     // 发起请求
     try {
       let result = await reqRequestEmailVerifyCode(info);
@@ -395,7 +345,7 @@ let useUserStore = defineStore("user", () => {
   };
 
   // 请求重置密码
-  let userResetPassword = async (resetPasswordInfo: resetPasswordInfo) => {
+  let userResetPassword = async (resetPasswordInfo: UserResetPasswordInfo) => {
     // 先对密码进行加密
     const hashpassword = sha256(resetPasswordInfo.new_password).toString();
     resetPasswordInfo.new_password = hashpassword;
@@ -409,7 +359,7 @@ let useUserStore = defineStore("user", () => {
   };
 
   // 请求邮箱绑定
-  let userEmailBind = async (emailBindInfo: emailBindInfo) => {
+  let userEmailBind = async (emailBindInfo: UserEmailBindInfo) => {
     // 发起请求
     try {
       let result = await reqEmailBind(emailBindInfo);
@@ -420,7 +370,7 @@ let useUserStore = defineStore("user", () => {
   };
 
   // 请求邮箱解绑
-  let userEmailUnbind = async (emailUnbindInfo: emailUnbindInfo) => {
+  let userEmailUnbind = async (emailUnbindInfo: UserEmailUnbindInfo) => {
     // 发起请求
     try {
       let result = await reqEmailUnbind(emailUnbindInfo);
@@ -431,11 +381,10 @@ let useUserStore = defineStore("user", () => {
   };
 
   // 请求删除账户
-  let userDeleteAccount = async (deleteAccountInfo: deleteAccountInfo) => {
+  let userDeleteAccount = async (deleteAccountInfo: UserRemoveAccountInfo) => {
     // 发起请求
     try {
       let result = await reqRemoveAccount(deleteAccountInfo);
-      // @ts-ignore
       if (result.success) {
         clearUser();
       }

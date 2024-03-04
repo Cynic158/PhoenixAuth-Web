@@ -13,7 +13,9 @@
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px; color: dimgray">使用管理权限生成兑换码</span>
+          <span style="margin-left: 12px; color: dimgray"
+            >使用管理权限生成兑换码</span
+          >
         </div>
         <el-divider />
 
@@ -43,11 +45,16 @@
             />
           </el-form-item>
           <el-form-item label="备注" prop="note">
-            <el-input v-model="generateRedeemCodeData.note" placeholder="请输入备注" />
+            <el-input
+              v-model="generateRedeemCodeData.note"
+              placeholder="请输入备注"
+            />
           </el-form-item>
 
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" native-type="submit" @click="generateCode">生成</el-button>
+            <el-button type="primary" native-type="submit" @click="generateCode"
+              >生成</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -184,7 +191,9 @@
             </el-descriptions>
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" native-type="submit" @click="queryUser">查询</el-button>
+            <el-button type="primary" native-type="submit" @click="queryUser"
+              >查询</el-button
+            >
             <el-button
               type="danger"
               @click="unBanUserDialog"
@@ -196,11 +205,7 @@
       </div>
     </el-card>
 
-    <el-card
-      shadow="hover"
-      v-loading="banLoading"
-      style="margin-top: 12px"
-    >
+    <el-card shadow="hover" v-loading="banLoading" style="margin-top: 12px">
       <template #header>
         <div class="card-header">用户封禁</div>
       </template>
@@ -238,7 +243,9 @@
             <el-input v-model="banData.reason" placeholder="请输入封禁原因" />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="danger" native-type="submit" @click="banUser">提交</el-button>
+            <el-button type="danger" native-type="submit" @click="banUser"
+              >提交</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -257,7 +264,9 @@
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px; color: dimgray">通过用户名设置用户权限</span>
+          <span style="margin-left: 12px; color: dimgray"
+            >通过用户名设置用户权限</span
+          >
         </div>
         <el-divider />
 
@@ -269,7 +278,10 @@
           ref="setUserPermissionForm"
         >
           <el-form-item label="用户名称" prop="username">
-            <el-input v-model="setUserPermissionData.username" placeholder="请输入用户名" />
+            <el-input
+              v-model="setUserPermissionData.username"
+              placeholder="请输入用户名"
+            />
           </el-form-item>
           <el-form-item label="用户权限" prop="permission">
             <el-select
@@ -282,7 +294,12 @@
             </el-select>
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="danger" native-type="submit" @click="setUserPermission">提交</el-button>
+            <el-button
+              type="danger"
+              native-type="submit"
+              @click="setUserPermission"
+              >提交</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -315,7 +332,10 @@
           ref="extendUserExipreForm"
         >
           <el-form-item label="用户名称" prop="username">
-            <el-input v-model="extendUserExipreData.username" placeholder="请输入用户名" />
+            <el-input
+              v-model="extendUserExipreData.username"
+              placeholder="请输入用户名"
+            />
           </el-form-item>
           <el-form-item label="设置时长" prop="hours">
             <el-input
@@ -328,7 +348,12 @@
             <span>{{ extendUserExipreTimeStr }}</span>
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="danger" native-type="submit" @click="extendUserExipre">提交</el-button>
+            <el-button
+              type="danger"
+              native-type="submit"
+              @click="extendUserExipre"
+              >提交</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -361,7 +386,10 @@
           ref="extendUserUnlimitedForm"
         >
           <el-form-item label="用户名称" prop="username">
-            <el-input v-model="extendUserUnlimitedData.username" placeholder="请输入用户名" />
+            <el-input
+              v-model="extendUserUnlimitedData.username"
+              placeholder="请输入用户名"
+            />
           </el-form-item>
           <el-form-item label="设置时长" prop="hours">
             <el-input
@@ -374,7 +402,12 @@
             <span>{{ extendUserUnlimitedTimeStr }}</span>
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="danger" native-type="submit" @click="extendUserUnlimited">提交</el-button>
+            <el-button
+              type="danger"
+              native-type="submit"
+              @click="extendUserUnlimited"
+              >提交</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -390,7 +423,9 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="unBanUserDialogVisible = false">取消</el-button>
-          <el-button type="primary" native-type="submit" @click="unBanUser">确定</el-button>
+          <el-button type="primary" native-type="submit" @click="unBanUser"
+            >确定</el-button
+          >
         </span>
       </template>
     </el-dialog>
@@ -415,7 +450,6 @@ let settingStore = useSettingStore();
 let adminStore = useAdminStore();
 
 // 数据校验规则
-// @ts-ignore
 let validateUserName = (rule: any, value: any, callback: any) => {
   const regex = /^[a-zA-Z0-9]+$/;
   if (!regex.test(value)) {
@@ -424,7 +458,6 @@ let validateUserName = (rule: any, value: any, callback: any) => {
     callback();
   }
 };
-// @ts-ignore
 let validateRedeemCodeCount = (rule: any, value: any, callback: any) => {
   const intValue = parseInt(value, 10);
   if (isNaN(intValue) || intValue <= 0 || intValue !== parseFloat(value)) {
@@ -435,7 +468,6 @@ let validateRedeemCodeCount = (rule: any, value: any, callback: any) => {
     callback();
   }
 };
-// @ts-ignore
 let validateValidNumber = (rule: any, value: any, callback: any) => {
   const intValue = parseInt(value, 10);
   if (intValue < -86400 || intValue > 86400) {
@@ -459,9 +491,7 @@ const generateRedeemCodeFormRule = {
     { required: true, message: "请输入生成数量", trigger: "blur" },
     { validator: validateRedeemCodeCount, trigger: "blur" },
   ],
-  note: [
-    { required: true, message: "请输入备注", trigger: "blur" },
-  ],
+  note: [{ required: true, message: "请输入备注", trigger: "blur" }],
 };
 // 查询用户
 const queryUserFormRule = {
@@ -515,7 +545,7 @@ const extendRule = {
 
 // 生成兑换码
 // 表单元素
-let codeform = ref(null);
+let codeform: EleFormRef = ref(null);
 // 新建信息表单
 let generateRedeemCodeData = reactive({
   type: "1",
@@ -531,7 +561,6 @@ let clearGenerateRedeemCodeForm = () => {
   try {
     setTimeout(() => {
       if (codeform.value) {
-        // @ts-ignore
         codeform.value.clearValidate(["type", "count"]);
       }
     }, 200);
@@ -544,8 +573,7 @@ let generateRedeemCodeLoading = ref(false);
 // 生成兑换码
 let generateCode = async () => {
   try {
-    // @ts-ignore
-    await codeform.value.validate();
+    await codeform.value!.validate();
     // 显示加载
     generateRedeemCodeLoading.value = true;
     let codeInfo = {
@@ -555,12 +583,10 @@ let generateCode = async () => {
     };
     // 仓库发起请求
     let result = await adminStore.genCode(codeInfo);
-    // @ts-ignore
     if (result.message) {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -584,7 +610,7 @@ let generateCode = async () => {
 // 用户操作loading
 let queryUserLoading = ref(false);
 // 表单元素
-let queryUserForm = ref(null);
+let queryUserForm: EleFormRef = ref(null);
 // 表单数据
 let queryUserData = reactive({
   username: "",
@@ -601,18 +627,8 @@ let queryUserInfo = reactive({
   ban_until: "",
   ban_reason: "",
 });
-interface userInfo {
-  username: string;
-  permission: number;
-  expire_at: number;
-  unlimited_until: number;
-  game_id: number;
-  create_at: number;
-  ban_until: number;
-  ban_reason: string;
-}
 // 设置用户信息
-let setUserInfo = (userInfo: userInfo) => {
+let setUserInfo = (userInfo: UserQueryDetail) => {
   queryUserInfo.username = userInfo.username;
   if (userInfo.permission == 0) {
     queryUserInfo.permission = "游客";
@@ -632,7 +648,7 @@ let setUserInfo = (userInfo: userInfo) => {
     queryUserInfo.ban_until = "";
   }
   queryUserInfo.ban_reason = userInfo.ban_reason;
-  
+
   if (userInfo.game_id == 0) {
     queryUserInfo.game_id = "暂未获取";
   } else {
@@ -653,8 +669,7 @@ let clearUserInfo = () => {
 // 查询用户信息
 let queryUser = async () => {
   try {
-    // @ts-ignore
-    await queryUserForm.value.validate();
+    await queryUserForm.value!.validate();
     // 显示加载
     queryUserLoading.value = true;
     let queryUserInfo = {
@@ -662,22 +677,18 @@ let queryUser = async () => {
     };
     // 仓库发起请求
     let result = await adminStore.userQuery(queryUserInfo);
-    // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
-      // @ts-ignore
       setUserInfo(result.user);
     } else {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -692,7 +703,7 @@ let queryUser = async () => {
 
 // 用户封禁
 // 表单元素
-let banform = ref(null);
+let banform: EleFormRef = ref(null);
 // 表单数据
 let banData = reactive({
   username: "",
@@ -712,7 +723,6 @@ let clearBanForm = () => {
   try {
     setTimeout(() => {
       if (banform.value) {
-        // @ts-ignore
         banform.value.clearValidate(["username", "hours", "reason"]);
       }
     }, 200);
@@ -725,8 +735,7 @@ let banLoading = ref(false);
 // 用户封禁
 let banUser = async () => {
   try {
-    // @ts-ignore
-    await banform.value.validate();
+    await banform.value!.validate();
     // 显示加载
     banLoading.value = true;
     let banInfo = {
@@ -736,12 +745,10 @@ let banUser = async () => {
     };
     // 仓库发起请求
     let result = await adminStore.userBan(banInfo);
-    // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -753,7 +760,6 @@ let banUser = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -771,11 +777,10 @@ let unBanUserDialogVisible = ref(false);
 // 显示dialog
 let unBanUserDialog = async () => {
   // 校验表单
-  try{
-    // @ts-ignore
-    await queryUserForm.value.validate();
+  try {
+    await queryUserForm.value!.validate();
     unBanUserDialogVisible.value = true;
-  }catch(error){}
+  } catch (error) {}
 };
 // 解封用户
 let unBanUser = async () => {
@@ -789,12 +794,10 @@ let unBanUser = async () => {
     };
     // 仓库发起请求
     let result = await adminStore.userUnBan(queryUserInfo);
-    // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -804,7 +807,6 @@ let unBanUser = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -818,7 +820,7 @@ let unBanUser = async () => {
 
 // 设置用户权限
 // 表单元素
-let setUserPermissionForm = ref(null);
+let setUserPermissionForm: EleFormRef = ref(null);
 // 新建信息表单
 let setUserPermissionData = reactive({
   username: "",
@@ -832,7 +834,6 @@ let clearSetUserPermissionForm = () => {
   try {
     setTimeout(() => {
       if (setUserPermissionForm.value) {
-        // @ts-ignore
         setUserPermissionForm.value.clearValidate(["username", "permission"]);
       }
     }, 200);
@@ -845,8 +846,7 @@ let setUserPermissionLoading = ref(false);
 // 设置用户权限
 let setUserPermission = async () => {
   try {
-    // @ts-ignore
-    await setUserPermissionForm.value.validate();
+    await setUserPermissionForm.value!.validate();
     // 显示加载
     setUserPermissionLoading.value = true;
     let setUserPermissionInfo = {
@@ -856,12 +856,10 @@ let setUserPermission = async () => {
     };
     // 仓库发起请求
     let result = await adminStore.userSetPermission(setUserPermissionInfo);
-    // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -874,7 +872,6 @@ let setUserPermission = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -888,7 +885,7 @@ let setUserPermission = async () => {
 
 // 用户续费
 // 表单元素
-let extendUserExipreForm = ref(null);
+let extendUserExipreForm: EleFormRef = ref(null);
 // 表单数据
 let extendUserExipreData = reactive({
   username: "",
@@ -906,7 +903,6 @@ let clearExtendUserExipreForm = () => {
   try {
     setTimeout(() => {
       if (extendUserExipreForm.value) {
-        // @ts-ignore
         extendUserExipreForm.value.clearValidate(["username", "hours"]);
       }
     }, 200);
@@ -919,8 +915,7 @@ let extendUserExipreLoading = ref(false);
 // 用户续期
 let extendUserExipre = async () => {
   try {
-    // @ts-ignore
-    await extendUserExipreForm.value.validate();
+    await extendUserExipreForm.value!.validate();
     // 显示加载
     extendUserExipreLoading.value = true;
     let extendUserExipreInfo = {
@@ -929,12 +924,10 @@ let extendUserExipre = async () => {
     };
     // 仓库发起请求
     let result = await adminStore.userExtendExpireTime(extendUserExipreInfo);
-    // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -947,7 +940,6 @@ let extendUserExipre = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -961,7 +953,7 @@ let extendUserExipre = async () => {
 
 // 无限制权限续期
 // 表单元素
-let extendUserUnlimitedForm = ref(null);
+let extendUserUnlimitedForm: EleFormRef = ref(null);
 // 表单数据
 let extendUserUnlimitedData = reactive({
   username: "",
@@ -979,7 +971,6 @@ let clearExtendUserUnlimitedForm = () => {
   try {
     setTimeout(() => {
       if (extendUserUnlimitedForm.value) {
-        // @ts-ignore
         extendUserUnlimitedForm.value.clearValidate(["username", "hours"]);
       }
     }, 200);
@@ -992,8 +983,7 @@ let extendUserUnlimitedLoading = ref(false);
 // 无限制权限续期
 let extendUserUnlimited = async () => {
   try {
-    // @ts-ignore
-    await extendUserUnlimitedForm.value.validate();
+    await extendUserUnlimitedForm.value!.validate();
     // 显示加载
     extendUserUnlimitedLoading.value = true;
     let extendUserUnlimitedInfo = {
@@ -1001,13 +991,13 @@ let extendUserUnlimited = async () => {
       seconds: extendUserUnlimitedData.hours * 3600,
     };
     // 仓库发起请求
-    let result = await adminStore.userExtendUnlimitedTime(extendUserUnlimitedInfo);
-    // @ts-ignore
+    let result = await adminStore.userExtendUnlimitedTime(
+      extendUserUnlimitedInfo
+    );
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -1020,7 +1010,6 @@ let extendUserUnlimited = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });

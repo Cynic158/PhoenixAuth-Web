@@ -10,15 +10,16 @@ import {
   reqGetLoginOptions,
   reqLoginVerification,
   reqQueryByUser,
-  reqRemoveById
+  reqRemoveById,
 } from "@/api/webauthn";
 
-interface removeWebAuthnInfo{
-    credential_id: number;
-}
+import type {
+  RegistrationResponseJSON,
+  AuthenticationResponseJSON,
+} from "@simplewebauthn/types";
 
 // 创建仓库
-let useWebAuthnStore = defineStore("webauthn", ()=>{
+let useWebAuthnStore = defineStore("webauthn", () => {
   // 请求通行密钥注册Options
   let registerOptions = async () => {
     try {
@@ -30,14 +31,14 @@ let useWebAuthnStore = defineStore("webauthn", ()=>{
   };
 
   // 请求通行密钥注册验证
-  let registerVerification = async (data: any) => {
+  let registerVerification = async (data: RegistrationResponseJSON) => {
     try {
       let result = await reqRegisterVerification(data);
       return result;
     } catch (error) {
       return Promise.reject(error);
     }
-  }
+  };
 
   // 请求通行密钥登录Options
   let loginOptions = async () => {
@@ -50,7 +51,7 @@ let useWebAuthnStore = defineStore("webauthn", ()=>{
   };
 
   // 请求通行密钥登录验证
-  let loginVerification = async (data: any) => {
+  let loginVerification = async (data: AuthenticationResponseJSON) => {
     try {
       let result = await reqLoginVerification(data);
       localStorage.setItem("TOKEN", useUserStore().token.valueOf());
@@ -58,7 +59,7 @@ let useWebAuthnStore = defineStore("webauthn", ()=>{
     } catch (error) {
       return Promise.reject(error);
     }
-  }
+  };
 
   // 请求通行密钥查询
   let queryByUser = async () => {
@@ -68,18 +69,18 @@ let useWebAuthnStore = defineStore("webauthn", ()=>{
     } catch (error) {
       return Promise.reject(error);
     }
-  }
+  };
 
   // 请求通行密钥删除
-  let removeById = async (info: removeWebAuthnInfo) => {
+  let removeById = async (info: WebauthnRemoveInfo) => {
     try {
       let result = await reqRemoveById(info);
       return result;
     } catch (error) {
       return Promise.reject(error);
     }
-  }
-  
+  };
+
   // 导出
   return {
     registerOptions,

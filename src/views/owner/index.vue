@@ -13,7 +13,8 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >游戏账号是调用部分功能所使用的账号 (不包括进服), 且只能与绑定的游戏ID一致</span
+            >游戏账号是调用部分功能所使用的账号 (不包括进服),
+            且只能与绑定的游戏ID一致</span
           >
         </div>
         <el-divider />
@@ -86,7 +87,12 @@
             <el-input v-model="phoneData.code" placeholder="请输入验证码" />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" native-type="submit" @click="createBotByPhone">绑定</el-button>
+            <el-button
+              type="primary"
+              native-type="submit"
+              @click="createBotByPhone"
+              >绑定</el-button
+            >
             <el-popover
               :width="326"
               :visible="!botInfo.set && robotVisible"
@@ -102,7 +108,8 @@
                   >获取验证码</el-button
                 >
               </template>
-              <div class="cf-turnstile"
+              <div
+                class="cf-turnstile"
                 data-sitekey="0x4AAAAAAAQhC3f_WRwvJ19O"
                 data-callback="onRobotSuccess"
                 data-error-callback="onRobotError"
@@ -110,8 +117,12 @@
                 data-before-interactive-callback="onRobotBeforeInteractive"
                 data-after-interactive-callback="onRobotAfterInteractive"
                 data-size="normal"
-                :data-theme="exportedLocalStorage.getItem('DARKMODE') === 'true' ? 'dark' : 'light'">
-              </div>
+                :data-theme="
+                  exportedLocalStorage.getItem('DARKMODE') === 'true'
+                    ? 'dark'
+                    : 'light'
+                "
+              ></div>
             </el-popover>
             <el-button v-if="codeTimeShow" type="primary" disabled>{{
               codeTimes
@@ -169,7 +180,12 @@
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" native-type="submit" @click="createBotByEmail">创建</el-button>
+            <el-button
+              type="primary"
+              native-type="submit"
+              @click="createBotByEmail"
+              >创建</el-button
+            >
             <el-button @click="clearForm">清空表单</el-button>
           </el-form-item>
         </el-form>
@@ -215,7 +231,8 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >在请求进服时, 如果短时间遇到多次错误则尝试向服务器发送重启指令</span
+            >在请求进服时,
+            如果短时间遇到多次错误则尝试向服务器发送重启指令</span
           >
         </div>
         <el-divider />
@@ -251,7 +268,7 @@
       </div>
     </el-card>
 
-    <el-card 
+    <el-card
       v-loading="giftCodeLoading || queryLoading"
       style="margin-top: 12px"
       shadow="hover"
@@ -293,7 +310,9 @@
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" native-type="submit" @click="useGiftCode">兑换</el-button>
+            <el-button type="primary" native-type="submit" @click="useGiftCode"
+              >兑换</el-button
+            >
           </el-form-item>
         </el-form>
       </div>
@@ -326,10 +345,11 @@ import useOwnerStore from "@/store/modules/owner";
 // 导入消息通知组件
 import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
+import type { AxiosResponse } from "axios";
 // 人机验证显示
-const robotVisible = ref(false)
+const robotVisible = ref(false);
 // 导出本地仓库给HTML使用
-let exportedLocalStorage = localStorage
+let exportedLocalStorage = localStorage;
 // 使用用户仓库
 let userStore = useUserStore();
 // bot信息部分
@@ -341,13 +361,7 @@ let botInfo = reactive({
   username: "",
 });
 // 设置bot信息
-interface robotInfo {
-  success: boolean;
-  message: string;
-  set: boolean;
-  username: string;
-}
-let setBotInfo = (info: robotInfo) => {
+let setBotInfo = (info: OwnerRobotInfo | AxiosResponse<any, any>) => {
   botInfo.set = info.set;
   botInfo.username = info.username;
 };
@@ -367,22 +381,16 @@ let getBotStatus = async () => {
     queryLoading.value = true;
     banUnbind.value = true;
     let result = await ownerStore.getBot();
-    // @ts-ignore
     if (result.success) {
       // 获取成功
-      // @ts-ignore
       setBotInfo(result);
-      // @ts-ignore
       if (result.username) {
         alertType.value = "success";
         alertTitle.value =
-          // @ts-ignore
           result.username +
-          // @ts-ignore
           ` [Lv.${result.lv} (${result.exp}/${result.total_exp})]`;
       } else {
         alertType.value = "warning";
-        // @ts-ignore
         alertTitle.value = result.message;
       }
       if (showUnbind.value == false) {
@@ -397,7 +405,6 @@ let getBotStatus = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -416,7 +423,7 @@ let createDefaultLoading = ref(false);
 
 // 邮箱创建
 // 表单元素
-let emailform = ref(null);
+let emailform: EleFormRef = ref(null);
 // 表单数据
 let emailData = reactive({
   username: "",
@@ -430,7 +437,6 @@ let clearForm = () => {
   try {
     setTimeout(() => {
       if (emailform.value) {
-        // @ts-ignore
         emailform.value.clearValidate(["username", "password"]);
       }
     }, 200);
@@ -438,7 +444,6 @@ let clearForm = () => {
     //console.log(error);
   }
 };
-// @ts-ignore
 let validateEmail = (rule: any, value: any, callback: any) => {
   // 邮箱正则表达式
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -449,11 +454,9 @@ let validateEmail = (rule: any, value: any, callback: any) => {
     callback();
   }
 };
-// @ts-ignore
 let validateGiftCode = (rule: any, value: any, callback: any) => {
   // uuid正则
-  const codeReg =
-    /^[0-9a-z]{10}$/;
+  const codeReg = /^[0-9a-z]{10}$/;
 
   if (!codeReg.test(value)) {
     callback(new Error("礼包兑换码格式不正确"));
@@ -480,9 +483,7 @@ const rules = {
   ],
 };
 const giftCodeRules = {
-  code: [
-    { required: true, validator: validateGiftCode, trigger: "blur" },
-  ],
+  code: [{ required: true, validator: validateGiftCode, trigger: "blur" }],
 };
 // 邮箱卡片提示
 // 提示类型
@@ -492,8 +493,7 @@ let emailAlertTitle = ref("");
 // 邮箱登录
 let createBotByEmail = async () => {
   try {
-    // @ts-ignore
-    await emailform.value.validate();
+    await emailform.value!.validate();
     // 显示加载
     createDefaultLoading.value = true;
     let emailInfo = {
@@ -505,24 +505,20 @@ let createBotByEmail = async () => {
     emailInfo.password = emailData.password;
     // 仓库发起邮箱登录请求
     let result = await ownerStore.botCreateByEmail(emailInfo);
-    // @ts-ignore
     if (result.success) {
       // 获取成功
-      // @ts-ignore
       if (result.need_verify) {
         emailAlertType.value = "warning";
       } else {
         emailAlertType.value = "success";
         getBotStatus();
       }
-      // @ts-ignore
       emailAlertTitle.value = result.message;
     } else {
       // 请求失败，消息提示
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -536,7 +532,7 @@ let createBotByEmail = async () => {
 
 // 手机创建
 // 表单元素
-let phoneform = ref(null);
+let phoneform: EleFormRef = ref(null);
 // 表单数据
 let phoneData = reactive({
   phone: "",
@@ -550,7 +546,6 @@ let clearPhoneForm = () => {
   try {
     setTimeout(() => {
       if (phoneform.value) {
-        // @ts-ignore
         phoneform.value.clearValidate(["phone"]);
       }
     }, 200);
@@ -558,7 +553,6 @@ let clearPhoneForm = () => {
     //console.log(error);
   }
 };
-// @ts-ignore
 let validatePhone = (rule: any, value: any, callback: any) => {
   // 手机正则表达式
   const phoneRegex = /^1[3456789]\d{9}$/;
@@ -598,57 +592,44 @@ let captchaExecutingFlag = ref(true);
 // 刷新验证码
 let refreshCaptcha = () => {
   captchaExecutingFlag.value = true;
-  // @ts-ignore
   turnstile.reset();
-  // @ts-ignore
   turnstile.execute();
 };
 
 // 人机验证成功回调
 var onRobotSuccess = async () => {
-  captchaExecutingFlag.value = false
+  captchaExecutingFlag.value = false;
 };
 // 人机验证交互前回调
 var onRobotBeforeInteractive = async () => {
-  robotVisible.value = true
-}
+  robotVisible.value = true;
+};
 // 人机验证交互后回调
 var onRobotAfterInteractive = async () => {
-  robotVisible.value = false
-}
+  robotVisible.value = false;
+};
 // 人机验证错误回调
 var onRobotError = async () => {
-  refreshCaptcha()
+  refreshCaptcha();
 };
 // 添加人机验证
 onMounted(() => {
-  // @ts-ignore
   window.onRobotBeforeInteractive = onRobotBeforeInteractive;
-  // @ts-ignore
   window.onRobotAfterInteractive = onRobotAfterInteractive;
-  // @ts-ignore
   window.onRobotSuccess = onRobotSuccess;
-  // @ts-ignore
   window.onRobotError = onRobotError;
-  // @ts-ignore
-  turnstile.render('.cf-turnstile');
+  turnstile.render(".cf-turnstile");
 });
 // 销毁全局变量
 onUnmounted(() => {
-  // @ts-ignore
   turnstile.remove();
-  // @ts-ignore
   window.onRobotBeforeInteractive = null;
-  // @ts-ignore
   window.onRobotAfterInteractive = null;
-  // @ts-ignore
   window.onRobotSuccess = null;
-  // @ts-ignore
   window.onRobotError = null;
 });
 // 获取验证码
 let getCode = async () => {
-  // @ts-ignore
   let captchaToken = turnstile.getResponse();
   if (!captchaToken) {
     // 消息提示
@@ -659,14 +640,13 @@ let getCode = async () => {
       duration: 3000,
     });
     // 重置人机验证
-    refreshCaptcha()
+    refreshCaptcha();
     return;
   }
   // 校验表单
   try {
-    // @ts-ignore
-    await phoneform.value.validate();
-  }catch (error: any) {
+    await phoneform.value!.validate();
+  } catch (error: any) {
     return;
   }
   // 显示加载
@@ -679,10 +659,8 @@ let getCode = async () => {
   try {
     // 仓库发起验证码请求
     let result = await ownerStore.botPhoneCode(codeInfo);
-    // @ts-ignore
     if (result.success) {
       // 获取成功
-      // @ts-ignore
       if (result.need_verify) {
         phoneAlertType.value = "warning";
         codedisabled.value = false;
@@ -693,7 +671,7 @@ let getCode = async () => {
         codeTimeShow.value = true;
         const timer = setInterval(() => {
           codeTimes.value--;
-          if (codeTimes.value < 1){
+          if (codeTimes.value < 1) {
             codeTimes.value = 60;
             codedisabled.value = false;
             codeTimeShow.value = false;
@@ -701,14 +679,12 @@ let getCode = async () => {
           }
         }, 1000);
       }
-      // @ts-ignore
       phoneAlertTitle.value = result.message;
     } else {
       // 请求失败，消息提示
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -718,15 +694,14 @@ let getCode = async () => {
     //console.log(error);
     codedisabled.value = false;
   } finally {
-    refreshCaptcha()
+    refreshCaptcha();
     codeloadingflag.value = false;
   }
 };
 // 手机登录
 let createBotByPhone = async () => {
   try {
-    // @ts-ignore
-    await phoneform.value.validate();
+    await phoneform.value!.validate();
     // 显示加载
     createDefaultLoading.value = true;
     let phoneInfo = {
@@ -735,24 +710,20 @@ let createBotByPhone = async () => {
     };
     // 仓库发起手机登录请求
     let result = await ownerStore.botCreateByPhone(phoneInfo);
-    // @ts-ignore
     if (result.success) {
       // 获取成功
-      // @ts-ignore
       if (result.need_verify) {
         phoneAlertType.value = "warning";
       } else {
         phoneAlertType.value = "success";
         getBotStatus();
       }
-      // @ts-ignore
       phoneAlertTitle.value = result.message;
     } else {
       // 请求失败，消息提示
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -777,12 +748,10 @@ let unbindBot = async () => {
   try {
     unbindLoading.value = true;
     let result = await ownerStore.botUnbind();
-    // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -790,7 +759,6 @@ let unbindBot = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -810,12 +778,10 @@ let signinBot = async () => {
   try {
     signLoading.value = true;
     let result = await ownerStore.botSignIn();
-    // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -823,7 +789,6 @@ let signinBot = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -843,12 +808,10 @@ let beforeAutoRestartChange = async () => {
     let result = await userStore.userAutoRestart({
       enable: !userStore.autoRestartFlag,
     });
-    // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -857,7 +820,6 @@ let beforeAutoRestartChange = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -876,12 +838,10 @@ let getMailReward = async () => {
   try {
     getMailRewardLoading.value = true;
     let result = await ownerStore.botGetMailReward();
-    // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -889,7 +849,6 @@ let getMailReward = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -908,7 +867,7 @@ let giftCodeAlertTitle = ref("");
 // 礼包码卡片loading
 let giftCodeLoading = ref(false);
 // 表单元素
-let giftCodeform = ref(null);
+let giftCodeform: EleFormRef = ref(null);
 // 表单数据
 let giftCodeData = reactive({
   code: "",
@@ -919,8 +878,7 @@ let clearGiftCodeForm = () => {
   try {
     setTimeout(() => {
       if (giftCodeform.value) {
-        // @ts-ignore
-        codeform.value.clearValidate(["code"]);
+        giftCodeform.value.clearValidate(["code"]);
       }
     }, 200);
   } catch (error) {}
@@ -928,15 +886,13 @@ let clearGiftCodeForm = () => {
 // 使用兑换码
 let useGiftCode = async () => {
   try {
-    // @ts-ignore
-    await giftCodeform.value.validate();
+    await giftCodeform.value!.validate();
     // 显示加载
     giftCodeLoading.value = true;
     // 仓库发起请求
     let result = await ownerStore.botUseGiftCode({
       code: giftCodeData.code,
     });
-    // @ts-ignore
     if (result.success) {
       giftCodeAlertType.value = "success";
       // 清空表单
@@ -944,7 +900,6 @@ let useGiftCode = async () => {
     } else {
       giftCodeAlertType.value = "warning";
     }
-    // @ts-ignore
     giftCodeAlertTitle.value = result.message;
   } catch (error) {
     //console.log(error);

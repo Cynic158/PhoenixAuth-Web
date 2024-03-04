@@ -35,8 +35,8 @@
                     />
                   </el-form-item>
                   <el-form-item prop="email_verify_code">
-                    <el-row class="row-bg" justify="center" style="width: 100%;">
-                      <el-col :span="20" style="padding-right: 10px;">
+                    <el-row class="row-bg" justify="center" style="width: 100%">
+                      <el-col :span="20" style="padding-right: 10px">
                         <el-input
                           v-model="forgetData.email_verify_code"
                           prefix-icon="Lock"
@@ -87,7 +87,7 @@
                     >
                   </el-form-item>
                   <el-form-item>
-                    <el-row class="row-bg" justify="center" style="width: 100%;">
+                    <el-row class="row-bg" justify="center" style="width: 100%">
                       <el-col :span="16"></el-col>
                       <el-col :span="8">
                         <el-button
@@ -96,8 +96,7 @@
                           @click="switchpage('login')"
                           >返回登录
                           <el-icon><ArrowRight /></el-icon>
-                          </el-button
-                        >
+                        </el-button>
                       </el-col>
                     </el-row>
                   </el-form-item>
@@ -139,9 +138,7 @@
                       >登录</el-button
                     >
                   </el-form-item>
-                  <el-form-item
-                    v-if="browserSupportsWebAuthn()"
-                  >
+                  <el-form-item v-if="browserSupportsWebAuthn()">
                     <el-button
                       type="success"
                       class="login-btn"
@@ -151,7 +148,7 @@
                     >
                   </el-form-item>
                   <el-form-item>
-                    <el-row class="row-bg" justify="center" style="width: 100%;">
+                    <el-row class="row-bg" justify="center" style="width: 100%">
                       <el-col :span="8">
                         <el-button
                           type="primary"
@@ -159,8 +156,7 @@
                           @click="switchpage('forget')"
                           ><el-icon><ArrowLeft /></el-icon>
                           忘记密码
-                          </el-button
-                        >
+                        </el-button>
                       </el-col>
                       <el-col :span="8"></el-col>
                       <el-col :span="8">
@@ -170,8 +166,7 @@
                           @click="switchpage('reg')"
                           >注册账号
                           <el-icon><ArrowRight /></el-icon>
-                          </el-button
-                        >
+                        </el-button>
                       </el-col>
                     </el-row>
                   </el-form-item>
@@ -224,7 +219,7 @@
                     >
                   </el-form-item>
                   <el-form-item>
-                    <el-row class="row-bg" justify="center" style="width: 100%;">
+                    <el-row class="row-bg" justify="center" style="width: 100%">
                       <el-col :span="8">
                         <el-button
                           type="primary"
@@ -232,8 +227,7 @@
                           @click="switchpage('login')"
                           ><el-icon><ArrowLeft /></el-icon>
                           返回登录
-                          </el-button
-                        >
+                        </el-button>
                       </el-col>
                       <el-col :span="16"></el-col>
                     </el-row>
@@ -242,7 +236,8 @@
               </el-form>
             </div>
           </template>
-          <div class="cf-turnstile"
+          <div
+            class="cf-turnstile"
             data-sitekey="0x4AAAAAAAQhC3f_WRwvJ19O"
             data-callback="onRobotSuccess"
             data-error-callback="onRobotError"
@@ -250,8 +245,12 @@
             data-before-interactive-callback="onRobotBeforeInteractive"
             data-after-interactive-callback="onRobotAfterInteractive"
             data-size="normal"
-            :data-theme="exportedLocalStorage.getItem('DARKMODE') === 'true' ? 'dark' : 'light'">
-          </div>
+            :data-theme="
+              exportedLocalStorage.getItem('DARKMODE') === 'true'
+                ? 'dark'
+                : 'light'
+            "
+          ></div>
         </el-popover>
       </el-col>
     </el-row>
@@ -272,7 +271,10 @@ import { ElNotification } from "element-plus";
 import { getTimeStr } from "@/utils/index";
 // 导入暗黑模式背景图
 //import darkimg from "../../assets/images/bg_dark.webp";
-import { browserSupportsWebAuthn, startAuthentication } from '@simplewebauthn/browser';
+import {
+  browserSupportsWebAuthn,
+  startAuthentication,
+} from "@simplewebauthn/browser";
 
 // 使用user仓库
 let userStore = useUserStore();
@@ -281,11 +283,10 @@ let webAuthnStore = useWebAuthnStore();
 // 使用路由
 let $router = useRouter();
 // 人机验证显示
-const robotVisible = ref(false)
+const robotVisible = ref(false);
 // 导出本地仓库给HTML使用
-let exportedLocalStorage = localStorage
+let exportedLocalStorage = localStorage;
 
-// @ts-ignore
 let validateUserName = (rule: any, value: any, callback: any) => {
   const regex = /^[a-zA-Z0-9]+$/;
   if (!regex.test(value)) {
@@ -294,7 +295,6 @@ let validateUserName = (rule: any, value: any, callback: any) => {
     callback();
   }
 };
-// @ts-ignore
 let validateRegRePassword = (rule: any, value: any, callback: any) => {
   if (value !== regData.password) {
     callback(new Error("输入的密码不相同"));
@@ -302,7 +302,6 @@ let validateRegRePassword = (rule: any, value: any, callback: any) => {
     callback();
   }
 };
-// @ts-ignore
 let validateForgetRePassword = (rule: any, value: any, callback: any) => {
   if (value !== forgetData.password) {
     callback(new Error("输入的密码不相同"));
@@ -311,7 +310,7 @@ let validateForgetRePassword = (rule: any, value: any, callback: any) => {
   }
 };
 // 表单校验规则
-const forgetRules ={
+const forgetRules = {
   username: [
     { required: true, message: "请输入用户名", trigger: "blur" },
     { min: 5, max: 12, message: "用户名长度为5到12位", trigger: "blur" },
@@ -376,9 +375,9 @@ const regRules = {
 
 //登录部分
 // 表单元素
-let loginform = ref(null);
-let regform = ref(null);
-let forgetform = ref(null);
+let loginform: EleFormRef = ref(null);
+let regform: EleFormRef = ref(null);
+let forgetform: EleFormRef = ref(null);
 // 当前表单
 let currentForm = ref("login");
 // 表单数据
@@ -414,50 +413,58 @@ let switchpage = (type: "login" | "reg" | "forget") => {
   currentForm.value = type;
   // 清空校验提示
   if (loginform.value) {
-    // @ts-ignore
     loginform.value.clearValidate(["username", "password"]);
   }
   if (regform.value) {
-    // @ts-ignore
     regform.value.clearValidate(["username", "password", "repassword"]);
   }
   if (forgetform.value) {
-    // @ts-ignore
-    forgetform.value.clearValidate(["username", "email_verify_code", "password", "repassword"]);
+    forgetform.value.clearValidate([
+      "username",
+      "email_verify_code",
+      "password",
+      "repassword",
+    ]);
   }
   // 清空表单内容
   clearForm();
   // 切换页面
-  switch(type){
+  switch (type) {
     case "reg":
-      // @ts-ignore
-      document.querySelector(".login-form").style.height = "384px";
-      // @ts-ignore
-      document.querySelector(".login-forgetpage").style.left = "-200%";
-      // @ts-ignore
-      document.querySelector(".login-loginpage").style.left = "-100%";
-      // @ts-ignore
-      document.querySelector(".login-regpage").style.left = "32px";
+      (document.querySelector(".login-form") as HTMLFormElement).style.height =
+        "384px";
+      (
+        document.querySelector(".login-forgetpage") as HTMLFormElement
+      ).style.left = "-200%";
+      (
+        document.querySelector(".login-loginpage") as HTMLFormElement
+      ).style.left = "-100%";
+      (document.querySelector(".login-regpage") as HTMLFormElement).style.left =
+        "32px";
       break;
     case "login":
-      // @ts-ignore
-      document.querySelector(".login-form").style.height = browserSupportsWebAuthn() ? "384px" : "344px";
-      // @ts-ignore
-      document.querySelector(".login-forgetpage").style.left = "-100%";
-      // @ts-ignore
-      document.querySelector(".login-loginpage").style.left = "32px";
-      // @ts-ignore
-      document.querySelector(".login-regpage").style.left = "100%";
+      (document.querySelector(".login-form") as HTMLFormElement).style.height =
+        browserSupportsWebAuthn() ? "384px" : "344px";
+      (
+        document.querySelector(".login-forgetpage") as HTMLFormElement
+      ).style.left = "-100%";
+      (
+        document.querySelector(".login-loginpage") as HTMLFormElement
+      ).style.left = "32px";
+      (document.querySelector(".login-regpage") as HTMLFormElement).style.left =
+        "100%";
       break;
     case "forget":
-      // @ts-ignore
-      document.querySelector(".login-form").style.height = "434px";
-      // @ts-ignore
-      document.querySelector(".login-forgetpage").style.left = "32px";
-      // @ts-ignore
-      document.querySelector(".login-loginpage").style.left = "100%";
-      // @ts-ignore
-      document.querySelector(".login-regpage").style.left = "200%";
+      (document.querySelector(".login-form") as HTMLFormElement).style.height =
+        "434px";
+      (
+        document.querySelector(".login-forgetpage") as HTMLFormElement
+      ).style.left = "32px";
+      (
+        document.querySelector(".login-loginpage") as HTMLFormElement
+      ).style.left = "100%";
+      (document.querySelector(".login-regpage") as HTMLFormElement).style.left =
+        "200%";
       break;
   }
 };
@@ -468,37 +475,34 @@ let captchaExecutingFlag = ref(true);
 // 刷新验证码
 let refreshCaptcha = () => {
   captchaExecutingFlag.value = true;
-  // @ts-ignore
   turnstile.reset();
-  // @ts-ignore
   turnstile.execute();
 };
 
 // 人机验证交互前回调
 var onRobotBeforeInteractive = async () => {
-  robotVisible.value = true
-}
+  robotVisible.value = true;
+};
 
 // 人机验证交互后回调
 var onRobotAfterInteractive = async () => {
-  robotVisible.value = false
-}
+  robotVisible.value = false;
+};
 
 // 人机验证成功回调
 var onRobotSuccess = async () => {
-  captchaExecutingFlag.value = false
+  captchaExecutingFlag.value = false;
 };
 
 // 人机验证错误回调
 var onRobotError = async () => {
-  refreshCaptcha()
+  refreshCaptcha();
 };
 
-let codeTimes = ref(0)
+let codeTimes = ref(0);
 // 请求邮箱验证码
 let requestEmailVerifyCode = async () => {
   // 尝试获取验证码
-  // @ts-ignore
   let captchaToken = turnstile.getResponse();
   if (!captchaToken) {
     // 消息提示
@@ -509,7 +513,7 @@ let requestEmailVerifyCode = async () => {
       duration: 3000,
     });
     // 重置人机验证
-    refreshCaptcha()
+    refreshCaptcha();
     return;
   }
   // 校验表单
@@ -522,11 +526,10 @@ let requestEmailVerifyCode = async () => {
       duration: 3000,
     });
   }
-  loadingflag.value = true
-  try{
+  loadingflag.value = true;
+  try {
     // 发起请求前获取token
     let tokenResult = await reqNewTokenFunc();
-    // @ts-ignore
     if (!tokenResult.success) {
       loadingflag.value = false;
       return;
@@ -537,18 +540,16 @@ let requestEmailVerifyCode = async () => {
       action_type: 3,
       captcha_token: captchaToken,
     });
-    // @ts-ignore
     if (result.success) {
       // 消息提示
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
       // 开始倒计时
-      codeTimes.value = 60
+      codeTimes.value = 60;
       let timer = setInterval(() => {
         codeTimes.value--;
         if (codeTimes.value < 1) {
@@ -560,17 +561,16 @@ let requestEmailVerifyCode = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
-  }catch (error: any) {
+  } catch (error: any) {
     //console.log(error);
-  }finally{
+  } finally {
     // 重置人机验证
-    refreshCaptcha()
-    loadingflag.value = false
+    refreshCaptcha();
+    loadingflag.value = false;
   }
 };
 
@@ -578,17 +578,15 @@ let requestEmailVerifyCode = async () => {
 let requestResetPassword = async () => {
   // 校验表单
   try {
-    // @ts-ignore
-    await forgetform.value.validate();
-  }catch (error: any) {
-    return
+    await forgetform.value!.validate();
+  } catch (error: any) {
+    return;
   }
   // 显示加载
   loadingflag.value = true;
   try {
     // 发起请求前获取token
     let tokenResult = await reqNewTokenFunc();
-    // @ts-ignore
     if (!tokenResult.success) {
       loadingflag.value = false;
       return;
@@ -599,13 +597,11 @@ let requestResetPassword = async () => {
       email_verify_code: forgetData.email_verify_code,
       new_password: forgetData.password,
     });
-    // @ts-ignore
     if (result.success) {
       // 消息提示
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
@@ -616,14 +612,13 @@ let requestResetPassword = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
-  }catch (error: any) {
+  } catch (error: any) {
     //console.log(error);
-  }finally{
+  } finally {
     loadingflag.value = false;
   }
 };
@@ -632,10 +627,9 @@ let requestResetPassword = async () => {
 let login = async () => {
   // 校验表单
   try {
-    // @ts-ignore
-    await loginform.value.validate();
-  }catch (error: any) {
-    return
+    await loginform.value!.validate();
+  } catch (error: any) {
+    return;
   }
   // 直接请求登录
   // 显示加载
@@ -645,43 +639,39 @@ let login = async () => {
     username: loginData.username,
     password: loginData.password,
     captcha_token: "",
-  }
+  };
   try {
     // 发起请求前获取token
     let tokenResult = await reqNewTokenFunc();
-    // @ts-ignore
     if (!tokenResult.success) {
       loadingflag.value = false;
       return;
     }
     // 仓库发起登录请求
     let result = await userStore.userRegLog(loginInfo, "login");
-    // @ts-ignore
-    if (result.success) {
+    if (result!.success) {
       // 获取当前时段字符串
       let timestr: string = getTimeStr();
       // 消息提示
       ElNotification({
         type: "success",
         title: timestr,
-        // @ts-ignore
-        message: result.message,
+        message: result!.message,
         duration: 3000,
       });
       // 请求成功，进入首页，且无需解锁登录按钮
       $router.push("/");
-      return
+      return;
     } else {
       // 请求失败，消息提示
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
-        message: result.message,
+        message: result!.message,
         duration: 3000,
       });
     }
-  }catch (error: any) {
+  } catch (error: any) {
     //console.log(error);
   }
   // 未请求成功，关闭加载
@@ -691,7 +681,7 @@ let login = async () => {
 // WebAuthn登录
 let webauthnLogin = async () => {
   // 检查浏览器是否支持WebAuthn
-  if (!browserSupportsWebAuthn()){
+  if (!browserSupportsWebAuthn()) {
     ElNotification({
       type: "warning",
       title: "Warning",
@@ -704,7 +694,6 @@ let webauthnLogin = async () => {
   try {
     // 发起请求前获取token
     let tokenResult = await reqNewTokenFunc();
-    // @ts-ignore
     if (!tokenResult.success) {
       loadingflag.value = false;
       return;
@@ -712,26 +701,22 @@ let webauthnLogin = async () => {
     // 仓库请求登录 WebAuthn Options
     let result = await webAuthnStore.loginOptions();
     // 向验证器发起挑战
-    // @ts-ignore
     let attResp = await startAuthentication(result.publicKey);
     // 仓库发起验证注册请求
     let registerResult = await webAuthnStore.loginVerification(attResp);
-    // @ts-ignore
-    if (registerResult.success){
+    if (registerResult.success) {
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
         message: registerResult.message,
         duration: 3000,
       });
       // 请求成功，进入首页，且无需解锁登录按钮
       $router.push("/");
-    }else{
+    } else {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
         message: registerResult.message,
         duration: 3000,
       });
@@ -747,11 +732,10 @@ let webauthnLogin = async () => {
     // 请求完成，关闭加载
     loadingflag.value = false;
   }
-}
+};
 
 let register = async () => {
   // 尝试获取验证码
-  // @ts-ignore
   let captchaToken = turnstile.getResponse();
   if (!captchaToken) {
     // 消息提示
@@ -762,15 +746,14 @@ let register = async () => {
       duration: 3000,
     });
     // 重置人机验证
-    refreshCaptcha()
+    refreshCaptcha();
     return;
   }
   // 校验表单
   try {
-    // @ts-ignore
-    await regform.value.validate();
-  }catch (error: any) {
-    return
+    await regform.value!.validate();
+  } catch (error: any) {
+    return;
   }
   // 显示加载
   loadingflag.value = true;
@@ -783,20 +766,17 @@ let register = async () => {
   try {
     // 发起请求前获取token
     let tokenResult = await reqNewTokenFunc();
-    // @ts-ignore
     if (!tokenResult.success) {
       return;
     }
     // 仓库发起注册请求
     let result = await userStore.userRegLog(regInfo, "reg");
-    // @ts-ignore
-    if (result.success) {
+    if (result!.success) {
       // 消息提示
       ElNotification({
         type: "success",
         title: "Success",
-        // @ts-ignore
-        message: result.message,
+        message: result!.message,
         duration: 3000,
       });
       // 注册成功，返回登录
@@ -806,8 +786,7 @@ let register = async () => {
       ElNotification({
         type: "warning",
         title: "Warning",
-        // @ts-ignore
-        message: result.message,
+        message: result!.message,
         duration: 3000,
       });
     }
@@ -815,7 +794,7 @@ let register = async () => {
     //console.log(error);
   } finally {
     // 重置人机验证
-    refreshCaptcha()
+    refreshCaptcha();
     // 请求完成，关闭加载
     loadingflag.value = false;
   }
@@ -843,46 +822,38 @@ let reqNewTokenFunc = async () => {
 
 // 销毁全局变量
 onUnmounted(() => {
-  // @ts-ignore
   turnstile.remove();
-  // @ts-ignore
   window.onRobotBeforeInteractive = null;
-  // @ts-ignore
   window.onRobotAfterInteractive = null;
-  // @ts-ignore
   window.onRobotSuccess = null;
-  // @ts-ignore
   window.onRobotError = null;
 });
 onMounted(() => {
-  // @ts-ignore
   window.onRobotBeforeInteractive = onRobotBeforeInteractive;
-  // @ts-ignore
   window.onRobotAfterInteractive = onRobotAfterInteractive;
-  // @ts-ignore
   window.onRobotSuccess = onRobotSuccess;
-  // @ts-ignore
   window.onRobotError = onRobotError;
-  // @ts-ignore
-  turnstile.render('.cf-turnstile');
+  turnstile.render(".cf-turnstile");
 
   // 清空校验提示，防止登出时回到登录页还有校验提示
-  // @ts-ignore
-  loginform.value.clearValidate(["username", "password"]);
-  // @ts-ignore
-  regform.value.clearValidate(["username", "password", "repassword"]);
-  // @ts-ignore
-  forgetform.value.clearValidate(["username", "email_verify_code", "password", "repassword"]);
+  loginform.value!.clearValidate(["username", "password"]);
+  regform.value!.clearValidate(["username", "password", "repassword"]);
+  forgetform.value!.clearValidate([
+    "username",
+    "email_verify_code",
+    "password",
+    "repassword",
+  ]);
 
   let darkbg = localStorage.getItem("DARKMODE") === "true";
   if (darkbg) {
-      const element = document.querySelector(".login-container");
-      if (element) {
-        // @ts-ignore
-        element.style.backgroundImage = `url("https://img.picgo.net/2024/01/24/bg_dark76c3ac9b1eee892b.webp")`;
-        // 转为黑夜模式
-        document.documentElement.className = "dark";
-      }
+    const element = document.querySelector(".login-container");
+    if (element) {
+      (element as HTMLDivElement).style.backgroundImage =
+        `url("https://img.picgo.net/2024/01/24/bg_dark76c3ac9b1eee892b.webp")`;
+      // 转为黑夜模式
+      document.documentElement.className = "dark";
+    }
   }
 
   // 初始化卡片
