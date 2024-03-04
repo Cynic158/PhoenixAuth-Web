@@ -109,7 +109,6 @@ import BreadCrumb from "./BreadCrumb.vue";
 // 导入标签页
 import Tabs from "./Tabs.vue";
 // element的消息通知组件
-// @ts-ignore
 import { ElNotification } from "element-plus";
 import { nextTick, ref } from "vue";
 
@@ -161,6 +160,9 @@ const predefineColors = ref([
 ]);
 let setTheme = () => {
   let el = document.documentElement;
+  if (!themeColor.value) {
+    themeColor.value = "#409EFF";
+  }
   el.style.setProperty("--el-color-primary", themeColor.value);
   localStorage.setItem("THEMECOLOR", themeColor.value);
 };
@@ -237,23 +239,30 @@ let logoutFunc = async () => {
   dialogVisible.value = false;
   try {
     // 由仓库发起请求
-    await userStore.userLogout();
-    // 请求成功，登出
-    $router.push("/login");
-    // 消息提示
-    ElNotification({
-      type: "success",
-      title: "成功",
-      message: "已退出登录, 欢迎下次再来~",
-      duration: 3000,
-    });
-  } catch (error: any) {
-    ElNotification({
-      type: "error",
-      message: error.message,
-      duration: 3000,
-    });
-  }
+    let result = await userStore.userLogout();
+    // @ts-ignore
+    if (result.success){
+      // 请求成功，登出
+      $router.push("/login");
+      // 消息提示
+      ElNotification({
+        type: "success",
+        title: "Success",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }else{
+      // 请求失败，消息提示
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {}
 };
 </script>
 

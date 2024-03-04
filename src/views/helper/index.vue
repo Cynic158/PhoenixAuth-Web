@@ -1,10 +1,5 @@
 <template>
   <div>
-    <div class="g-recaptcha"
-      data-sitekey="6LdATh8pAAAAAI8oKdlrCK9nt1FG1MTdSuE2ZhI5"
-      data-callback="robotCallback"
-      data-size="invisible">
-    </div>
     <el-card shadow="hover">
       <template #header>
         <div class="card-header">
@@ -91,7 +86,7 @@
 
     <el-card
       shadow="hover"
-      v-if="botInfo.set == false"
+      v-show="botInfo.set == false"
       v-loading="createDefaultLoading || queryLoading"
       style="margin-top: 12px"
     >
@@ -104,7 +99,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >使用您提供的手机账号作为Bot</span
+            >使用您提供的手机账号作为Bot (*人机验证)</span
           >
         </div>
         <el-divider />
@@ -116,8 +111,8 @@
           show-icon
           :closable="false"
         />
-
         <el-form
+          @submit.prevent
           class="phone-form-container"
           :model="phoneData"
           :rules="phoneRules"
@@ -130,15 +125,33 @@
             <el-input v-model="phoneData.code" placeholder="请输入验证码" />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" @click="createBotByPhone">创建</el-button>
-            <el-button
-              v-if="!codeTimeShow"
-              type="primary"
-              @click="robotCheck"
-              :loading="codeloadingflag"
-              :disabled="codedisabled"
-              >获取验证码</el-button
+            <el-button type="primary" native-type="submit" @click="createBotByPhone">创建</el-button>
+            <el-popover
+              :width="326"
+              :visible="!botInfo.set && robotVisible"
+              placement="right-end"
             >
+              <template #reference>
+                <el-button
+                  v-if="!codeTimeShow"
+                  type="primary"
+                  @click="getCode"
+                  :loading="codeloadingflag || captchaExecutingFlag"
+                  :disabled="codedisabled"
+                  >获取验证码</el-button
+                >
+              </template>
+              <div class="cf-turnstile"
+                data-sitekey="0x4AAAAAAAQhC3f_WRwvJ19O"
+                data-callback="onRobotSuccess"
+                data-error-callback="onRobotError"
+                data-expired-callback="onRobotError"
+                data-before-interactive-callback="onRobotBeforeInteractive"
+                data-after-interactive-callback="onRobotAfterInteractive"
+                data-size="normal"
+                :data-theme="exportedLocalStorage.getItem('DARKMODE') === 'true' ? 'dark' : 'light'">
+              </div>
+            </el-popover>
             <el-button v-if="codeTimeShow" type="primary" disabled>{{
               codeTimes
             }}</el-button>
@@ -176,6 +189,7 @@
         />
 
         <el-form
+          @submit.prevent
           class="email-form-container"
           :model="emailData"
           :rules="rules"
@@ -190,13 +204,38 @@
               show-password
               v-model="emailData.password"
               placeholder="请输入密码"
+              autocomplete="new-password"
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" @click="createBotByEmail">创建</el-button>
+            <el-button type="primary" native-type="submit" @click="createBotByEmail">创建</el-button>
             <el-button @click="clearForm">清空表单</el-button>
           </el-form-item>
         </el-form>
+      </div>
+    </el-card>
+
+    <el-card
+      shadow="hover"
+      v-if="botInfo.username"
+      v-loading="signLoading || queryLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
+        <div class="card-header">每日签到</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >可以获得游戏内道具以及经验值奖励</span
+          >
+        </div>
+        <el-divider />
+
+        <el-button type="success" round @click="signinBot">签到</el-button>
       </div>
     </el-card>
 
@@ -234,33 +273,9 @@
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" @click="changeDialog">更改</el-button>
+            <el-button type="primary" native-type="submit" @click="changeDialog">更改</el-button>
           </el-form-item>
         </el-form>
-      </div>
-    </el-card>
-
-    <el-card
-      shadow="hover"
-      v-if="botInfo.username"
-      v-loading="signLoading || queryLoading"
-      style="margin-top: 12px"
-    >
-      <template #header>
-        <div class="card-header">每日签到</div>
-      </template>
-      <div>
-        <div class="card-footer">
-          <el-icon>
-            <ChatDotRound />
-          </el-icon>
-          <span style="margin-left: 12px; color: dimgray"
-            >可以获得游戏内道具以及经验值奖励</span
-          >
-        </div>
-        <el-divider />
-
-        <el-button type="success" @click="signinBot">签到</el-button>
       </div>
     </el-card>
 
@@ -307,9 +322,12 @@
 // 导入bot仓库
 import useHelperStore from "@/store/modules/helper";
 // 导入消息通知组件
-// @ts-ignore
 import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
+// 人机验证显示
+const robotVisible = ref(false)
+// 导出本地仓库给HTML使用
+let exportedLocalStorage = localStorage
 
 // bot信息部分
 // 使用bot仓库
@@ -361,7 +379,6 @@ let getBotStatus = async () => {
       // @ts-ignore
       if (result.username) {
         alertType.value = "success";
-
         alertTitle.value =
           // @ts-ignore
           result.username +
@@ -382,14 +399,15 @@ let getBotStatus = async () => {
     } else {
       // 获取失败
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
     queryLoading.value = false;
     banUnbind.value = false;
@@ -427,7 +445,8 @@ let createBotByDefault = async () => {
     } else {
       // 获取失败
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -501,17 +520,15 @@ let emailAlertType = ref("warning");
 let emailAlertTitle = ref("");
 // 邮箱登录
 let createBotByEmail = async () => {
-  // 校验表单
-  if (emailform.value) {
+  try {
     // @ts-ignore
     await emailform.value.validate();
-  }
-  try {
     // 显示加载
     createDefaultLoading.value = true;
     let emailInfo = {
       username: "",
       password: "",
+      password_level: -1,
     };
     emailInfo.username = emailData.username;
     emailInfo.password = emailData.password;
@@ -531,14 +548,15 @@ let createBotByEmail = async () => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
     createDefaultLoading.value = false;
     getBotStatus();
@@ -604,49 +622,90 @@ let codedisabled = ref(false);
 let codeTimes = ref(60);
 // 显示倒计时
 let codeTimeShow = ref(false);
-// 人机验证成功回调
-var robotCallback = async (args: any) => {
-  getCode(args);
+// 人机验证
+let captchaExecutingFlag = ref(true);
+// 刷新验证码
+let refreshCaptcha = () => {
+  captchaExecutingFlag.value = true;
+  // @ts-ignore
+  turnstile.reset();
+  // @ts-ignore
+  turnstile.execute();
 };
-// recaptcha验证
-let robotCheck = async () => {
-  // 校验表单
-  if (phoneform.value) {
-    // @ts-ignore
-    await phoneform.value.validate();
-  }
-  // @ts-ignore
-  grecaptcha.reset();
-  // @ts-ignore
-  grecaptcha.execute();
+
+// 人机验证成功回调
+var onRobotSuccess = async () => {
+  captchaExecutingFlag.value = false
+};
+// 人机验证交互前回调
+var onRobotBeforeInteractive = async () => {
+  robotVisible.value = true
+}
+// 人机验证交互后回调
+var onRobotAfterInteractive = async () => {
+  robotVisible.value = false
+}
+// 人机验证错误回调
+var onRobotError = async () => {
+  refreshCaptcha()
 };
 // 添加人机验证
 onMounted(() => {
-  // 添加人机验证
-  const script = document.createElement("script");
-  script.src = "https://recaptcha.net/recaptcha/api.js";
-  script.async = true;
-  script.defer = true;
-  document.head.appendChild(script);
-
   // @ts-ignore
-  window.robotCallback = robotCallback;
+  window.onRobotBeforeInteractive = onRobotBeforeInteractive;
+  // @ts-ignore
+  window.onRobotAfterInteractive = onRobotAfterInteractive;
+  // @ts-ignore
+  window.onRobotSuccess = onRobotSuccess;
+  // @ts-ignore
+  window.onRobotError = onRobotError;
+  // @ts-ignore
+  turnstile.render('.cf-turnstile');
 });
 // 销毁全局变量
 onUnmounted(() => {
   // @ts-ignore
-  window.robotCallback = null;
+  turnstile.remove();
+  // @ts-ignore
+  window.onRobotBeforeInteractive = null;
+  // @ts-ignore
+  window.onRobotAfterInteractive = null;
+  // @ts-ignore
+  window.onRobotSuccess = null;
+  // @ts-ignore
+  window.onRobotError = null;
 });
 // 获取验证码
-let getCode = async (robotToken: string) => {
+let getCode = async () => {
+  // @ts-ignore
+  let captchaToken = turnstile.getResponse();
+  if (!captchaToken) {
+    // 消息提示
+    ElNotification({
+      type: "warning",
+      title: "Warning",
+      message: "人机验证未通过",
+      duration: 3000,
+    });
+    // 重置人机验证
+    refreshCaptcha()
+    return;
+  }
+  // 校验表单
   try {
-    // 显示加载
-    codeloadingflag.value = true;
-    codedisabled.value = true;
-    let codeInfo = {
-      mobile: phoneData.phone,
-      captcha_token: robotToken,
-    };
+    // @ts-ignore
+    await phoneform.value.validate();
+  }catch (error: any) {
+    return;
+  }
+  // 显示加载
+  codeloadingflag.value = true;
+  codedisabled.value = true;
+  let codeInfo = {
+    mobile: phoneData.phone,
+    captcha_token: captchaToken,
+  };
+  try {
     // 仓库发起验证码请求
     let result = await helperStore.botPhoneCode(codeInfo);
     // @ts-ignore
@@ -662,9 +721,8 @@ let getCode = async (robotToken: string) => {
         codedisabled.value = true;
         codeTimeShow.value = true;
         const timer = setInterval(() => {
-          if (codeTimes.value > 0) {
-            codeTimes.value--;
-          } else {
+          codeTimes.value--;
+          if (codeTimes.value < 1){
             codeTimes.value = 60;
             codedisabled.value = false;
             codeTimeShow.value = false;
@@ -677,7 +735,8 @@ let getCode = async (robotToken: string) => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -685,20 +744,18 @@ let getCode = async (robotToken: string) => {
       codedisabled.value = false;
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
     codedisabled.value = false;
   } finally {
+    refreshCaptcha()
     codeloadingflag.value = false;
   }
 };
 // 手机登录
 let createBotByPhone = async () => {
-  // 校验表单
-  if (phoneform.value) {
+  try {
     // @ts-ignore
     await phoneform.value.validate();
-  }
-  try {
     // 显示加载
     createDefaultLoading.value = true;
     let phoneInfo = {
@@ -724,14 +781,15 @@ let createBotByPhone = async () => {
     } else {
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
     createDefaultLoading.value = false;
     getBotStatus();
@@ -755,20 +813,22 @@ let unbindBot = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     } else {
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
     unbindLoading.value = false;
     unbindDialogVisible.value = false;
@@ -817,12 +877,9 @@ const rules2 = {
   ],
 };
 let changeBotName = async () => {
-  // 校验表单
-  if (botnameform.value) {
+  try {
     // @ts-ignore
     await botnameform.value.validate();
-  }
-  try {
     changeLoading.value = true;
     let botname = {
       username: "",
@@ -833,6 +890,7 @@ let changeBotName = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -840,14 +898,15 @@ let changeBotName = async () => {
       clearChangeForm();
     } else {
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
     changeLoading.value = false;
     changeDialogVisible.value = false;
@@ -865,13 +924,15 @@ let signinBot = async () => {
     if (result.success) {
       ElNotification({
         type: "success",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     } else {
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,

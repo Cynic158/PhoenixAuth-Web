@@ -19,7 +19,7 @@
       <el-card
         v-loading="loading"
         v-for="item in annList"
-        :key="item.id"
+        :key="item.ID"
         shadow="hover"
         class="notice-container"
       >
@@ -31,33 +31,117 @@
         <div class="notice-content" v-html="item.content"></div>
         <el-divider />
         <div class="notice-author">
-          <span>{{ item.create_at }}</span>
+          <span>{{ item.formatted_create_time }}</span>
           <div
             class="notice-option"
             :style="{ width: settingStore.pageSmall ? '100%' : 'auto' }"
           >
             <span>Author: {{ item.author_name }}</span>
-            <el-button
-              style="margin-left: 8px"
-              @click="deletedialog(item.id)"
-              v-if="userStore.adminFlag == '是'"
-              type="danger"
-              round
-            >
-              <el-icon class="userinfo-cell-item-icon">
-                <Delete />
-              </el-icon>
-            </el-button>
+            <div style="display: inline-flex; align-items: center; flex-wrap: wrap">
+              <el-button
+                style="margin-left: 8px"
+                @click="editDialog(item.ID, item.title, item.content)"
+                v-if="userStore.adminFlag == '是'"
+                type="primary"
+                round
+              >
+                <el-icon class="userinfo-cell-item-icon">
+                  <Edit />
+                </el-icon>
+              </el-button>
+              <el-button
+                style="margin-left: 8px"
+                @click="deletedialog(item.ID)"
+                v-if="userStore.adminFlag == '是'"
+                type="danger"
+                round
+              >
+                <el-icon class="userinfo-cell-item-icon">
+                  <Delete />
+                </el-icon>
+              </el-button>
+            </div>
           </div>
         </div>
       </el-card>
+      <el-dialog
+        :width="settingStore.createDialogWidth"
+        v-model="dialogVisible"
+        title="公告内容编辑"
+        align-center
+      >
+        <el-form
+          @submit.prevent
+          class="notice-form-container"
+          :model="noticeData"
+          :rules="rules"
+          ref="noticeform"
+        >
+          <el-form-item label="公告ID" v-if="noticeData.ID != 0">
+            <el-input 
+              v-model="noticeData.ID"
+              disabled
+            />
+          </el-form-item>
+          <el-form-item label="标题" prop="title">
+            <el-input 
+              v-model="noticeData.title"
+              placeholder="请输入标题"
+            />
+          </el-form-item>
+          <el-form-item label="内容" prop="content">
+            <el-input
+              v-model="noticeData.content"
+              :autosize="{ minRows: 4 }"
+              type="textarea"
+              placeholder="请输入内容, 支持HTML渲染"
+            />
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="dialogVisible = false">取消</el-button>
+            <el-button
+              type="warning"
+              @click="previewNotice"
+              >预览</el-button
+            >
+            <el-button
+              :loading="noticeloadingflag"
+              type="primary"
+              @click="submitNotice"
+              >提交</el-button
+            >
+          </span>
+        </template>
+      </el-dialog>
+
+      <el-dialog
+        width="300px"
+        v-model="deleteDialogVisible"
+        title="删除公告"
+        align-center
+      >
+        确定要删除该公告吗
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="deleteDialogVisible = false">取消</el-button>
+            <el-button
+              :loading="deleteloadingflag"
+              type="primary"
+              @click="deleteNotice"
+              >确定</el-button
+            >
+          </span>
+        </template>
+      </el-dialog>
     </div>
 
     <div class="notice-footer">
       <el-pagination
         v-model:current-page="currentPage"
         :page-size="5"
-        :pager-count="settingStore.pageCount"
+        :pager-count="5"
         :small="settingStore.pageSmall"
         background
         layout="total, prev, pager, next"
@@ -65,70 +149,6 @@
         @current-change="handleCurrentChange"
       />
     </div>
-
-    <el-dialog
-      :width="settingStore.createDialogWidth"
-      v-model="dialogVisible"
-      title="创建公告"
-      align-center
-    >
-      <el-form
-        class="notice-form-container"
-        :model="noticeData"
-        :rules="rules"
-        ref="noticeform"
-      >
-        <el-form-item label="标题" prop="title">
-          <el-input v-model="noticeData.title" placeholder="请输入标题" />
-        </el-form-item>
-        <div style="border: 1px solid var(--el-border-color)">
-          <Toolbar
-            style="border-bottom: 1px solid var(--el-border-color)"
-            :editor="editorRef"
-            :defaultConfig="toolbarConfig"
-            :mode="'default'"
-          />
-          <Editor
-            style="height: 400px; overflow-y: hidden"
-            v-model="valueHtml"
-            :defaultConfig="editorConfig"
-            :mode="'default'"
-            @onCreated="handleCreated"
-          />
-        </div>
-      </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button
-            :loading="noticeloadingflag"
-            type="primary"
-            @click="createNotice"
-            >创建</el-button
-          >
-        </span>
-      </template>
-    </el-dialog>
-
-    <el-dialog
-      width="300px"
-      v-model="deleteDialogVisible"
-      title="删除公告"
-      align-center
-    >
-      确定要删除该公告吗
-      <template #footer>
-        <span class="dialog-footer">
-          <el-button @click="deleteDialogVisible = false">取消</el-button>
-          <el-button
-            :loading="deleteloadingflag"
-            type="primary"
-            @click="deleteNotice"
-            >确定</el-button
-          >
-        </span>
-      </template>
-    </el-dialog>
   </div>
 </template>
 
@@ -139,44 +159,11 @@ import useUserStore from "@/store/modules/user";
 import useSettingStore from "@/store/modules/setting";
 // 导入公告仓库
 import useAnnouncementStore from "@/store/modules/announcement";
-import { onBeforeUnmount, onMounted, reactive, ref, shallowRef } from "vue";
+import { onMounted, reactive, ref } from "vue";
 // 导入通知
-// @ts-ignore
-import { ElNotification } from "element-plus";
+import { ElNotification, ElMessageBox } from "element-plus";
 // 导入缓动函数
 import { verticalScroll } from "@/utils";
-// 导入富文本编辑器样式
-// import "@wangeditor/editor/dist/css/style.css"; // 引入 css
-// @ts-ignore
-const { Editor, Toolbar } = window.wangEditor;
-// import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
-// 查看key
-// import { DomEditor } from '@wangeditor/editor'
-
-// 编辑器实例，必须用 shallowRef
-const editorRef = shallowRef();
-// 内容 HTML
-const valueHtml = ref("<p>hello</p>");
-const toolbarConfig = {
-  excludeKeys: ["group-image", "group-video"],
-};
-const editorConfig = { placeholder: "请输入内容..." };
-// 组件销毁时，也及时销毁编辑器
-onBeforeUnmount(() => {
-  const editor = editorRef.value;
-  if (editor == null) return;
-  editor.destroy();
-});
-const handleCreated = (editor: any) => {
-  editorRef.value = editor; // 记录 editor 实例，重要！
-
-  //   setTimeout(() => {
-  //     const toolbar = DomEditor.getToolbar(editor)
-
-  // const curToolbarConfig = toolbar.getConfig()
-  // console.log( curToolbarConfig.toolbarKeys ) // 当前菜单排序和分组
-  //   }, 1000);
-};
 
 // 使用用户仓库的管理员信息
 let userStore = useUserStore();
@@ -190,11 +177,11 @@ let annStore = useAnnouncementStore();
 let loading = ref(false);
 // 公告列表数组
 interface annObj {
-  id: number;
+  ID: number;
   title: string;
   content: string;
   author_name: string;
-  create_at: string;
+  formatted_create_time: string;
 }
 let annList = ref<annObj[]>([]);
 // 公告总数
@@ -205,28 +192,33 @@ let currentPage = ref(1);
 let getAnnList = async (page_num: number) => {
   // 显示开始加载
   loading.value = true;
-  // 发起请求
-  let result = await annStore.getAnn({ page_num, page_size: 5 });
-  // @ts-ignore
-  if (result.success) {
-    // 获取成功
-    // 更新列表
+  try{
+    // 发起请求
+    let result = await annStore.getAnn({ page_num, page_size: 5 });
     // @ts-ignore
-    annList.value = result.announcements;
-    // 更新总数
-    // @ts-ignore
-    annTotal.value = result.total;
-    // 回滚到顶部
-    let scrollEl = document.querySelector(".el-main");
-    await verticalScroll(scrollEl as Element);
+    if (result.success) {
+      // 获取成功
+      // 更新列表
+      // @ts-ignore
+      annList.value = result.announcements;
+      // 更新总数
+      // @ts-ignore
+      annTotal.value = result.total;
+      // 回滚到顶部
+      let scrollEl = document.querySelector(".el-main");
+      await verticalScroll(scrollEl as Element);
+    } else {
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  }catch(err){
+  }finally{
     loading.value = false;
-  } else {
-    loading.value = false;
-    ElNotification({
-      type: "error",
-      message: "列表数据获取失败",
-      duration: 3000,
-    });
   }
 };
 // 页码发生变化就获取新的列表
@@ -274,12 +266,15 @@ let createdialog = () => {
 let noticeform = ref(null);
 // 表单数据
 let noticeData = reactive({
+  ID: 0,
   title: "",
+  content: "",
 });
 // 清空表单
 let clearForm = () => {
+  noticeData.ID = 0;
   noticeData.title = "";
-  valueHtml.value = "";
+  noticeData.content = "";
   // 清空校验提示
   try {
     setTimeout(() => {
@@ -303,58 +298,113 @@ const rules = {
       trigger: "blur",
     },
   ],
+  content: [
+    {
+      required: true,
+      message: "请输入内容",
+      trigger: "blur",
+    },
+  ],
+};
+// 预览公告
+let previewNotice = async () => {
+  try{
+    // @ts-ignore
+    await noticeform.value.validate();
+    ElMessageBox.alert(
+      noticeData.content,
+      noticeData.title,
+      {
+        dangerouslyUseHTMLString: true,
+        showConfirmButton: false,
+        closeOnClickModal: true,
+        showClose: false,
+        callback: () => { /* Do nothing */ },
+      }
+    )
+  }catch(error: any){}
 };
 // 创建公告
-let createNotice = async () => {
-  // 校验表单
-  // @ts-ignore
-  await noticeform.value.validate();
-  let valueHtmlContent = valueHtml.value.trim();
-  if (valueHtmlContent == "") {
-    // 没输入正文
-    ElNotification({
-      type: "error",
-      message: "请输入正文",
-      duration: 3000,
-    });
-    return;
-  }
+let submitNotice = async () => {
   try {
+    // 校验表单
+    // @ts-ignore
+    await noticeform.value.validate();
     // 显示加载
     noticeloadingflag.value = true;
     let noticeInfo = {
+      ID: 0,
       title: "",
       content: "",
     };
+    noticeInfo.ID = noticeData.ID;
     noticeInfo.title = noticeData.title;
-    noticeInfo.content = valueHtml.value;
-    // 仓库发起请求
-    let result = await annStore.annCreate(noticeInfo);
-    // @ts-ignore
-    if (result.success) {
-      dialogVisible.value = false;
-      //  刷新列表
-      getAnnList(1);
-      ElNotification({
-        type: "success",
-        message: "创建成功",
-        duration: 3000,
-      });
-    } else {
-      // 请求失败，消息提示
-      ElNotification({
-        type: "error",
-        // @ts-ignore
-        message: result.message,
-        duration: 3000,
-      });
+    noticeInfo.content = noticeData.content;
+    // 如果id为0，说明是新公告，将调用创建接口，否则调用编辑接口
+    if (noticeData.ID == 0){
+      // 仓库发起请求
+      let result = await annStore.annCreate(noticeInfo);
+      // @ts-ignore
+      if (result.success) {
+        dialogVisible.value = false;
+        // 刷新列表
+        getAnnList(1);
+        ElNotification({
+          type: "success",
+          title: "Success",
+          // @ts-ignore
+          message: result.message,
+          duration: 3000,
+        });
+      } else {
+        // 请求失败，消息提示
+        ElNotification({
+          type: "warning",
+          title: "Warning",
+          // @ts-ignore
+          message: result.message,
+          duration: 3000,
+        });
+      }
+    }else{
+      // 仓库发起请求
+      let result = await annStore.annEdit(noticeInfo);
+      // @ts-ignore
+      if (result.success) {
+        dialogVisible.value = false;
+        // 刷新列表
+        getAnnList(1);
+        ElNotification({
+          type: "success",
+          title: "Success",
+          // @ts-ignore
+          message: result.message,
+          duration: 3000,
+        });
+      } else {
+        // 请求失败，消息提示
+        ElNotification({
+          type: "warning",
+          title: "Warning",
+          // @ts-ignore
+          message: result.message,
+          duration: 3000,
+        });
+      }
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
     // 请求完成，关闭加载
     noticeloadingflag.value = false;
   }
+};
+// 编辑公告
+let editDialog = (id: number, title: string, content: string) => {
+  noticeData.ID = id;
+  noticeData.title = title;
+  noticeData.content = content;
+  dialogVisible.value = true;
 };
 
 // 删除公告
@@ -387,14 +437,17 @@ let deleteNotice = async () => {
       }
       ElNotification({
         type: "success",
-        message: "删除成功",
+        title: "Success",
+        // @ts-ignore
+        message: result.message,
         duration: 3000,
       });
     } else {
       deleteDialogVisible.value = false;
       // 请求失败，消息提示
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,

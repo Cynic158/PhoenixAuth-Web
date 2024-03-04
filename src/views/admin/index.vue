@@ -1,74 +1,8 @@
 <template>
   <div>
-    <el-card shadow="hover" v-loading="adminCreateLoading">
-      <template #header>
-        <div class="card-header">新建用户</div>
-      </template>
-      <div>
-        <div class="card-footer">
-          <el-icon>
-            <ChatDotRound />
-          </el-icon>
-          <span style="margin-left: 12px; color: dimgray"
-            >使用管理权限新建用户</span
-          >
-        </div>
-        <el-divider />
-
-        <el-form
-          class="admin-create-form-container"
-          :model="createData"
-          :rules="rules"
-          ref="createform"
-        >
-          <el-form-item prop="username">
-            <el-input
-              prefix-icon="User"
-              v-model="createData.username"
-              placeholder="请输入用户名"
-            />
-          </el-form-item>
-          <el-form-item prop="password">
-            <el-input
-              prefix-icon="Lock"
-              type="password"
-              show-password
-              v-model="createData.password"
-              placeholder="请输入密码"
-            />
-          </el-form-item>
-          <el-form-item prop="repassword">
-            <el-input
-              prefix-icon="Lock"
-              type="password"
-              show-password
-              v-model="createData.repassword"
-              placeholder="请确认密码"
-            />
-          </el-form-item>
-          <el-form-item prop="permission">
-            <el-select
-              v-model="createData.permission"
-              class="m-2"
-              placeholder="游客"
-            >
-              <el-option label="封禁" value="0" />
-              <el-option label="游客" value="1" />
-              <el-option label="普通" value="2" />
-              <el-option label="开发者" value="3" />
-            </el-select>
-          </el-form-item>
-          <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" @click="createUser">新建</el-button>
-            <el-button @click="clearCreateForm">清空表单</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-    </el-card>
-
     <el-card
       shadow="hover"
-      v-loading="adminCodeLoading"
+      v-loading="generateRedeemCodeLoading"
       style="margin-top: 12px"
     >
       <template #header>
@@ -84,16 +18,15 @@
         <el-divider />
 
         <el-form
-          class="admin-code-form-container"
-          :model="codeData"
-          :rules="rules4"
+          @submit.prevent
+          class="form-container"
+          :model="generateRedeemCodeData"
+          :rules="generateRedeemCodeFormRule"
           ref="codeform"
-          label-width="100px"
-          label-position="right"
         >
-          <el-form-item label="兑换码类型" prop="type">
+          <el-form-item label="类型" prop="type">
             <el-select
-              v-model="codeData.type"
+              v-model="generateRedeemCodeData.type"
               class="m-2"
               placeholder="激活账号(1)"
             >
@@ -102,19 +35,19 @@
               <el-option label="续费三个月(3)" value="3" />
             </el-select>
           </el-form-item>
-          <el-form-item label="生成数量" prop="count">
+          <el-form-item label="数量" prop="count">
             <el-input
               type="number"
-              v-model="codeData.count"
+              v-model="generateRedeemCodeData.count"
               placeholder="请输入生成数量"
             />
           </el-form-item>
           <el-form-item label="备注" prop="note">
-            <el-input v-model="codeData.note" placeholder="请输入备注" />
+            <el-input v-model="generateRedeemCodeData.note" placeholder="请输入备注" />
           </el-form-item>
 
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" @click="generateCode">生成</el-button>
+            <el-button type="primary" native-type="submit" @click="generateCode">生成</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -122,11 +55,11 @@
 
     <el-card
       shadow="hover"
-      v-loading="adminOptionLoading"
+      v-loading="queryUserLoading"
       style="margin-top: 12px"
     >
       <template #header>
-        <div class="card-header">用户操作</div>
+        <div class="card-header">用户查询</div>
       </template>
       <div>
         <div class="card-footer">
@@ -134,21 +67,20 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >查询、封禁或激活用户，激活会将用户提升为普通权限</span
+            >通过用户名查询用户详细信息</span
           >
         </div>
         <el-divider />
 
         <el-form
           @submit.prevent
-          class="admin-option-form-container"
-          :model="optionData"
-          :rules="rules2"
-          ref="optionform"
+          :model="queryUserData"
+          :rules="queryUserFormRule"
+          ref="queryUserForm"
         >
           <el-form-item style="max-width: 400px" label="用户名" prop="username">
             <el-input
-              v-model="optionData.username"
+              v-model="queryUserData.username"
               placeholder="请输入用户名"
             />
           </el-form-item>
@@ -189,21 +121,10 @@
                     <el-icon class="userinfo-cell-item-icon">
                       <Tools />
                     </el-icon>
-                    权限
+                    用户权限
                   </div>
                 </template>
                 {{ queryUserInfo.permission }}
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template #label>
-                  <div class="userinfo-cell-item">
-                    <el-icon class="userinfo-cell-item-icon">
-                      <SwitchButton />
-                    </el-icon>
-                    有效期至
-                  </div>
-                </template>
-                {{ queryUserInfo.expire_at }}
               </el-descriptions-item>
               <el-descriptions-item>
                 <template #label>
@@ -220,32 +141,55 @@
                 <template #label>
                   <div class="userinfo-cell-item">
                     <el-icon class="userinfo-cell-item-icon">
-                      <Refresh />
+                      <SwitchButton />
                     </el-icon>
-                    更新时间
+                    有效期至
                   </div>
                 </template>
-                {{ queryUserInfo.update_at }}
+                {{ queryUserInfo.expire_at }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template #label>
+                  <div class="userinfo-cell-item">
+                    <el-icon class="userinfo-cell-item-icon">
+                      <Promotion />
+                    </el-icon>
+                    无限制至
+                  </div>
+                </template>
+                {{ queryUserInfo.unlimited_until }}
+              </el-descriptions-item>
+              <el-descriptions-item v-if="queryUserInfo.ban_until">
+                <template #label>
+                  <div class="userinfo-cell-item">
+                    <el-icon class="userinfo-cell-item-icon">
+                      <CircleCloseFilled />
+                    </el-icon>
+                    封禁时间
+                  </div>
+                </template>
+                {{ queryUserInfo.ban_until }}
+              </el-descriptions-item>
+              <el-descriptions-item v-if="queryUserInfo.ban_reason">
+                <template #label>
+                  <div class="userinfo-cell-item">
+                    <el-icon class="userinfo-cell-item-icon">
+                      <CircleCloseFilled />
+                    </el-icon>
+                    封禁原因
+                  </div>
+                </template>
+                {{ queryUserInfo.ban_reason }}
               </el-descriptions-item>
             </el-descriptions>
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" @click="queryUser">查询</el-button>
-            <el-button
-              type="success"
-              @click="activateUser"
-              v-if="['封禁(0)', '游客(1)'].includes(queryUserInfo.permission)"
-              >激活
-            </el-button>
+            <el-button type="primary" native-type="submit" @click="queryUser">查询</el-button>
             <el-button
               type="danger"
-              @click="banUserDialog"
-              v-if="
-                ['游客(1)', '普通(2)', '开发者(3)'].includes(
-                  queryUserInfo.permission
-                )
-              "
-              >封禁
+              @click="unBanUserDialog"
+              v-if="queryUserInfo.ban_until"
+              >解封
             </el-button>
           </el-form-item>
         </el-form>
@@ -254,11 +198,11 @@
 
     <el-card
       shadow="hover"
-      v-loading="adminRenewLoading"
+      v-loading="banLoading"
       style="margin-top: 12px"
     >
       <template #header>
-        <div class="card-header">用户续期</div>
+        <div class="card-header">用户封禁</div>
       </template>
       <div>
         <div class="card-footer">
@@ -266,32 +210,171 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >延长用户的有效期，以小时为单位</span
+            >禁止用户进行登录, 封禁用户可在用户查询卡片解封</span
           >
         </div>
         <el-divider />
-
         <el-form
-          class="admin-renew-form-container"
-          :model="renewData"
-          :rules="rules3"
-          ref="renewform"
+          @submit.prevent
+          class="form-container"
+          :model="banData"
+          :rules="banFormRule"
+          ref="banform"
         >
           <el-form-item label="用户名称" prop="username">
-            <el-input v-model="renewData.username" placeholder="请输入用户名" />
+            <el-input v-model="banData.username" placeholder="请输入用户名" />
           </el-form-item>
-          <el-form-item label="续期时长" prop="renew_time">
+          <el-form-item label="封禁时长" prop="hours">
             <el-input
-              v-model="renewData.renew_time"
+              v-model="banData.hours"
               type="number"
               placeholder="请输入时长(小时)"
               min="1"
               max="86400"
             />
+            <span>{{ banTimeStr }}</span>
+          </el-form-item>
+          <el-form-item label="封禁原因" prop="reason">
+            <el-input v-model="banData.reason" placeholder="请输入封禁原因" />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <span style="margin-right: 12px">{{ renewStr }}</span>
-            <el-button type="primary" @click="renewUser">续期</el-button>
+            <el-button type="danger" native-type="submit" @click="banUser">提交</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+
+    <el-card
+      shadow="hover"
+      v-loading="setUserPermissionLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
+        <div class="card-header">设置用户权限</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray">通过用户名设置用户权限</span>
+        </div>
+        <el-divider />
+
+        <el-form
+          @submit.prevent
+          class="form-container"
+          :model="setUserPermissionData"
+          :rules="setUserPermissionRule"
+          ref="setUserPermissionForm"
+        >
+          <el-form-item label="用户名称" prop="username">
+            <el-input v-model="setUserPermissionData.username" placeholder="请输入用户名" />
+          </el-form-item>
+          <el-form-item label="用户权限" prop="permission">
+            <el-select
+              v-model="setUserPermissionData.permission"
+              class="m-2"
+              placeholder="游客(0)"
+            >
+              <el-option label="游客(0)" value="0" />
+              <el-option label="激活用户(1)" value="1" />
+            </el-select>
+          </el-form-item>
+          <el-form-item style="margin-bottom: 0">
+            <el-button type="danger" native-type="submit" @click="setUserPermission">提交</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+
+    <el-card
+      shadow="hover"
+      v-loading="extendUserExipreLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
+        <div class="card-header">设置用户有效期</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >延长或缩短用户的有效期</span
+          >
+        </div>
+        <el-divider />
+
+        <el-form
+          @submit.prevent
+          class="form-container"
+          :model="extendUserExipreData"
+          :rules="extendRule"
+          ref="extendUserExipreForm"
+        >
+          <el-form-item label="用户名称" prop="username">
+            <el-input v-model="extendUserExipreData.username" placeholder="请输入用户名" />
+          </el-form-item>
+          <el-form-item label="设置时长" prop="hours">
+            <el-input
+              v-model="extendUserExipreData.hours"
+              type="number"
+              placeholder="请输入时长(小时)"
+              min="-86400"
+              max="86400"
+            />
+            <span>{{ extendUserExipreTimeStr }}</span>
+          </el-form-item>
+          <el-form-item style="margin-bottom: 0">
+            <el-button type="danger" native-type="submit" @click="extendUserExipre">提交</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+
+    <el-card
+      shadow="hover"
+      v-loading="extendUserUnlimitedLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
+        <div class="card-header">设置用户无限制权限有效期</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >延长或缩短用户的无限制权限 (开发者/商用许可) 有效期</span
+          >
+        </div>
+        <el-divider />
+
+        <el-form
+          @submit.prevent
+          class="form-container"
+          :model="extendUserUnlimitedData"
+          :rules="extendRule"
+          ref="extendUserUnlimitedForm"
+        >
+          <el-form-item label="用户名称" prop="username">
+            <el-input v-model="extendUserUnlimitedData.username" placeholder="请输入用户名" />
+          </el-form-item>
+          <el-form-item label="设置时长" prop="hours">
+            <el-input
+              v-model="extendUserUnlimitedData.hours"
+              type="number"
+              placeholder="请输入时长(小时)"
+              min="-86400"
+              max="86400"
+            />
+            <span>{{ extendUserUnlimitedTimeStr }}</span>
+          </el-form-item>
+          <el-form-item style="margin-bottom: 0">
+            <el-button type="danger" native-type="submit" @click="extendUserUnlimited">提交</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -299,15 +382,15 @@
 
     <el-dialog
       width="300px"
-      v-model="banUserDialogVisible"
-      title="封禁"
+      v-model="unBanUserDialogVisible"
+      title="解封用户"
       align-center
     >
-      确定封禁 {{ optionData.username }} 吗？
+      确定解封 {{ queryUserData.username }} 吗？
       <template #footer>
         <span class="dialog-footer">
-          <el-button @click="banUserDialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="banUser">确定</el-button>
+          <el-button @click="unBanUserDialogVisible = false">取消</el-button>
+          <el-button type="primary" native-type="submit" @click="unBanUser">确定</el-button>
         </span>
       </template>
     </el-dialog>
@@ -318,7 +401,6 @@
 // 导入管理仓库
 import useAdminStore from "@/store/modules/admin";
 // 导入消息通知组件
-// @ts-ignore
 import { ElNotification } from "element-plus";
 import { reactive, ref, computed } from "vue";
 // 导入时间转换函数
@@ -329,41 +411,10 @@ import useSettingStore from "@/store/modules/setting";
 // 使用设置仓库的移动端适配
 let settingStore = useSettingStore();
 
-// 新建用户部分
 // 使用管理仓库
 let adminStore = useAdminStore();
-// 表单元素
-let createform = ref(null);
-// 新建信息表单
-let createData = reactive({
-  username: "",
-  password: "",
-  repassword: "",
-  permission: "1",
-});
-// 清空表单
-let clearCreateForm = () => {
-  createData.username = "";
-  createData.password = "";
-  createData.repassword = "";
-  createData.permission = "1";
-  // 清空校验提示
-  try {
-    setTimeout(() => {
-      if (createform.value) {
-        // @ts-ignore
-        createform.value.clearValidate([
-          "username",
-          "password",
-          "repassword",
-          "permission",
-        ]);
-      }
-    }, 200);
-  } catch (error) {
-    console.log(error);
-  }
-};
+
+// 数据校验规则
 // @ts-ignore
 let validateUserName = (rule: any, value: any, callback: any) => {
   const regex = /^[a-zA-Z0-9]+$/;
@@ -374,148 +425,214 @@ let validateUserName = (rule: any, value: any, callback: any) => {
   }
 };
 // @ts-ignore
-let validateRePassword = (rule: any, value: any, callback: any) => {
-  if (value !== createData.password) {
-    callback(new Error("输入的密码不相同"));
+let validateRedeemCodeCount = (rule: any, value: any, callback: any) => {
+  const intValue = parseInt(value, 10);
+  if (isNaN(intValue) || intValue <= 0 || intValue !== parseFloat(value)) {
+    callback(new Error("请输入正整数"));
+  } else if (intValue > 999) {
+    callback(new Error("超出最大生成数量"));
   } else {
     callback();
   }
 };
+// @ts-ignore
+let validateValidNumber = (rule: any, value: any, callback: any) => {
+  const intValue = parseInt(value, 10);
+  if (intValue < -86400 || intValue > 86400) {
+    callback(new Error("数字超出允许范围"));
+  } else {
+    callback();
+  }
+};
+
 // 表单校验规则
-const rules = {
+// 生成兑换码
+const generateRedeemCodeFormRule = {
+  type: [
+    {
+      required: true,
+      message: "请选择兑换码类型",
+      trigger: "blur",
+    },
+  ],
+  count: [
+    { required: true, message: "请输入生成数量", trigger: "blur" },
+    { validator: validateRedeemCodeCount, trigger: "blur" },
+  ],
+  note: [
+    { required: true, message: "请输入备注", trigger: "blur" },
+  ],
+};
+// 查询用户
+const queryUserFormRule = {
   username: [
     { required: true, message: "请输入用户名", trigger: "blur" },
     { min: 5, max: 12, message: "用户名长度为5到12位", trigger: "blur" },
     { validator: validateUserName, trigger: "blur" },
   ],
-  password: [
-    {
-      required: true,
-      message: "请输入密码",
-      trigger: "blur",
-    },
+};
+// 封禁用户
+const banFormRule = {
+  username: [
+    { required: true, message: "请输入用户名", trigger: "blur" },
+    { min: 5, max: 12, message: "用户名长度为5到12位", trigger: "blur" },
+    { validator: validateUserName, trigger: "blur" },
   ],
-  repassword: [
-    {
-      required: true,
-      message: "请确认密码",
-      trigger: "blur",
-    },
-    { validator: validateRePassword, trigger: "blur" },
+  hours: [
+    { required: true, message: "请输入封禁时长", trigger: "blur" },
+    { min: 1, message: "封禁时长至少为 1 小时", trigger: "blur" },
+    { validator: validateValidNumber, trigger: "blur" },
   ],
-  permission: [
-    {
-      required: true,
-      message: "请选择权限",
-      trigger: "blur",
-    },
+  reason: [
+    { required: true, message: "请输入封禁原因", trigger: "blur" },
+    { min: 1, message: "封禁原因不能为空", trigger: "blur" },
   ],
 };
-// 创建卡片loading
-let adminCreateLoading = ref(false);
-// 创建用户
-let createUser = async () => {
-  // 校验表单
-  if (createform.value) {
-    // @ts-ignore
-    await createform.value.validate();
-  }
+// 设置用户权限
+const setUserPermissionRule = {
+  username: [
+    { required: true, message: "请输入用户名", trigger: "blur" },
+    { min: 5, max: 12, message: "用户名长度为5到12位", trigger: "blur" },
+    { validator: validateUserName, trigger: "blur" },
+  ],
+  permission: [
+    { required: true, message: "请选择用户权限", trigger: "blur" },
+    { min: 0, max: 1, message: "用户权限不在可设置范围内", trigger: "blur" },
+  ],
+};
+// 续期用户
+const extendRule = {
+  username: [
+    { required: true, message: "请输入用户名", trigger: "blur" },
+    { min: 5, max: 12, message: "用户名长度为5到12位", trigger: "blur" },
+    { validator: validateUserName, trigger: "blur" },
+  ],
+  hours: [
+    { required: true, message: "请输入时长", trigger: "blur" },
+    { validator: validateValidNumber, trigger: "blur" },
+  ],
+};
 
+// 生成兑换码
+// 表单元素
+let codeform = ref(null);
+// 新建信息表单
+let generateRedeemCodeData = reactive({
+  type: "1",
+  count: "",
+  note: "",
+});
+// 清空表单
+let clearGenerateRedeemCodeForm = () => {
+  generateRedeemCodeData.type = "1";
+  generateRedeemCodeData.count = "";
+  generateRedeemCodeData.note = "";
+  // 清空校验提示
   try {
-    // 显示加载
-    adminCreateLoading.value = true;
-    let createInfo = {
-      username: "",
-      password: "",
-      permission: 1,
-    };
-    createInfo.username = createData.username;
-    createInfo.password = createData.password;
-    createInfo.permission = Number(createData.permission);
-    // 仓库发起请求
-    let result = await adminStore.userCreate(createInfo);
+    setTimeout(() => {
+      if (codeform.value) {
+        // @ts-ignore
+        codeform.value.clearValidate(["type", "count"]);
+      }
+    }, 200);
+  } catch (error) {
+    //console.log(error);
+  }
+};
+// 生成卡片loading
+let generateRedeemCodeLoading = ref(false);
+// 生成兑换码
+let generateCode = async () => {
+  try {
     // @ts-ignore
-    if (result.success) {
+    await codeform.value.validate();
+    // 显示加载
+    generateRedeemCodeLoading.value = true;
+    let codeInfo = {
+      type: Number(generateRedeemCodeData.type),
+      count: Number(generateRedeemCodeData.count),
+      note: generateRedeemCodeData.note,
+    };
+    // 仓库发起请求
+    let result = await adminStore.genCode(codeInfo);
+    // @ts-ignore
+    if (result.message) {
       ElNotification({
-        type: "success",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
-      clearCreateForm();
     } else {
       ElNotification({
-        type: "error",
-        // @ts-ignore
-        message: result.message,
+        type: "success",
+        title: "Success",
+        message: "请及时下载兑换码",
         duration: 3000,
       });
+      clearGenerateRedeemCodeForm();
     }
-  } catch (error: any) {
-    console.log(error);
+  } catch (error) {
+    //console.log(error);
   } finally {
-    adminCreateLoading.value = false;
+    generateRedeemCodeLoading.value = false;
   }
 };
 
 // 用户操作
 // 用户操作loading
-let adminOptionLoading = ref(false);
+let queryUserLoading = ref(false);
 // 表单元素
-let optionform = ref(null);
+let queryUserForm = ref(null);
 // 表单数据
-let optionData = reactive({
+let queryUserData = reactive({
   username: "",
 });
-// 表单校验规则
-const rules2 = {
-  username: [
-    { required: true, message: "请输入用户名", trigger: "blur" },
-    { min: 5, max: 12, message: "用户名长度为5到12位", trigger: "blur" },
-    { validator: validateUserName, trigger: "blur" },
-  ],
-};
 // 查询用户信息
 // 用户信息
 let queryUserInfo = reactive({
   username: "暂无信息",
   permission: "暂无信息",
   expire_at: "暂无信息",
+  unlimited_until: "暂无信息",
   game_id: "暂无信息",
   create_at: "暂无信息",
-  update_at: "暂无信息",
+  ban_until: "",
+  ban_reason: "",
 });
 interface userInfo {
   username: string;
   permission: number;
   expire_at: number;
+  unlimited_until: number;
   game_id: number;
   create_at: number;
-  update_at: number;
+  ban_until: number;
+  ban_reason: string;
 }
 // 设置用户信息
 let setUserInfo = (userInfo: userInfo) => {
   queryUserInfo.username = userInfo.username;
   if (userInfo.permission == 0) {
-    queryUserInfo.permission = "封禁";
-  } else if (userInfo.permission == 1) {
     queryUserInfo.permission = "游客";
+  } else if (userInfo.permission == 1) {
+    queryUserInfo.permission = "激活用户";
   } else if (userInfo.permission == 2) {
-    queryUserInfo.permission = "普通";
-  } else if (userInfo.permission == 3) {
-    queryUserInfo.permission = "开发者";
-  } else if (userInfo.permission == 4) {
-    queryUserInfo.permission = "管理员";
+    queryUserInfo.permission = "系统管理员";
   } else {
     queryUserInfo.permission = "未知";
   }
   queryUserInfo.permission += `(${userInfo.permission})`;
-  let expireTime = getTimeStr2(userInfo.expire_at.toString());
-  let createTime = getTimeStr2(userInfo.create_at.toString());
-  let updateTime = getTimeStr2(userInfo.update_at.toString());
-  queryUserInfo.expire_at = expireTime;
-  queryUserInfo.create_at = createTime;
-  queryUserInfo.update_at = updateTime;
+  queryUserInfo.expire_at = getTimeStr2(userInfo.expire_at);
+  queryUserInfo.create_at = getTimeStr2(userInfo.create_at);
+  queryUserInfo.unlimited_until = getTimeStr2(userInfo.unlimited_until);
+  queryUserInfo.ban_until = getTimeStr2(userInfo.ban_until);
+  if (queryUserInfo.ban_until === "1970/01/01 08:00:00") {
+    queryUserInfo.ban_until = "";
+  }
+  queryUserInfo.ban_reason = userInfo.ban_reason;
+  
   if (userInfo.game_id == 0) {
     queryUserInfo.game_id = "暂未获取";
   } else {
@@ -528,30 +645,28 @@ let clearUserInfo = () => {
   queryUserInfo.game_id = "暂无信息";
   queryUserInfo.permission = "暂无信息";
   queryUserInfo.expire_at = "暂无信息";
+  queryUserInfo.unlimited_until = "暂无信息";
   queryUserInfo.create_at = "暂无信息";
-  queryUserInfo.update_at = "暂无信息";
+  queryUserInfo.ban_until = "";
+  queryUserInfo.ban_reason = "";
 };
 // 查询用户信息
 let queryUser = async () => {
-  // 校验表单
-  if (optionform.value) {
-    // @ts-ignore
-    await optionform.value.validate();
-  }
-
   try {
+    // @ts-ignore
+    await queryUserForm.value.validate();
     // 显示加载
-    adminOptionLoading.value = true;
-    let optionInfo = {
-      username: "",
+    queryUserLoading.value = true;
+    let queryUserInfo = {
+      username: queryUserData.username,
     };
-    optionInfo.username = optionData.username;
     // 仓库发起请求
-    let result = await adminStore.userQuery(optionInfo);
+    let result = await adminStore.userQuery(queryUserInfo);
     // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -560,7 +675,8 @@ let queryUser = async () => {
       setUserInfo(result.user);
     } else {
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
@@ -568,291 +684,351 @@ let queryUser = async () => {
       clearUserInfo();
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
-    adminOptionLoading.value = false;
+    queryUserLoading.value = false;
   }
 };
-// 激活用户
-let activateUser = async () => {
-  // 校验表单
-  if (optionform.value) {
-    // @ts-ignore
-    await optionform.value.validate();
-  }
 
+// 用户封禁
+// 表单元素
+let banform = ref(null);
+// 表单数据
+let banData = reactive({
+  username: "",
+  hours: 0,
+  reason: "",
+});
+// 时长显示
+let banTimeStr = computed(() => {
+  return getTimeStr3(banData.hours);
+});
+// 清空表单
+let clearBanForm = () => {
+  banData.username = "";
+  banData.hours = 0;
+  banData.reason = "";
+  // 清空校验提示
   try {
-    // 显示加载
-    adminOptionLoading.value = true;
-    let optionInfo = {
-      username: "",
-    };
-    optionInfo.username = optionData.username;
-    // 仓库发起请求
-    let result = await adminStore.userActivate(optionInfo);
-    // @ts-ignore
-    if (result.success) {
-      ElNotification({
-        type: "success",
+    setTimeout(() => {
+      if (banform.value) {
         // @ts-ignore
-        message: result.message,
-        duration: 3000,
-      });
-      queryUser();
-    } else {
-      ElNotification({
-        type: "error",
-        // @ts-ignore
-        message: result.message,
-        duration: 3000,
-      });
-    }
-  } catch (error: any) {
-    console.log(error);
-  } finally {
-    adminOptionLoading.value = false;
+        banform.value.clearValidate(["username", "hours", "reason"]);
+      }
+    }, 200);
+  } catch (error) {
+    //console.log(error);
   }
 };
-// 封禁用户
-// 封禁dialog
-let banUserDialogVisible = ref(false);
-// 显示dialog
-let banUserDialog = async () => {
-  // 校验表单
-  if (optionform.value) {
-    // @ts-ignore
-    await optionform.value.validate();
-  }
-  banUserDialogVisible.value = true;
-};
-// 封禁用户
+// 封禁卡片loading
+let banLoading = ref(false);
+// 用户封禁
 let banUser = async () => {
-  // 关掉对话框
-  banUserDialogVisible.value = false;
-
   try {
+    // @ts-ignore
+    await banform.value.validate();
     // 显示加载
-    adminOptionLoading.value = true;
-    let optionInfo = {
-      username: "",
+    banLoading.value = true;
+    let banInfo = {
+      username: banData.username,
+      seconds: banData.hours * 3600,
+      reason: banData.reason,
     };
-    optionInfo.username = optionData.username;
     // 仓库发起请求
-    let result = await adminStore.userBan(optionInfo);
+    let result = await adminStore.userBan(banInfo);
     // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
+      clearBanForm();
+      // 查询该用户
+      queryUserData.username = banInfo.username;
       queryUser();
     } else {
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
-    adminOptionLoading.value = false;
+    banLoading.value = false;
+  }
+};
+
+// 解封用户
+// 解封dialog
+let unBanUserDialogVisible = ref(false);
+// 显示dialog
+let unBanUserDialog = async () => {
+  // 校验表单
+  try{
+    // @ts-ignore
+    await queryUserForm.value.validate();
+    unBanUserDialogVisible.value = true;
+  }catch(error){}
+};
+// 解封用户
+let unBanUser = async () => {
+  // 关掉对话框
+  unBanUserDialogVisible.value = false;
+  try {
+    // 显示加载
+    queryUserLoading.value = true;
+    let queryUserInfo = {
+      username: queryUserData.username,
+    };
+    // 仓库发起请求
+    let result = await adminStore.userUnBan(queryUserInfo);
+    // @ts-ignore
+    if (result.success) {
+      ElNotification({
+        type: "success",
+        title: "Success",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      // 查询该用户
+      queryUser();
+    } else {
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+    //console.log(error);
+  } finally {
+    queryUserLoading.value = false;
+  }
+};
+
+// 设置用户权限
+// 表单元素
+let setUserPermissionForm = ref(null);
+// 新建信息表单
+let setUserPermissionData = reactive({
+  username: "",
+  permission: "0",
+});
+// 清空表单
+let clearSetUserPermissionForm = () => {
+  setUserPermissionData.username = "";
+  setUserPermissionData.permission = "0";
+  // 清空校验提示
+  try {
+    setTimeout(() => {
+      if (setUserPermissionForm.value) {
+        // @ts-ignore
+        setUserPermissionForm.value.clearValidate(["username", "permission"]);
+      }
+    }, 200);
+  } catch (error) {
+    //console.log(error);
+  }
+};
+// 设置权限卡片loading
+let setUserPermissionLoading = ref(false);
+// 设置用户权限
+let setUserPermission = async () => {
+  try {
+    // @ts-ignore
+    await setUserPermissionForm.value.validate();
+    // 显示加载
+    setUserPermissionLoading.value = true;
+    let setUserPermissionInfo = {
+      username: setUserPermissionData.username,
+      // 转换为数字
+      permission: Number(setUserPermissionData.permission),
+    };
+    // 仓库发起请求
+    let result = await adminStore.userSetPermission(setUserPermissionInfo);
+    // @ts-ignore
+    if (result.success) {
+      ElNotification({
+        type: "success",
+        title: "Success",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+      // 查询该用户
+      queryUserData.username = setUserPermissionInfo.username;
+      queryUser();
+      // 清除表单
+      clearSetUserPermissionForm();
+    } else {
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error) {
+    //console.log(error);
+  } finally {
+    setUserPermissionLoading.value = false;
   }
 };
 
 // 用户续费
 // 表单元素
-let renewform = ref(null);
+let extendUserExipreForm = ref(null);
 // 表单数据
-let renewData = reactive({
+let extendUserExipreData = reactive({
   username: "",
-  renew_time: "",
+  hours: 0,
 });
 // 时长显示
-let renewStr = computed(() => {
-  return getTimeStr3(renewData.renew_time);
+let extendUserExipreTimeStr = computed(() => {
+  return getTimeStr3(extendUserExipreData.hours);
 });
 // 清空表单
-let clearRenewForm = () => {
-  renewData.renew_time = "";
+let clearExtendUserExipreForm = () => {
+  extendUserExipreData.username = "";
+  extendUserExipreData.hours = 0;
   // 清空校验提示
   try {
     setTimeout(() => {
-      if (renewform.value) {
+      if (extendUserExipreForm.value) {
         // @ts-ignore
-        renewform.value.clearValidate(["renew_time"]);
+        extendUserExipreForm.value.clearValidate(["username", "hours"]);
       }
     }, 200);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   }
-};
-// @ts-ignore
-let validateRenew = (rule: any, value: any, callback: any) => {
-  const intValue = parseInt(value, 10);
-  if (isNaN(intValue) || intValue <= 0 || intValue !== parseFloat(value)) {
-    callback(new Error("请输入正整数"));
-  } else if (intValue > 86400) {
-    callback(new Error("超出最大续期时长"));
-  } else {
-    callback();
-  }
-};
-const rules3 = {
-  username: [
-    { required: true, message: "请输入用户名", trigger: "blur" },
-    { min: 5, max: 12, message: "用户名长度为5到12位", trigger: "blur" },
-    { validator: validateUserName, trigger: "blur" },
-  ],
-  renew_time: [
-    { required: true, message: "请输入续期时长", trigger: "blur" },
-    { validator: validateRenew, trigger: "blur" },
-  ],
 };
 // 续期卡片loading
-let adminRenewLoading = ref(false);
+let extendUserExipreLoading = ref(false);
 // 用户续期
-let renewUser = async () => {
-  // 校验表单
-  if (renewform.value) {
-    // @ts-ignore
-    await renewform.value.validate();
-  }
-
+let extendUserExipre = async () => {
   try {
+    // @ts-ignore
+    await extendUserExipreForm.value.validate();
     // 显示加载
-    adminRenewLoading.value = true;
-    let renewInfo = {
-      username: "",
-      renew_time: 0,
+    extendUserExipreLoading.value = true;
+    let extendUserExipreInfo = {
+      username: extendUserExipreData.username,
+      seconds: extendUserExipreData.hours * 3600,
     };
-    renewInfo.username = renewData.username;
-    renewInfo.renew_time = Number(renewData.renew_time) * 3600;
     // 仓库发起请求
-    let result = await adminStore.userRenew(renewInfo);
+    let result = await adminStore.userExtendExpireTime(extendUserExipreInfo);
     // @ts-ignore
     if (result.success) {
       ElNotification({
         type: "success",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
-      clearRenewForm();
       // 查询该用户
-      optionData.username = renewInfo.username;
+      queryUserData.username = extendUserExipreData.username;
       queryUser();
+      // 清除表单
+      clearExtendUserExipreForm();
     } else {
       ElNotification({
-        type: "error",
+        type: "warning",
+        title: "Warning",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
     }
   } catch (error: any) {
-    console.log(error);
+    //console.log(error);
   } finally {
-    adminRenewLoading.value = false;
+    extendUserExipreLoading.value = false;
   }
 };
 
-// 生成兑换码
+// 无限制权限续期
 // 表单元素
-let codeform = ref(null);
-// 新建信息表单
-let codeData = reactive({
-  type: "1",
-  count: "",
-  note: "",
+let extendUserUnlimitedForm = ref(null);
+// 表单数据
+let extendUserUnlimitedData = reactive({
+  username: "",
+  hours: 0,
+});
+// 时长显示
+let extendUserUnlimitedTimeStr = computed(() => {
+  return getTimeStr3(extendUserUnlimitedData.hours);
 });
 // 清空表单
-let clearCodeForm = () => {
-  codeData.type = "1";
-  codeData.count = "";
-  codeData.note = "";
+let clearExtendUserUnlimitedForm = () => {
+  extendUserUnlimitedData.username = "";
+  extendUserUnlimitedData.hours = 0;
   // 清空校验提示
   try {
     setTimeout(() => {
-      if (codeform.value) {
+      if (extendUserUnlimitedForm.value) {
         // @ts-ignore
-        codeform.value.clearValidate(["type", "count"]);
+        extendUserUnlimitedForm.value.clearValidate(["username", "hours"]);
       }
     }, 200);
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   }
 };
-// @ts-ignore
-let validateCount = (rule: any, value: any, callback: any) => {
-  const intValue = parseInt(value, 10);
-  if (isNaN(intValue) || intValue <= 0 || intValue !== parseFloat(value)) {
-    callback(new Error("请输入正整数"));
-  } else if (intValue > 999) {
-    callback(new Error("超出最大生成数量"));
-  } else {
-    callback();
-  }
-};
-const rules4 = {
-  type: [
-    {
-      required: true,
-      message: "请选择兑换码类型",
-      trigger: "blur",
-    },
-  ],
-  count: [
-    { required: true, message: "请输入生成数量", trigger: "blur" },
-    { validator: validateCount, trigger: "blur" },
-  ],
-};
-// 生成卡片loading
-let adminCodeLoading = ref(false);
-// 生成兑换码
-let generateCode = async () => {
-  // 校验表单
-  if (codeform.value) {
-    // @ts-ignore
-    await codeform.value.validate();
-  }
-
+// 无限制权限续期卡片loading
+let extendUserUnlimitedLoading = ref(false);
+// 无限制权限续期
+let extendUserUnlimited = async () => {
   try {
-    // 显示加载
-    adminCodeLoading.value = true;
-    let codeInfo = {
-      type: 0,
-      count: 0,
-      note: "",
-    };
-    codeInfo.type = Number(codeData.type);
-    codeInfo.count = Number(codeData.count);
-    codeInfo.note = codeData.note;
-    // 仓库发起请求
-    let result = await adminStore.genCode(codeInfo);
-    ElNotification({
-      type: "success",
-      message: "生成兑换码成功",
-      duration: 3000,
-    });
     // @ts-ignore
-    if (result.success === false) {
+    await extendUserUnlimitedForm.value.validate();
+    // 显示加载
+    extendUserUnlimitedLoading.value = true;
+    let extendUserUnlimitedInfo = {
+      username: extendUserUnlimitedData.username,
+      seconds: extendUserUnlimitedData.hours * 3600,
+    };
+    // 仓库发起请求
+    let result = await adminStore.userExtendUnlimitedTime(extendUserUnlimitedInfo);
+    // @ts-ignore
+    if (result.success) {
       ElNotification({
-        type: "error",
+        type: "success",
+        title: "Success",
         // @ts-ignore
         message: result.message,
         duration: 3000,
       });
+      // 查询该用户
+      queryUserData.username = extendUserUnlimitedData.username;
+      queryUser();
+      // 清除表单
+      clearExtendUserUnlimitedForm();
     } else {
-      clearCodeForm();
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        // @ts-ignore
+        message: result.message,
+        duration: 3000,
+      });
     }
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    //console.log(error);
   } finally {
-    adminCodeLoading.value = false;
+    extendUserUnlimitedLoading.value = false;
   }
 };
 </script>
@@ -863,9 +1039,7 @@ let generateCode = async () => {
   display: flex;
   align-items: center;
 }
-.admin-create-form-container,
-.admin-renew-form-container,
-.admin-code-form-container {
+.form-container {
   max-width: 600px;
 }
 .userinfo-cell-item {

@@ -1,3 +1,4 @@
+import { DateTimeFormatOptions } from 'intl';
 // 用于时间业务
 export const getTimeStr = () => {
   // 获取当前时间
@@ -28,22 +29,13 @@ export const getTimeStr = () => {
   }
   return timestr;
 };
-export const getTimeStr2 = (time: string) => {
-  const date = new Date(Number(time) * 1000);
-  const year = date.getFullYear();
-  const month = (date.getMonth() + 1).toString().padStart(2, "0"); // 注意月份是从0开始计数，所以要加1
-  const day = date.getDate().toString().padStart(2, "0");
-  const hours = date.getHours().toString().padStart(2, "0");
-  const minutes = date.getMinutes().toString().padStart(2, "0");
-  const seconds = date.getSeconds().toString().padStart(2, "0");
-  // 使用模板字符串构建时间字符串
-  const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-  return formattedDate;
+export const getTimeStr2 = (time: number) => {
+  let date = new Date(time);
+  let options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' } as DateTimeFormatOptions;
+  return Intl.DateTimeFormat('zh-CH', options).format(date);
 };
-export const getTimeStr3 = (time: string) => {
-  let intValue = parseInt(time, 10);
-  if (isNaN(intValue) || intValue <= 0 || intValue !== parseFloat(time)) {
+export const getTimeStr3 = (time: number) => {
+  if (isNaN(time) || time <= 0) {
     // 非正整数
     return "";
   } else {
@@ -55,15 +47,15 @@ export const getTimeStr3 = (time: string) => {
     for (let i = durations.length - 1; i >= 0; i--) {
       const unit = units[i];
       const duration = durations[i];
-      const quotient = Math.floor(intValue / duration);
+      const quotient = Math.floor(time / duration);
 
       if (quotient > 0) {
         result += `${quotient}${unit}`;
 
-        intValue %= duration;
+        time %= duration;
       }
 
-      if (intValue === 0) {
+      if (time === 0) {
         break; // 已经处理完毕
       }
     }
@@ -117,4 +109,27 @@ export const verticalScroll = (scrollEl: Element) => {
       scrollEl.scrollTo(0, scrollEl.scrollTop + step);
     }, 15);
   });
+};
+export const getPasswordLevel = (str: string) => {
+  if (str === null || str === undefined) {
+      return 0;
+  }
+  let length: number = str.length;
+  let matches: boolean = /^[a-zA-Z]+$/.test(str);
+  let matches2: boolean = /^\d+$/.test(str);
+  let matches3: boolean = /^[^0-9a-zA-Z]+$/.test(str);
+  let matches4: boolean = /[a-zA-Z]/.test(str);
+  let matches5: boolean = /[^a-zA-Z]/.test(str);
+  let matches6: boolean = /\d/.test(str);
+  let matches7: boolean = /[^\d]/.test(str);
+  if (length > 0) {
+      if (length < 6 || ((matches && length < 8) || matches2 || matches3)) {
+          return 1;
+      }
+      if ((!matches || length < 8) && !((matches4 && matches5 && length < 8) || (matches6 && matches7 && length < 8))) {
+          return ((matches4 && matches5 && length >= 8) || (matches6 && matches7 && length >= 8)) ? 3 : 0;
+      }
+      return 2;
+  }
+  return 0;
 };

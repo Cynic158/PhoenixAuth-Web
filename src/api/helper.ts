@@ -9,14 +9,15 @@ enum API {
   BIND_EMAIL_ACCOUNT = "/helper/bind_email_account",
   UNBIND = "/helper/unbind",
   DAILY_SIGN = "/helper/daily_sign",
-  BIND_MOBILE_ACCOUNT = "/helper/bind_mobile_account",
-  GET_LOGIN_SMSCODE = "/helper/get_login_smscode",
+  BIND_MOBILE_ACCOUNT = "/helper/bind_mobile_account/verify",
+  GET_LOGIN_SMSCODE = "/helper/bind_mobile_account/get_sms",
 }
 
 // 数据类型声明
 interface emailInfo {
   username: string;
   password: string;
+  password_level: number;
 }
 
 interface phoneInfo {

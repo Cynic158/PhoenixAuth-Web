@@ -14,6 +14,12 @@ import {
   reqDisableApiKey,
   reqGenApiKey,
   reqSetBanListUpload,
+  reqSetAutoRestartServer,
+  reqRequestEmailVerifyCode,
+  reqResetPassword,
+  reqEmailBind,
+  reqEmailUnbind,
+  reqRemoveAccount,
 } from "@/api/user";
 // 导入路由创建动态菜单
 import {
@@ -27,8 +33,8 @@ import router from "@/router";
 // @ts-ignore
 import cloneDeep from "lodash/cloneDeep";
 // 导入加密
-// @ts-ignore
 import sha256 from "crypto-js/sha256";
+import md5 from "crypto-js/md5";
 
 interface userInfo {
   username: string;
@@ -38,16 +44,43 @@ interface userInfo {
 interface userDetail {
   username: string;
   game_id: number;
+  unlimited_until: number;
+  permission: number;
   is_admin: boolean;
-  is_developer: boolean;
   create_at: number;
   expire_at: number;
   enable_ban_list_upload: boolean;
+  enable_auto_restart_server: boolean;
   api_key: string;
+  has_email: boolean;
 }
 interface passwordInfo {
-  original_password: string;
+  email_verify_code: string;
   new_password: string;
+}
+interface fbtokenInfo{
+  hashed_ip: string;
+}
+interface requestEmailVerifyCodeInfo {
+  email?: string;
+  username?: string;
+  action_type: number;
+  captcha_token: string;
+}
+interface resetPasswordInfo {
+  username: string;
+  email_verify_code: string;
+  new_password: string;
+}
+interface emailBindInfo {
+  email: string;
+  email_verify_code: string;
+}
+interface emailUnbindInfo {
+  email_verify_code: string;
+}
+interface deleteAccountInfo {
+  email_verify_code: string;
 }
 
 // 过滤权限路由，传入权限路由以及用户所拥有的的路由权限数组
@@ -90,18 +123,24 @@ let useUserStore = defineStore("user", () => {
   let uname = ref(localStorage.getItem("UNAME") || "");
   // 游戏id
   let uid = ref(localStorage.getItem("UID") || "");
+  // 无限制至
+  let uunlimited = ref(localStorage.getItem("UUNLIMITEDFLAG") || "");
+  // 权限
+  let upermission = ref(localStorage.getItem("UPERMISSION") || "");
   // 是否管理员
   let adminFlag = ref(localStorage.getItem("ADMINFLAG") || "");
-  // 是否开发者
-  let devFlag = ref(localStorage.getItem("DEVFLAG") || "");
   // 用户创建时间
   let ucreate = ref(localStorage.getItem("UCREATE") || "");
   // 用户过期时间
   let uexpire = ref(localStorage.getItem("UEXPIRE") || "");
   // 黑名单
   let banlistFlag = ref(Boolean(localStorage.getItem("BANLISTFLAG")) || false);
+  // 自动重启服务器
+  let autoRestartFlag = ref(Boolean(localStorage.getItem("AUTORESTARTFLAG")) || false);
   // API
   let uapi = ref(localStorage.getItem("UAPI") || "");
+  // 是否有邮箱
+  let uhasEmail = ref(Boolean(localStorage.getItem("HAS_EMAIL")) || false);
 
   // 动态路由菜单项
   let menuRoutes = ref([...defaultRoutes]);
@@ -145,10 +184,7 @@ let useUserStore = defineStore("user", () => {
   // 请求更改密码
   let userPassword = async (passwordInfo: passwordInfo) => {
     // 先对密码进行加密
-    const hashOldPassword = sha256(passwordInfo.original_password).toString();
-    const hashNewPassword = sha256(passwordInfo.new_password).toString();
-    passwordInfo.original_password = hashOldPassword;
-    passwordInfo.new_password = hashNewPassword;
+    passwordInfo.new_password = sha256(passwordInfo.new_password).toString();
     // 发起请求
     try {
       let result = await reqChangePassword(passwordInfo);
@@ -166,51 +202,58 @@ let useUserStore = defineStore("user", () => {
     } else {
       adminFlag.value = "否";
     }
-    if (userInfo.is_developer) {
-      devFlag.value = "是";
-    } else {
-      devFlag.value = "否";
-    }
     if (userInfo.game_id == 0) {
       uid.value = "暂未获取";
     } else {
       uid.value = userInfo.game_id.toString();
     }
+    uunlimited.value = userInfo.unlimited_until.toString();
     ucreate.value = userInfo.create_at.toString();
     uexpire.value = userInfo.expire_at.toString();
-    uapi.value = userInfo.api_key || "未生成";
+    uapi.value = userInfo.api_key;
     banlistFlag.value = userInfo.enable_ban_list_upload;
+    autoRestartFlag.value = userInfo.enable_auto_restart_server;
+    upermission.value = userInfo.permission.toString();
+    uhasEmail.value = userInfo.has_email;
 
     localStorage.setItem("UNAME", userInfo.username);
     localStorage.setItem("UID", uid.value);
+    localStorage.setItem("UUNLIMITED", uunlimited.value);
+    localStorage.setItem("UPERMISSION", upermission.value);
     localStorage.setItem("ADMINFLAG", adminFlag.value);
-    localStorage.setItem("DEVFLAG", devFlag.value);
     localStorage.setItem("UCREATE", ucreate.value);
     localStorage.setItem("UEXPIRE", uexpire.value);
     localStorage.setItem("BANLISTFLAG", banlistFlag.value.toString());
+    localStorage.setItem("AUTORESTARTFLAG", autoRestartFlag.value.toString());
     localStorage.setItem("UAPI", uapi.value);
+    localStorage.setItem("HAS_EMAIL", uhasEmail.value.toString());
   };
   // 清空用户信息函数
   let clearUser = () => {
     token.value = "";
     uname.value = "";
     uid.value = "";
+    upermission.value = "";
     adminFlag.value = "";
-    devFlag.value = "";
+    uunlimited.value = "";
     ucreate.value = "";
     uexpire.value = "";
     banlistFlag.value = false;
+    autoRestartFlag.value = false;
     uapi.value = "";
+    uhasEmail.value = false;
 
     localStorage.setItem("TOKEN", token.value);
     localStorage.setItem("UNAME", uname.value);
     localStorage.setItem("UID", uid.value);
+    localStorage.setItem("UUNLIMITED", uunlimited.value);
+    localStorage.setItem("UPERMISSION", upermission.value);
     localStorage.setItem("ADMINFLAG", adminFlag.value);
-    localStorage.setItem("DEVFLAG", devFlag.value);
     localStorage.setItem("UCREATE", ucreate.value);
     localStorage.setItem("UEXPIRE", uexpire.value);
     localStorage.setItem("BANLISTFLAG", "");
     localStorage.setItem("UAPI", uapi.value);
+    localStorage.setItem("HAS_EMAIL", "");
 
     // 重置flag，使得重新登录会再次动态添加路由
     refreshFlag.value = false;
@@ -258,24 +301,27 @@ let useUserStore = defineStore("user", () => {
 
   // 请求登出
   let userLogout = async () => {
-    // 发起请求
-    let result = await reqLogout();
-    // @ts-ignore
-    if (result.success) {
-      // 清空用户信息
-      clearUser();
-      return "登出成功";
-    } else {
-      // 登出失败，返回一个失败的promise
-      return Promise.reject(result);
+    try {
+      // 发起请求
+      let result = await reqLogout();
+      // @ts-ignore
+      if (result.success) {
+        clearUser();
+      }
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
     }
   };
 
   // 请求phoenixtoken
-  let userDownload = async () => {
+  let userReqFBToken = async (fbtokenInfo: fbtokenInfo) => {
     // 发起请求
     try {
-      let result = await reqGetPhoenixToken();
+      if (fbtokenInfo.hashed_ip !== ""){
+        fbtokenInfo.hashed_ip = md5(fbtokenInfo.hashed_ip).toString();
+      }
+      let result = await reqGetPhoenixToken(fbtokenInfo);
       return result;
     } catch (error) {
       return Promise.reject(error);
@@ -287,6 +333,17 @@ let useUserStore = defineStore("user", () => {
     // 发起请求
     try {
       let result = await reqSetBanListUpload(enable);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 自动重启服务器
+  let userAutoRestart = async (enable: { enable: boolean }) => {
+    // 发起请求
+    try {
+      let result = await reqSetAutoRestartServer(enable);
       return result;
     } catch (error) {
       return Promise.reject(error);
@@ -326,6 +383,68 @@ let useUserStore = defineStore("user", () => {
     }
   };
 
+  // 请求邮箱验证码
+  let userRequestEmailVerifyCode = async (info: requestEmailVerifyCodeInfo) => {
+    // 发起请求
+    try {
+      let result = await reqRequestEmailVerifyCode(info);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 请求重置密码
+  let userResetPassword = async (resetPasswordInfo: resetPasswordInfo) => {
+    // 先对密码进行加密
+    const hashpassword = sha256(resetPasswordInfo.new_password).toString();
+    resetPasswordInfo.new_password = hashpassword;
+    // 发起请求
+    try {
+      let result = await reqResetPassword(resetPasswordInfo);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 请求邮箱绑定
+  let userEmailBind = async (emailBindInfo: emailBindInfo) => {
+    // 发起请求
+    try {
+      let result = await reqEmailBind(emailBindInfo);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 请求邮箱解绑
+  let userEmailUnbind = async (emailUnbindInfo: emailUnbindInfo) => {
+    // 发起请求
+    try {
+      let result = await reqEmailUnbind(emailUnbindInfo);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 请求删除账户
+  let userDeleteAccount = async (deleteAccountInfo: deleteAccountInfo) => {
+    // 发起请求
+    try {
+      let result = await reqRemoveAccount(deleteAccountInfo);
+      // @ts-ignore
+      if (result.success) {
+        clearUser();
+      }
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   return {
     token,
     uname,
@@ -338,18 +457,27 @@ let useUserStore = defineStore("user", () => {
     btns,
     getToken,
     userRegLog,
+    upermission,
     adminFlag,
-    devFlag,
+    uunlimited,
     ucreate,
     uexpire,
     banlistFlag,
+    autoRestartFlag,
     uapi,
-    userDownload,
+    uhasEmail,
+    userReqFBToken,
     userPassword,
     userCode,
     userGenApi,
     userDisApi,
     userBanList,
+    userAutoRestart,
+    userRequestEmailVerifyCode,
+    userResetPassword,
+    userEmailBind,
+    userEmailUnbind,
+    userDeleteAccount,
   };
 });
 

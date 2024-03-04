@@ -1,8 +1,7 @@
 <template>
   <div class="logo-container">
-    <!-- <img :src="setting.logoImage" alt=""> -->
     <svg-icon
-      name="logo"
+      name="icon"
       width="40px"
       height="40px"
       class="logo-img"
@@ -12,7 +11,6 @@
 </template>
 
 <script setup lang="ts">
-// @ts-ignore
 import setting from "@/setting.ts";
 </script>
 

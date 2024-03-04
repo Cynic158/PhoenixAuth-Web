@@ -3,6 +3,8 @@ import { defineStore } from "pinia";
 // 导入md5
 // @ts-ignore
 import md5 from "crypto-js/md5";
+// 导入工具函数
+import { getPasswordLevel } from "@/utils";
 
 // bot 请求api
 import {
@@ -12,11 +14,14 @@ import {
   reqSignIn,
   reqBindMobileAccount,
   reqGetLoginSmscode,
+  reqGetMailReward,
+  reqUseGiftCode,
 } from "@/api/owner";
 
 interface emailInfo {
   username: string;
   password: string;
+  password_level: number;
 }
 
 interface phoneInfo {
@@ -27,6 +32,10 @@ interface phoneInfo {
 interface codeInfo {
   mobile: string;
   captcha_token: string;
+}
+
+interface giftCodeIndo {
+  code: string;
 }
 
 // 创建仓库
@@ -44,9 +53,10 @@ let useOwnerStore = defineStore("owner", () => {
   // 邮箱创建
   let botCreateByEmail = async (emailInfo: emailInfo) => {
     try {
+      // 计算密码强度
+      emailInfo.password_level = getPasswordLevel(emailInfo.password);
       // 对密码进行加密
-      const hashpassword = md5(emailInfo.password).toString();
-      emailInfo.password = hashpassword;
+      emailInfo.password = md5(emailInfo.password).toString();
       let result = await reqBindEmailAccount(emailInfo);
       return result;
     } catch (error) {
@@ -94,6 +104,26 @@ let useOwnerStore = defineStore("owner", () => {
     }
   };
 
+  // 获取邮件奖励
+  let botGetMailReward = async () => {
+    try {
+      let result = await reqGetMailReward();
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 使用礼包码
+  let botUseGiftCode = async (giftCodeIndo: giftCodeIndo) => {
+    try {
+      let result = await reqUseGiftCode(giftCodeIndo);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   return {
     getBot,
     botCreateByEmail,
@@ -101,6 +131,8 @@ let useOwnerStore = defineStore("owner", () => {
     botSignIn,
     botCreateByPhone,
     botPhoneCode,
+    botGetMailReward,
+    botUseGiftCode,
   };
 });
 

@@ -2,23 +2,15 @@
   <div>
     <el-card shadow="hover">
       <template #header>
-        <div class="card-header">更改验证服务器</div>
-      </template>
-      <div>
-        <span>您可能需要在启动程序时添加额外参数来使用我们的服务</span>
-        <Precode :code="auth1" :type="'bash'"></Precode>
-        <Precode :code="auth2" :type="'bash'"></Precode>
-      </div>
-    </el-card>
-    <el-card style="margin-top: 12px" shadow="hover">
-      <template #header>
         <div class="card-header">PhoenixBuilder</div>
       </template>
       <div>
         <span>
           您可以从源码构建 PhoenixBuilder 以使用
         </span>
-        <Precode :code="fbbuild" :type="'bash'"></Precode>
+        <div v-for="cmd in fbBuildCmds">
+          <Precode :code="cmd" :type="'bash'"></Precode>
+        </div>
         <span style="display: inline-block; margin-top: 16px">
           您也可以点击以下链接下载预先构建好的二进制文件来使用
         </span>
@@ -59,24 +51,18 @@
 
 <script setup lang="ts">
 // 导入代码显示
-let auth1 = `./phoenixbuilder -A https://liliya233.uk`;
 
-let auth2 = `./windows-amd64.exe -A https://liliya233.uk`;
+let fbBuildCmds = [
+  "git clone git@github.com:LNSSPsd/PhoenixBuilder.git",
+  "cd PhoenixBuilder",
+  "make current",
+  "# 初次使用在执行完一次 make 后执行下面的命令\n"+
+  `sed "s/currentProtocol byte = */currentProtocol byte = 8/g" ~/go/pkg/mod/github.com/sandertv/go-raknet@v1.12.0/conn.go`,
+  "make current",
+  "./build/phoenixbuilder",
+]
 
-let fbbuild = `git clone git@github.com:LNSSPsd/PhoenixBuilder.git
-
-cd PhoenixBuilder
-
-make current
-
-# 初次使用在执行完一次 make 后执行下面的命令
-sed "s/currentProtocol byte = */currentProtocol byte = 8/g" ~/go/pkg/mod/github.com/sandertv/go-raknet@v1.12.0/conn.go
-
-make current
-
-./build/phoenixbuilder`;
-
-let neo = `curl -o install.sh https://omega-1259160345.cos.ap-nanjing.myqcloud.com/fastbuilder_launcher/install.sh && bash install.sh `;
+let neo = `curl -o install.sh https://omega-1259160345.cos.ap-nanjing.myqcloud.com/fastbuilder_launcher/install.sh && bash install.sh && rm install.sh`;
 </script>
 
 <style scoped lang="scss">

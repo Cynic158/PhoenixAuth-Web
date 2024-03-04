@@ -28,16 +28,11 @@ let iframeLoadedFunc = () => {
       settingStore.reqCollapse++;
     }
   });
-  iframeContentWindow.addEventListener("touchend", () => {
+  iframeContentWindow.addEventListener("touchstart", () => {
     if (settingStore.mmenuFlag == true && settingStore.isCollapse == false) {
       settingStore.reqCollapse++;
     }
   });
-  iframeContentWindow.addEventListener("touchmove", (event:TouchEvent) => {
-    if (settingStore.mmenuFlag && !settingStore.isCollapse) {
-      event.preventDefault();
-    }
-  }, {passive: false});
 };
 </script>
 

@@ -1,11 +1,8 @@
 <template>
-  <pre
-    class="code-container"
-  ><code :class="'language-'+ type" v-html="Prism.highlight(code, Prism.languages[type], type)"></code></pre>
+  <pre :class="'code-container language-'+type"><code>{{ code }}</code></pre>
 </template>
 <script setup lang="ts">
-import { onMounted, defineProps } from "vue";
-// @ts-ignore
+import { onMounted } from "vue";
 import Prism from "prismjs";
 defineProps({
   code: {
@@ -14,11 +11,11 @@ defineProps({
   },
   type: {
     type: String,
-    default: "html",
+    default: "none",
   },
 });
 onMounted(() => {
-  Prism.highlightAll(); //切换菜单重新渲染
+  Prism.highlightAll(false);
 });
 </script>
 

@@ -1,5 +1,4 @@
 import { defineConfig, loadEnv } from "vite";
-// @ts-ignore
 import { createHtmlPlugin } from "vite-plugin-html";
 import vue from "@vitejs/plugin-vue";
 import AutoImport from "unplugin-auto-import/vite";
@@ -15,6 +14,8 @@ const getEnvFn = (mode: string, target: string) => {
   return loadEnv(mode, process.cwd())[target];
 };
 
+const dependencies = require('./package.json').dependencies;
+
 // https://vitejs.dev/config/
 export default ({ mode }) =>
   defineConfig({
@@ -28,11 +29,27 @@ export default ({ mode }) =>
       },
     },
     base: "/static",
-    // build: {
-    //   rollupOptions: {
-    //     external: ["avatar.webp", "avatar2.webp", "bg.webp", "bg_m.webp"],
-    //   },
-    // },
+    build: {
+      rollupOptions: {
+        treeshake: true,
+        output: {
+          // 根据不同的js库 拆分包，减少index.js包体积
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              // 指定需要拆分的第三方库或模块
+              const dependenciesKeys = Object.keys(dependencies);
+              const match = dependenciesKeys.find((item) => {
+                  return id.includes(item);
+              });
+              const notSplit = ['vue', 'ant-design-vue'];
+              if (match && !notSplit.includes(match)) {
+                  return match;
+              }
+            }
+          },
+        },
+      },
+    },
     plugins: [
       vue(),
       importToCDN({
@@ -45,9 +62,14 @@ export default ({ mode }) =>
         ],
       }),
       prismjsPlugin({
-        languages: ["json", "js", "bash", "shell"],
-        //  languages: 'all',
-        plugins: ["line-numbers", "copy-to-clipboard"], //配置显示行号插件
+        languages: [
+          "bash",
+        ],
+        plugins: [
+          'toolbar', 
+          'show-language', 
+          'copy-to-clipboard',
+        ], 
         theme: "solarizedlight", //主题名称
         css: true,
       }),
