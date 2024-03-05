@@ -578,9 +578,6 @@ import {
   startRegistration,
   browserSupportsWebAuthn,
 } from "@simplewebauthn/browser";
-// 导入人机验证
-import { TurnstileObject } from "turnstile-types";
-const turnstile: TurnstileObject = window.turnstile;
 // 导出本地仓库给HTML使用
 let exportedLocalStorage = localStorage;
 // 使用设置仓库的移动端适配

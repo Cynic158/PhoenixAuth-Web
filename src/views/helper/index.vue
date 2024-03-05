@@ -342,9 +342,6 @@ import useHelperStore from "@/store/modules/helper";
 import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 import type { AxiosResponse } from "axios";
-// 导入人机验证
-import { TurnstileObject } from "turnstile-types";
-const turnstile: TurnstileObject = window.turnstile;
 
 // 人机验证显示
 const robotVisible = ref(false);

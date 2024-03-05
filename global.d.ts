@@ -18,6 +18,7 @@ declare module "axios" {
 
 import type { FormContext } from "element-plus";
 import type { Ref } from "vue";
+import type { TurnstileObject } from "turnstile-types";
 
 declare global {
   // 通用
@@ -34,7 +35,7 @@ declare global {
     onRobotError: Function | null;
   }
   // 人机校验
-  declare var turnstile: any;
+  declare var turnstile: TurnstileObject;
 
   // admin相关
   // 请求封禁用户

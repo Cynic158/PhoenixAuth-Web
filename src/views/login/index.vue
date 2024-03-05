@@ -269,9 +269,6 @@ import { useRouter } from "vue-router";
 import { ElNotification } from "element-plus";
 // 获取时间字符串函数
 import { getTimeStr } from "@/utils/index";
-// 导入人机验证
-import { TurnstileObject } from "turnstile-types";
-const turnstile: TurnstileObject = window.turnstile;
 import {
   browserSupportsWebAuthn,
   startAuthentication,

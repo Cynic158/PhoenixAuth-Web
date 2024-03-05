@@ -346,9 +346,6 @@ import useOwnerStore from "@/store/modules/owner";
 import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 import type { AxiosResponse } from "axios";
-// 导入人机验证
-import { TurnstileObject } from "turnstile-types";
-const turnstile: TurnstileObject = window.turnstile;
 // 人机验证显示
 const robotVisible = ref(false);
 // 导出本地仓库给HTML使用
