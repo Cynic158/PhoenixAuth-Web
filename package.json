@@ -66,6 +66,7 @@
     "vite-plugin-html": "^3.2.2",
     "vite-plugin-mock": "3.0.1",
     "vite-plugin-svg-icons": "^2.0.1",
-    "vue-tsc": "^1.8.27"
+    "vue-tsc": "^1.8.27",
+    "turnstile-types": "^1.2.0"
   }
 }

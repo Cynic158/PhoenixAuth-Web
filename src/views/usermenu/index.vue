@@ -578,6 +578,9 @@ import {
   startRegistration,
   browserSupportsWebAuthn,
 } from "@simplewebauthn/browser";
+// 导入人机验证
+import { TurnstileObject } from "turnstile-types";
+const turnstile: TurnstileObject = window.turnstile;
 // 导出本地仓库给HTML使用
 let exportedLocalStorage = localStorage;
 // 使用设置仓库的移动端适配
@@ -826,14 +829,14 @@ let clearForm = () => {
 onActivated(() => {
   clearForm();
 });
-let validateRePassword = (rule: any, value: any, callback: any) => {
+let validateRePassword = (_: any, value: any, callback: any) => {
   if (value !== passwordData.newPassword) {
     callback(new Error("输入的密码不相同"));
   } else {
     callback();
   }
 };
-let validateRedeemCode = (rule: any, value: any, callback: any) => {
+let validateRedeemCode = (_: any, value: any, callback: any) => {
   // uuid正则
   const codeReg =
     /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;

@@ -346,6 +346,9 @@ import useOwnerStore from "@/store/modules/owner";
 import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 import type { AxiosResponse } from "axios";
+// 导入人机验证
+import { TurnstileObject } from "turnstile-types";
+const turnstile: TurnstileObject = window.turnstile;
 // 人机验证显示
 const robotVisible = ref(false);
 // 导出本地仓库给HTML使用
@@ -444,7 +447,7 @@ let clearForm = () => {
     //console.log(error);
   }
 };
-let validateEmail = (rule: any, value: any, callback: any) => {
+let validateEmail = (_: any, value: any, callback: any) => {
   // 邮箱正则表达式
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -454,7 +457,7 @@ let validateEmail = (rule: any, value: any, callback: any) => {
     callback();
   }
 };
-let validateGiftCode = (rule: any, value: any, callback: any) => {
+let validateGiftCode = (_: any, value: any, callback: any) => {
   // uuid正则
   const codeReg = /^[0-9a-z]{10}$/;
 
@@ -553,7 +556,7 @@ let clearPhoneForm = () => {
     //console.log(error);
   }
 };
-let validatePhone = (rule: any, value: any, callback: any) => {
+let validatePhone = (_: any, value: any, callback: any) => {
   // 手机正则表达式
   const phoneRegex = /^1[3456789]\d{9}$/;
 

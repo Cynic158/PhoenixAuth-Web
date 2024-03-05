@@ -269,8 +269,9 @@ import { useRouter } from "vue-router";
 import { ElNotification } from "element-plus";
 // 获取时间字符串函数
 import { getTimeStr } from "@/utils/index";
-// 导入暗黑模式背景图
-//import darkimg from "../../assets/images/bg_dark.webp";
+// 导入人机验证
+import { TurnstileObject } from "turnstile-types";
+const turnstile: TurnstileObject = window.turnstile;
 import {
   browserSupportsWebAuthn,
   startAuthentication,
@@ -287,7 +288,7 @@ const robotVisible = ref(false);
 // 导出本地仓库给HTML使用
 let exportedLocalStorage = localStorage;
 
-let validateUserName = (rule: any, value: any, callback: any) => {
+let validateUserName = (_: any, value: any, callback: any) => {
   const regex = /^[a-zA-Z0-9]+$/;
   if (!regex.test(value)) {
     callback(new Error("用户名只能是大小英文以及数字"));
@@ -295,14 +296,14 @@ let validateUserName = (rule: any, value: any, callback: any) => {
     callback();
   }
 };
-let validateRegRePassword = (rule: any, value: any, callback: any) => {
+let validateRegRePassword = (_: any, value: any, callback: any) => {
   if (value !== regData.password) {
     callback(new Error("输入的密码不相同"));
   } else {
     callback();
   }
 };
-let validateForgetRePassword = (rule: any, value: any, callback: any) => {
+let validateForgetRePassword = (_: any, value: any, callback: any) => {
   if (value !== forgetData.password) {
     callback(new Error("输入的密码不相同"));
   } else {

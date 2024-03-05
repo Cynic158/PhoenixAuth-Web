@@ -450,7 +450,7 @@ let settingStore = useSettingStore();
 let adminStore = useAdminStore();
 
 // 数据校验规则
-let validateUserName = (rule: any, value: any, callback: any) => {
+let validateUserName = (_: any, value: any, callback: any) => {
   const regex = /^[a-zA-Z0-9]+$/;
   if (!regex.test(value)) {
     callback(new Error("用户名只能是大小英文以及数字"));
@@ -458,7 +458,7 @@ let validateUserName = (rule: any, value: any, callback: any) => {
     callback();
   }
 };
-let validateRedeemCodeCount = (rule: any, value: any, callback: any) => {
+let validateRedeemCodeCount = (_: any, value: any, callback: any) => {
   const intValue = parseInt(value, 10);
   if (isNaN(intValue) || intValue <= 0 || intValue !== parseFloat(value)) {
     callback(new Error("请输入正整数"));
@@ -468,7 +468,7 @@ let validateRedeemCodeCount = (rule: any, value: any, callback: any) => {
     callback();
   }
 };
-let validateValidNumber = (rule: any, value: any, callback: any) => {
+let validateValidNumber = (_: any, value: any, callback: any) => {
   const intValue = parseInt(value, 10);
   if (intValue < -86400 || intValue > 86400) {
     callback(new Error("数字超出允许范围"));
