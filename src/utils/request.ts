@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ElMessage, ElNotification } from "element-plus";
+import { ElNotification } from "element-plus";
 // 导入用户仓库
 import useUserStore from "@/store/modules/user";
 // 导入路由函数

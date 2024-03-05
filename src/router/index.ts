@@ -36,7 +36,7 @@ let router = createRouter({
 let userStore = useUserStore(pinia);
 
 //当路由开始跳转时
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async (to, _, next) => {
   // 开启进度条
   NProgress.start();
   // 判断是否已经登录，否则不给跳转

@@ -10,7 +10,7 @@
 <script setup lang="ts">
 // 使用中文的element组件
 import { ElConfigProvider } from "element-plus";
-import zhCn from "element-plus/dist/locale/zh-cn.mjs";
+import zhCn from "element-plus/es/locale/lang/zh-cn";
 const locale = zhCn;
 </script>
 
