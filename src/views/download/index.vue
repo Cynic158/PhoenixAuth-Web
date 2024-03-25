@@ -12,9 +12,10 @@
           <Precode :code="cmd" :type="'bash'"></Precode>
         </div>
         <span style="display: inline-block; margin-top: 16px">
-          安卓 / Linux / macOS 可尝试在终端输入以下内容使用官方提供的安装脚本
+          安卓 / Linux / macOS 可尝试在终端输入以下内容使用官方提供的安装脚本, 并根据提示使用对应的命令来启动程序
         </span>
-        <Precode :code="fbInstaller" :type="'bash'"></Precode>
+        <Precode :code="fbMainInstaller" :type="'bash'"></Precode>
+        <Precode :code="fbLibreInstaller" :type="'bash'"></Precode>
         <span style="display: inline-block; margin-top: 16px">
           您也可以点击以下链接下载预先构建好的二进制文件来使用
         </span>
@@ -66,8 +67,11 @@ let fbBuildCmds = [
   "./build/phoenixbuilder",
 ]
 
-let fbInstaller = "# 下载完成后请根据提示使用对应的命令来启动程序\n"+
+let fbMainInstaller = "# 主分支\n"+
   `export LOCAL=1 && export PB_USE_GH_REPO=1 && curl -o install.sh https://raw.githubusercontent.com/LNSSPsd/PhoenixBuilder/main/install.sh && bash install.sh && rm install.sh`;
+
+let fbLibreInstaller = "# Libre 分支\n"+
+  `export LOCAL=1 && export PB_USE_GH_REPO=1 && curl -o install.sh https://raw.githubusercontent.com/LNSSPsd/PhoenixBuilder/libre/install.sh && bash install.sh && rm install.sh`;
 
 let neo = `curl -o install.sh https://omega-1259160345.cos.ap-nanjing.myqcloud.com/fastbuilder_launcher/install.sh && bash install.sh && rm install.sh`;
 </script>
