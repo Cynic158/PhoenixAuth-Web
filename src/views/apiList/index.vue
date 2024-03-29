@@ -12,7 +12,7 @@ onMounted(async () => {
     SwaggerUIBundle({
       domNode: document.querySelector('.swagger-div') as HTMLElement,
       url: '/openapi/swagger/doc.json',
-      docExpansion: 'list',
+      docExpansion: 'none',
     });
   } catch (error) {
     console.error('Error loading Swagger UI:', error);
