@@ -53,7 +53,7 @@ let useSettingStore = defineStore("setting", () => {
     // 获取当前窗口宽度
     const screenWidth = window.innerWidth;
     // 根据窗口宽度进行判断
-    if (screenWidth <= 768) {
+    if (screenWidth <= 900) {
       createDialogWidth.value = "100%";
       pageCount.value = 4;
       pageSmall.value = true;

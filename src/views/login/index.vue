@@ -860,7 +860,7 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .login-container {
     // background-image: url("../../assets/images/bg_m.webp") !important;
     background-image: url("https://img.picgo.net/2024/01/24/bg_m747b3a845541b9e0.webp") !important;
