@@ -176,7 +176,7 @@
               show-password
               v-model="emailData.password"
               placeholder="请输入密码"
-              autocomplete="new-password"
+              autocomplete="off"
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
