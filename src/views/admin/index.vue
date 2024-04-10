@@ -644,7 +644,7 @@ let setUserInfo = (userInfo: UserQueryDetail) => {
   queryUserInfo.create_at = getTimeStr2(userInfo.create_at);
   queryUserInfo.unlimited_until = getTimeStr2(userInfo.unlimited_until);
   queryUserInfo.ban_until = getTimeStr2(userInfo.ban_until);
-  if (queryUserInfo.ban_until === "1970/01/01 08:00:00") {
+  if (queryUserInfo.ban_until.startsWith("1970")) {
     queryUserInfo.ban_until = "";
   }
   queryUserInfo.ban_reason = userInfo.ban_reason;
