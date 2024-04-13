@@ -51,6 +51,24 @@
         </p>
       </div>
     </el-card>
+    <el-card style="margin-top: 12px" shadow="hover">
+      <template #header>
+        <div class="card-header">ToolDelta</div>
+      </template>
+      <div>
+        <span style="display: inline-block">
+          点击以下链接前往 ToolDelta Wiki 查看使用教程
+        </span>
+        <p style="margin-top: 16px">
+          <a
+            style="white-space: normal; word-wrap: break-word"
+            href="https://tooldelta-wiki.tblstudio.cn/learn-use.html"
+            target="_blank"
+            >https://tooldelta-wiki.tblstudio.cn/learn-use.html
+          </a>
+        </p>
+      </div>
+    </el-card>
   </div>
 </template>
 
