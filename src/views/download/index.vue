@@ -62,9 +62,9 @@
         <p style="margin-top: 16px">
           <a
             style="white-space: normal; word-wrap: break-word"
-            href="https://tooldelta-wiki.tblstudio.cn/learn-use.html"
+            href="https://tooldelta-wiki.tblstudio.cn"
             target="_blank"
-            >https://tooldelta-wiki.tblstudio.cn/learn-use.html
+            >https://tooldelta-wiki.tblstudio.cn
           </a>
         </p>
       </div>
