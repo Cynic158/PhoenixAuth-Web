@@ -13,7 +13,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >Bot 账号是进入服务器时使用的账号</span
+            >Bot 账号是进入服务器时使用的账号, 建议使用游客登录</span
           >
         </div>
         <el-divider />
@@ -99,7 +99,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >使用您提供的手机账号作为Bot (*人机验证)</span
+            >[不推荐] 使用您提供的手机账号作为Bot (*人机验证)</span
           >
         </div>
         <el-divider />
@@ -185,7 +185,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >使用您提供的邮箱账号作为Bot</span
+            >[不推荐] 使用您提供的邮箱账号作为Bot</span
           >
         </div>
         <el-divider />

@@ -60,7 +60,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >绑定您的手机账号 (*人机验证)</span
+            >[不推荐] 绑定您的手机账号 (*人机验证)</span
           >
         </div>
         <el-divider />
@@ -147,7 +147,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >绑定您的邮箱账号</span
+            >[不推荐] 绑定您的邮箱账号</span
           >
         </div>
         <el-divider />
