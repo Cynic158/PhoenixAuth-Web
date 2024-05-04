@@ -15,6 +15,7 @@ import {
   reqGenApiKey,
   reqSetBanListUpload,
   reqSetAutoRestartServer,
+  reqBindGameId,
   reqRequestEmailVerifyCode,
   reqResetPassword,
   reqEmailBind,
@@ -300,6 +301,17 @@ let useUserStore = defineStore("user", () => {
     }
   };
 
+  // 请求绑定游戏ID
+  let userGameIDBind = async (bindInfo: { server_code: string }) => {
+    // 发起请求
+    try {
+      let result = await reqBindGameId(bindInfo);
+      return result;bindInfo
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   // 请求使用兑换码
   let userCode = async (code: { redeem_code: string }) => {
     // 发起请求
@@ -417,6 +429,7 @@ let useUserStore = defineStore("user", () => {
     uhasEmail,
     userReqFBToken,
     userPassword,
+    userGameIDBind,
     userCode,
     userGenApi,
     userDisApi,

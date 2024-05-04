@@ -111,6 +111,48 @@
       </div>
     </el-card>
 
+    <el-card v-loading="bindLoading" style="margin-top: 12px" shadow="hover" v-if="Number(userStore.upermission)>0 && userStore.uid=='暂未获取'">
+      <template #header>
+        <div class="card-header">绑定游戏ID</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >将服务器密码设置为下面显示的值，再输入服务器号来绑定您的游戏ID</span
+          >
+        </div>
+        <el-divider />
+        <el-form
+          @submit.prevent
+          class="limited-form-container"
+          :model="bindData"
+          :rules="bindRules"
+          ref="bindform"
+        >
+          <el-form-item label="服务器号" prop="server_code">
+            <el-input
+              v-model="bindData.server_code"
+              placeholder="请输入要绑定的服务器号码"
+            />
+          </el-form-item>
+          <el-form-item label="服务器密码">
+            <el-input
+            v-model="bindData.server_passcode"
+              disabled="false"
+            />
+          </el-form-item>
+          <el-form-item style="margin-bottom: 0">
+            <el-button type="primary" native-type="submit" @click="gamdIDBind"
+              >绑定</el-button
+            >
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+
     <el-card v-loading="codeLoading" style="margin-top: 12px" shadow="hover">
       <template #header>
         <div class="card-header">兑换码</div>
@@ -578,6 +620,8 @@ import {
   startRegistration,
   browserSupportsWebAuthn,
 } from "@simplewebauthn/browser";
+// 导入md5
+import md5 from "crypto-js/md5";
 // 导出本地仓库给HTML使用
 let exportedLocalStorage = localStorage;
 // 使用设置仓库的移动端适配
@@ -900,6 +944,15 @@ const changePasswordRules = {
       trigger: "blur",
     },
     { validator: validateRePassword, trigger: "blur" },
+  ],
+};
+const bindRules = {
+  server_code: [
+    {
+      required: true,
+      message: "服务器号不能为空",
+      trigger: "blur",
+    },
   ],
 };
 const redeemRules = {
@@ -1290,6 +1343,84 @@ let removeWebAuthn = async (credentialID: number) => {
   }
 };
 
+// 绑定游戏账号
+// 绑定卡片loading
+let bindLoading = ref(false);
+// 表单元素
+let bindform: EleFormRef = ref(null);
+// 表单数据
+let bindData = reactive({
+  server_code: "",
+  server_passcode: "",
+});
+// 生成密码
+let generateServerPassCode = () => {
+    let retval = md5(userStore.uname).toString();
+    // 截取前六位
+    retval = retval.slice(0, 6);
+    // 替换 'a' 到 'f' 为 '0' 到 '5'
+    retval = retval.replace(/[a-f]/g, function(match) {
+        return (match.charCodeAt(0) - 'a'.charCodeAt(0)).toString();
+    });
+    // 将结果绑定到server_passcode上
+    bindData.server_passcode = retval;
+};
+// 清空表单
+let clearBindForm = () => {
+  bindData.server_code = "";
+  try {
+    setTimeout(() => {
+      if (bindform.value) {
+        bindform.value.clearValidate(["server_code"]);
+      }
+    }, 200);
+  } catch (error) {
+    //console.log(error);
+  }
+};
+// 每次进入子页面就清空表单
+onActivated(() => {
+  clearBindForm();
+});
+// 使用兑换码
+let gamdIDBind = async () => {
+  try {
+    await bindform.value!.validate();
+    // 显示加载
+    bindLoading.value = true;
+    let bindInfo = {
+      server_code: "",
+    };
+    bindInfo.server_code = bindData.server_code;
+    // 仓库发起请求
+    let result = await userStore.userGameIDBind(bindInfo);
+    if (result.success) {
+      ElNotification({
+        type: "success",
+        title: "Success",
+        message: result.message,
+        duration: 3000,
+        dangerouslyUseHTMLString: true,
+      });
+      // 刷新信息
+      getInfo();
+      // 清空表单
+      clearBindForm();
+    } else {
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error) {
+    ////console.log(error);
+  } finally {
+    bindLoading.value = false;
+  }
+};
+
 // 兑换码
 // 兑换码卡片loading
 let codeLoading = ref(false);
@@ -1411,6 +1542,8 @@ onMounted(() => {
   window.onRobotError = onRobotError;
   turnstile.render(".cf-turnstile");
   getInfo();
+  // 更新绑定密码
+  generateServerPassCode();
   // 获取credentials列表
   getWebAuthnList();
 });

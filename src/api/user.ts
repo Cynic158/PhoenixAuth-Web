@@ -10,6 +10,7 @@ enum API {
   LOGOUT = "/user/logout",
   GET_PHOENIX_TOKEN = "/user/get_phoenix_token",
   CHANGE_PASSWORD = "/user/change_password",
+  BIND_GAME_ID = "/user/bind_game_id",
   USE_REDEEM_CODE = "/user/use_redeem_code",
   GEN_API_KEY = "/user/gen_api_key",
   DISABLE_API_KEY = "/user/disable_api_key",
@@ -41,6 +42,9 @@ export const reqGetPhoenixToken = (fbtokenInfo: UserFbtokenInfo) =>
 // 请求更改密码
 export const reqChangePassword = (passwordInfo: UserPasswordInfo) =>
   request.post(API.CHANGE_PASSWORD, passwordInfo);
+// 请求绑定游戏ID
+export const reqBindGameId = (bindInfo: { server_code: string }) =>
+  request.post(API.BIND_GAME_ID, bindInfo);
 // 请求使用兑换码
 export const reqUseRedeemCode = (code: { redeem_code: string }) =>
   request.post(API.USE_REDEEM_CODE, code);
