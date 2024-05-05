@@ -78,6 +78,8 @@ let useUserStore = defineStore("user", () => {
   let uname = ref(localStorage.getItem("UNAME") || "");
   // 游戏id
   let uid = ref(localStorage.getItem("UID") || "");
+  // 游戏名
+  let clientName = ref(localStorage.getItem("CLIENTNAME") || "");
   // 无限制至
   let uunlimited = ref(localStorage.getItem("UUNLIMITEDFLAG") || "");
   // 权限
@@ -171,9 +173,11 @@ let useUserStore = defineStore("user", () => {
     autoRestartFlag.value = userInfo.enable_auto_restart_server;
     upermission.value = userInfo.permission.toString();
     uhasEmail.value = userInfo.has_email;
+    clientName.value = userInfo.client_username;
 
     localStorage.setItem("UNAME", userInfo.username);
     localStorage.setItem("UID", uid.value);
+    localStorage.setItem("CLIENTNAME", clientName.value);
     localStorage.setItem("UUNLIMITED", uunlimited.value);
     localStorage.setItem("UPERMISSION", upermission.value);
     localStorage.setItem("ADMINFLAG", adminFlag.value);
@@ -188,6 +192,7 @@ let useUserStore = defineStore("user", () => {
   let clearUser = () => {
     token.value = "";
     uname.value = "";
+    clientName.value = "";
     uid.value = "";
     upermission.value = "";
     adminFlag.value = "";
@@ -201,6 +206,7 @@ let useUserStore = defineStore("user", () => {
 
     localStorage.setItem("TOKEN", token.value);
     localStorage.setItem("UNAME", uname.value);
+    localStorage.setItem("CLIENTNAME", clientName.value);
     localStorage.setItem("UID", uid.value);
     localStorage.setItem("UUNLIMITED", uunlimited.value);
     localStorage.setItem("UPERMISSION", upermission.value);
@@ -422,6 +428,7 @@ let useUserStore = defineStore("user", () => {
     token,
     uname,
     uid,
+    clientName,
     userInfo,
     userLogout,
     menuRoutes,

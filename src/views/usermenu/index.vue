@@ -903,7 +903,9 @@ let setClientUsername = async () => {
     }
   } catch (error) {
     //console.log(error);
-  } finally {
+  }finally{
+    await getInfo();
+    clientUsernameData.client_username = userStore.clientName;
     clientUsernameLoading.value = false;
   }
 };
@@ -1617,6 +1619,8 @@ onMounted(() => {
   generateServerPassCode();
   // 获取credentials列表
   getWebAuthnList();
+  // 设置游戏名
+  clientUsernameData.client_username = userStore.clientName;
 });
 </script>
 

@@ -180,6 +180,7 @@ declare global {
   interface UserDetail {
     username: string;
     game_id: number;
+    client_username: string;
     unlimited_until: number;
     permission: number;
     is_admin: boolean;
