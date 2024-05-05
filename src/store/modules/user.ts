@@ -9,6 +9,7 @@ import {
   reqLogin,
   reqGetStatus,
   reqGetPhoenixToken,
+  reqSetResponseTo,
   reqChangePassword,
   reqUseRedeemCode,
   reqDisableApiKey,
@@ -279,6 +280,17 @@ let useUserStore = defineStore("user", () => {
     }
   };
 
+  // 请求phoenixtoken
+  let userSetClientUsername = async (info: UserSetClientUsernameInfo) => {
+    // 发起请求
+    try {
+      let result = await reqSetResponseTo(info);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   // 黑名单
   let userBanList = async (enable: { enable: boolean }) => {
     // 发起请求
@@ -428,6 +440,7 @@ let useUserStore = defineStore("user", () => {
     uapi,
     uhasEmail,
     userReqFBToken,
+    userSetClientUsername,
     userPassword,
     userGameIDBind,
     userCode,
