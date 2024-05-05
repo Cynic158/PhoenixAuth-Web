@@ -32,7 +32,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray">
-            游戏ID在第一次成功登录时自动获取，之后您只能登录至此ID的租赁服
+            您可以登入绑定的游戏ID下的所有服务器
           </span>
         </div>
         <el-divider />
@@ -121,7 +121,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >将服务器密码设置为下面显示的值，再输入服务器号来绑定您的游戏ID</span
+            >将服务器密码设置为下面显示的值, 再输入服务器号来绑定您的游戏ID</span
           >
         </div>
         <el-divider />
@@ -243,7 +243,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >在此处设置客户端默认游戏名，可以不设置</span
+            >在此处设置程序的默认游戏名, 可以不设置</span
           >
         </div>
         <el-divider />

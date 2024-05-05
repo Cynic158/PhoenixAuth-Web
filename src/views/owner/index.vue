@@ -207,7 +207,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >可以获得游戏内道具以及经验值奖励</span
+            >可以获得游戏内道具奖励</span
           >
         </div>
         <el-divider />
