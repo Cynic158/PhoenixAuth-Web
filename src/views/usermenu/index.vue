@@ -121,7 +121,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >将服务器密码设置为下面显示的值, 再输入服务器号来绑定您的游戏ID</span
+            >输入服务器号来绑定您的游戏ID, 绑定前需要先创建 Bot 账号</span
           >
         </div>
         <el-divider />
@@ -138,14 +138,8 @@
               placeholder="请输入要绑定的服务器号码"
             />
           </el-form-item>
-          <el-form-item label="服务器密码">
-            <el-input
-            v-model="bindData.server_passcode"
-              disabled="false"
-            />
-          </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" native-type="submit" @click="gamdIDBind"
+            <el-button type="primary" native-type="submit" @click="popBindDialog"
               >绑定</el-button
             >
           </el-form-item>
@@ -628,6 +622,26 @@
         </el-form-item>
       </el-form>
     </el-card>
+
+    <el-dialog
+        max-width="500px"
+        v-model="bindDialogVisible"
+        title="绑定游戏ID"
+        align-center
+      >
+        确定要将游戏ID设置为 {{ bindData.server_code }} 的拥有者吗? 绑定成功后无法更改
+        <template #footer>
+          <span class="dialog-footer">
+            <el-button @click="bindDialogVisible = false">取消</el-button>
+            <el-button
+              :loading="bindLoading"
+              type="warning"
+              @click="gamdIDBind"
+              >确定</el-button
+            >
+          </span>
+        </template>
+      </el-dialog>
   </div>
 </template>
 
@@ -657,8 +671,6 @@ import {
   startRegistration,
   browserSupportsWebAuthn,
 } from "@simplewebauthn/browser";
-// 导入md5
-import md5 from "crypto-js/md5";
 // 导出本地仓库给HTML使用
 let exportedLocalStorage = localStorage;
 // 使用设置仓库的移动端适配
@@ -1417,6 +1429,8 @@ let removeWebAuthn = async (credentialID: number) => {
 };
 
 // 绑定游戏账号
+// 弹窗
+let bindDialogVisible = ref(false);
 // 绑定卡片loading
 let bindLoading = ref(false);
 // 表单元素
@@ -1424,20 +1438,7 @@ let bindform: EleFormRef = ref(null);
 // 表单数据
 let bindData = reactive({
   server_code: "",
-  server_passcode: "",
 });
-// 生成密码
-let generateServerPassCode = () => {
-    let retval = md5(userStore.uname).toString();
-    // 截取前六位
-    retval = retval.slice(0, 6);
-    // 替换 'a' 到 'f' 为 '0' 到 '5'
-    retval = retval.replace(/[a-f]/g, function(match) {
-        return (match.charCodeAt(0) - 'a'.charCodeAt(0)).toString();
-    });
-    // 将结果绑定到server_passcode上
-    bindData.server_passcode = retval;
-};
 // 清空表单
 let clearBindForm = () => {
   bindData.server_code = "";
@@ -1455,12 +1456,22 @@ let clearBindForm = () => {
 onActivated(() => {
   clearBindForm();
 });
-// 使用兑换码
+// 弹窗
+let popBindDialog = async() => {
+  try {
+    await bindform.value!.validate();
+    bindDialogVisible.value = true;
+  } catch (error) {
+    //console.log(error);
+  }
+};
+// 绑定游戏ID
 let gamdIDBind = async () => {
   try {
     await bindform.value!.validate();
     // 显示加载
     bindLoading.value = true;
+    bindDialogVisible.value = false;
     let bindInfo = {
       server_code: "",
     };
@@ -1615,8 +1626,6 @@ onMounted(() => {
   window.onRobotError = onRobotError;
   turnstile.render(".cf-turnstile");
   getInfo();
-  // 更新绑定密码
-  generateServerPassCode();
   // 获取credentials列表
   getWebAuthnList();
   // 设置游戏名
