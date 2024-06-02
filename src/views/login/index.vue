@@ -25,7 +25,10 @@
                 ref="forgetform"
                 class="login-page login-forgetpage"
               >
-                <h2>通过验证您绑定的邮箱来重置密码 (*人机验证)</h2>
+                <h2>
+                  通过验证您绑定的邮箱来重置密码
+                  <el-tag type="warning" style="margin-right: 5px;">人机验证</el-tag>
+                </h2>
                 <div class="input-container">
                   <el-form-item prop="username">
                     <el-input
@@ -179,7 +182,10 @@
                 ref="regform"
                 class="login-page login-regpage"
               >
-                <h2>创建一个新的账号来使用我们的服务 (*人机验证)</h2>
+                <h2>
+                  创建一个新的账号来使用我们的服务
+                  <el-tag type="warning" style="margin-right: 5px;">人机验证</el-tag>
+                </h2>
                 <div class="input-container">
                   <el-form-item prop="username">
                     <el-input

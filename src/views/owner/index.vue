@@ -52,7 +52,11 @@
       style="margin-top: 12px"
     >
       <template #header>
-        <div class="card-header">手机登录</div>
+        <div class="card-header">
+          手机登录
+          <el-tag type="danger" style="margin-left: 5px">不推荐</el-tag>
+          <el-tag type="warning" style="margin-left: 5px">人机验证</el-tag>  
+        </div>
       </template>
       <div>
         <div class="card-footer">
@@ -60,7 +64,9 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >[不推荐] 绑定您的手机账号 (*人机验证)</span
+            >
+            绑定您的手机账号
+            </span
           >
         </div>
         <el-divider />
@@ -139,7 +145,10 @@
       style="margin-top: 12px"
     >
       <template #header>
-        <div class="card-header">邮箱登录</div>
+        <div class="card-header">
+          邮箱登录
+          <el-tag type="danger" style="margin-left: 5px">不推荐</el-tag> 
+        </div>
       </template>
       <div>
         <div class="card-footer">
@@ -147,7 +156,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >[不推荐] 绑定您的邮箱账号</span
+            >绑定您的邮箱账号</span
           >
         </div>
         <el-divider />

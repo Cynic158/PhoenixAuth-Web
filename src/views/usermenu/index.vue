@@ -267,7 +267,10 @@
 
     <el-card style="margin-top: 12px" shadow="hover" v-if="userStore.uhasEmail">
       <template #header>
-        <div class="card-header">修改密码</div>
+        <div class="card-header">
+          修改密码
+          <el-tag type="warning" style="margin-left: 5px;">人机验证</el-tag>
+        </div>
       </template>
       <div>
         <div class="card-footer">
@@ -400,7 +403,10 @@
       v-if="!userStore.uhasEmail"
     >
       <template #header>
-        <div class="card-header">绑定邮箱</div>
+        <div class="card-header">
+          绑定邮箱
+          <el-tag type="warning" style="margin-left: 5px;">人机验证</el-tag>
+        </div>
       </template>
       <div class="card-footer">
         <el-icon>
@@ -515,14 +521,19 @@
 
     <el-card style="margin-top: 12px" shadow="hover" v-if="userStore.uhasEmail">
       <template #header>
-        <div class="card-header">解绑邮箱</div>
+        <div class="card-header">
+          解绑邮箱
+          <el-tag type="warning" style="margin-left: 5px;">人机验证</el-tag>
+        </div>
       </template>
       <div class="card-footer">
         <el-icon>
           <ChatDotRound />
         </el-icon>
         <span style="margin-left: 12px; color: dimgray"
-          >解绑您的账户的安全邮箱, 解绑后无法进行修改密码等操作</span
+          >
+          解绑您的账户的安全邮箱, 解绑后无法进行修改密码等操作
+          </span
         >
       </div>
       <el-divider />
@@ -570,14 +581,19 @@
 
     <el-card style="margin-top: 12px" shadow="hover" v-if="userStore.uhasEmail">
       <template #header>
-        <div class="card-header">删除账户</div>
+        <div class="card-header">
+          删除账户
+          <el-tag type="warning" style="margin-left: 5px;">人机验证</el-tag>
+        </div>
       </template>
       <div class="card-footer">
         <el-icon>
           <ChatDotRound />
         </el-icon>
         <span style="margin-left: 12px; color: dimgray"
-          >立即删除账户的所有信息且无法恢复, 请谨慎操作</span
+          >
+          立即删除账户的所有信息且无法恢复, 请谨慎操作
+          </span
         >
       </div>
       <el-divider />

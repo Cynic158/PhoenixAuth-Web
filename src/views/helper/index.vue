@@ -58,7 +58,10 @@
       shadow="hover"
     >
       <template #header>
-        <div class="card-header">游客登录</div>
+        <div class="card-header">
+          游客登录
+          <el-tag type="success" style="margin-left: 5px">推荐</el-tag> 
+        </div>
       </template>
       <div>
         <div class="card-footer">
@@ -91,7 +94,11 @@
       style="margin-top: 12px"
     >
       <template #header>
-        <div class="card-header">手机登录</div>
+        <div class="card-header">
+          手机登录
+          <el-tag type="danger" style="margin-left: 5px">不推荐</el-tag>
+          <el-tag type="warning" style="margin-left: 5px">人机验证</el-tag>  
+        </div>
       </template>
       <div>
         <div class="card-footer">
@@ -99,7 +106,9 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >[不推荐] 使用您提供的手机账号作为Bot (*人机验证)</span
+            >
+            使用您提供的手机账号作为Bot
+            </span
           >
         </div>
         <el-divider />
@@ -177,7 +186,10 @@
       style="margin-top: 12px"
     >
       <template #header>
-        <div class="card-header">邮箱登录</div>
+        <div class="card-header">
+          邮箱登录
+          <el-tag type="danger" style="margin-left: 5px">不推荐</el-tag> 
+        </div>
       </template>
       <div>
         <div class="card-footer">
@@ -185,7 +197,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >[不推荐] 使用您提供的邮箱账号作为Bot</span
+            >使用您提供的邮箱账号作为Bot</span
           >
         </div>
         <el-divider />
