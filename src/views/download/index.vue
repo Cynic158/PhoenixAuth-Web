@@ -2,35 +2,6 @@
   <div>
     <el-card shadow="hover">
       <template #header>
-        <div class="card-header">PhoenixBuilder</div>
-      </template>
-      <div>
-        <span>
-          您可以从源码构建 PhoenixBuilder 以使用
-        </span>
-        <div v-for="cmd in fbBuildCmds">
-          <Precode :code="cmd" :type="'bash'"></Precode>
-        </div>
-        <span style="display: inline-block; margin-top: 16px">
-          安卓 / Linux / macOS 可尝试在终端输入以下内容使用官方提供的安装脚本, 并根据提示使用对应的命令来启动程序
-        </span>
-        <Precode :code="fbMainInstaller" :type="'bash'"></Precode>
-        <Precode :code="fbLibreInstaller" :type="'bash'"></Precode>
-        <span style="display: inline-block; margin-top: 16px">
-          您也可以点击以下链接下载预先构建好的二进制文件来使用
-        </span>
-        <p style="margin-top: 16px">
-          <a
-            style="white-space: normal; word-wrap: break-word"
-            href="https://github.com/LNSSPsd/PhoenixBuilder/releases/latest"
-            target="_blank"
-            >https://github.com/LNSSPsd/PhoenixBuilder/releases/latest
-          </a>
-        </p>
-      </div>
-    </el-card>
-    <el-card style="margin-top: 12px" shadow="hover">
-      <template #header>
         <div class="card-header">neOmega</div>
       </template>
       <div>
@@ -65,6 +36,35 @@
             href="https://tooldelta-wiki.tblstudio.cn"
             target="_blank"
             >https://tooldelta-wiki.tblstudio.cn
+          </a>
+        </p>
+      </div>
+    </el-card>
+    <el-card style="margin-top: 12px" shadow="hover">
+      <template #header>
+        <div class="card-header">PhoenixBuilder</div>
+      </template>
+      <div>
+        <span>
+          您可以从源码构建 PhoenixBuilder 以使用
+        </span>
+        <div v-for="cmd in fbBuildCmds">
+          <Precode :code="cmd" :type="'bash'"></Precode>
+        </div>
+        <span style="display: inline-block; margin-top: 16px">
+          安卓 / Linux / macOS 可尝试在终端输入以下内容使用官方提供的安装脚本, 并根据提示使用对应的命令来启动程序
+        </span>
+        <Precode :code="fbMainInstaller" :type="'bash'"></Precode>
+        <Precode :code="fbLibreInstaller" :type="'bash'"></Precode>
+        <span style="display: inline-block; margin-top: 16px">
+          您也可以点击以下链接下载预先构建好的二进制文件来使用
+        </span>
+        <p style="margin-top: 16px">
+          <a
+            style="white-space: normal; word-wrap: break-word"
+            href="https://github.com/LNSSPsd/PhoenixBuilder/releases/latest"
+            target="_blank"
+            >https://github.com/LNSSPsd/PhoenixBuilder/releases/latest
           </a>
         </p>
       </div>
