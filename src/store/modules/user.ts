@@ -14,7 +14,6 @@ import {
   reqUseRedeemCode,
   reqDisableApiKey,
   reqGenApiKey,
-  reqSetBanListUpload,
   reqSetAutoRestartServer,
   reqBindGameId,
   reqRequestEmailVerifyCode,
@@ -90,8 +89,6 @@ let useUserStore = defineStore("user", () => {
   let ucreate = ref(localStorage.getItem("UCREATE") || "");
   // 用户过期时间
   let uexpire = ref(localStorage.getItem("UEXPIRE") || "");
-  // 黑名单
-  let banlistFlag = ref(Boolean(localStorage.getItem("BANLISTFLAG")) || false);
   // 自动重启服务器
   let autoRestartFlag = ref(
     Boolean(localStorage.getItem("AUTORESTARTFLAG")) || false
@@ -169,7 +166,6 @@ let useUserStore = defineStore("user", () => {
     ucreate.value = userInfo.create_at.toString();
     uexpire.value = userInfo.expire_at.toString();
     uapi.value = userInfo.api_key;
-    banlistFlag.value = userInfo.enable_ban_list_upload;
     autoRestartFlag.value = userInfo.enable_auto_restart_server;
     upermission.value = userInfo.permission.toString();
     uhasEmail.value = userInfo.has_email;
@@ -183,7 +179,6 @@ let useUserStore = defineStore("user", () => {
     localStorage.setItem("ADMINFLAG", adminFlag.value);
     localStorage.setItem("UCREATE", ucreate.value);
     localStorage.setItem("UEXPIRE", uexpire.value);
-    localStorage.setItem("BANLISTFLAG", banlistFlag.value.toString());
     localStorage.setItem("AUTORESTARTFLAG", autoRestartFlag.value.toString());
     localStorage.setItem("UAPI", uapi.value);
     localStorage.setItem("HAS_EMAIL", uhasEmail.value.toString());
@@ -199,7 +194,6 @@ let useUserStore = defineStore("user", () => {
     uunlimited.value = "";
     ucreate.value = "";
     uexpire.value = "";
-    banlistFlag.value = false;
     autoRestartFlag.value = false;
     uapi.value = "";
     uhasEmail.value = false;
@@ -213,7 +207,6 @@ let useUserStore = defineStore("user", () => {
     localStorage.setItem("ADMINFLAG", adminFlag.value);
     localStorage.setItem("UCREATE", ucreate.value);
     localStorage.setItem("UEXPIRE", uexpire.value);
-    localStorage.setItem("BANLISTFLAG", "");
     localStorage.setItem("UAPI", uapi.value);
     localStorage.setItem("HAS_EMAIL", "");
 
@@ -291,17 +284,6 @@ let useUserStore = defineStore("user", () => {
     // 发起请求
     try {
       let result = await reqSetResponseTo(info);
-      return result;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-
-  // 黑名单
-  let userBanList = async (enable: { enable: boolean }) => {
-    // 发起请求
-    try {
-      let result = await reqSetBanListUpload(enable);
       return result;
     } catch (error) {
       return Promise.reject(error);
@@ -442,7 +424,6 @@ let useUserStore = defineStore("user", () => {
     uunlimited,
     ucreate,
     uexpire,
-    banlistFlag,
     autoRestartFlag,
     uapi,
     uhasEmail,
@@ -453,7 +434,6 @@ let useUserStore = defineStore("user", () => {
     userCode,
     userGenApi,
     userDisApi,
-    userBanList,
     userAutoRestart,
     userRequestEmailVerifyCode,
     userResetPassword,

@@ -497,28 +497,6 @@
       </div>
     </el-card>
 
-    <el-card style="margin-top: 12px" shadow="hover">
-      <template #header>
-        <div class="card-header">上传黑名单</div>
-      </template>
-      <div>
-        <div class="card-footer">
-          <el-icon>
-            <ChatDotRound />
-          </el-icon>
-          <span style="margin-left: 12px; color: dimgray"
-            >在进入服务器时获取黑名单并上传至验证服务器, 不会影响进服速度</span
-          >
-        </div>
-        <el-divider />
-        <el-switch
-          v-model="userStore.banlistFlag"
-          :loading="banloading"
-          :before-change="beforeChange"
-        />
-      </div>
-    </el-card>
-
     <el-card style="margin-top: 12px" shadow="hover" v-if="userStore.uhasEmail">
       <template #header>
         <div class="card-header">
@@ -734,39 +712,6 @@ var onRobotAfterInteractive = async () => {
 // 人机验证错误回调
 var onRobotError = async () => {
   refreshCaptcha();
-};
-
-let banloading = ref(false);
-let beforeChange = async () => {
-  banloading.value = true;
-  try {
-    let result = await userStore.userBanList({
-      enable: !userStore.banlistFlag,
-    });
-    if (result.success) {
-      // userStore.banlistFlag = !userStore.banlistFlag;
-      ElNotification({
-        type: "success",
-        title: "Success",
-        message: result.message,
-        duration: 3000,
-      });
-      return true;
-    } else {
-      ElNotification({
-        type: "warning",
-        title: "Warning",
-        message: result.message,
-        duration: 3000,
-      });
-      return false;
-    }
-  } catch (error) {
-    //console.log(error);
-    return false;
-  } finally {
-    banloading.value = false;
-  }
 };
 
 let apikeyLoading = ref(false);

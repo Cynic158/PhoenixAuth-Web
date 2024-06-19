@@ -186,7 +186,6 @@ declare global {
     is_admin: boolean;
     create_at: number;
     expire_at: number;
-    enable_ban_list_upload: boolean;
     enable_auto_restart_server: boolean;
     api_key: string;
     has_email: boolean;

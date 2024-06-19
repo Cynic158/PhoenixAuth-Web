@@ -15,7 +15,6 @@ enum API {
   USE_REDEEM_CODE = "/user/use_redeem_code",
   GEN_API_KEY = "/user/gen_api_key",
   DISABLE_API_KEY = "/user/disable_api_key",
-  SET_BAN_LIST_UPLOAD = "/user/set_ban_list_upload",
   SET_AUTO_RESTART_SERVER = "/user/set_auto_restart_server",
   REQUEST_EMAIL_VERIFY_CODE = "/user/request_email_verify_code",
   RESET_PASSWORD = "/user/reset_password",
@@ -56,9 +55,6 @@ export const reqUseRedeemCode = (code: { redeem_code: string }) =>
 export const reqGenApiKey = () => request.get(API.GEN_API_KEY);
 // 禁用生成api
 export const reqDisableApiKey = () => request.get(API.DISABLE_API_KEY);
-// 黑名单
-export const reqSetBanListUpload = (enable: { enable: boolean }) =>
-  request.post(API.SET_BAN_LIST_UPLOAD, enable);
 // 自动重启
 export const reqSetAutoRestartServer = (enable: { enable: boolean }) =>
   request.post(API.SET_AUTO_RESTART_SERVER, enable);
