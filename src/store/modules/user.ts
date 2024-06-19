@@ -14,7 +14,6 @@ import {
   reqUseRedeemCode,
   reqDisableApiKey,
   reqGenApiKey,
-  reqSetAutoRestartServer,
   reqBindGameId,
   reqRequestEmailVerifyCode,
   reqResetPassword,
@@ -89,10 +88,6 @@ let useUserStore = defineStore("user", () => {
   let ucreate = ref(localStorage.getItem("UCREATE") || "");
   // 用户过期时间
   let uexpire = ref(localStorage.getItem("UEXPIRE") || "");
-  // 自动重启服务器
-  let autoRestartFlag = ref(
-    Boolean(localStorage.getItem("AUTORESTARTFLAG")) || false
-  );
   // API
   let uapi = ref(localStorage.getItem("UAPI") || "");
   // 是否有邮箱
@@ -166,7 +161,6 @@ let useUserStore = defineStore("user", () => {
     ucreate.value = userInfo.create_at.toString();
     uexpire.value = userInfo.expire_at.toString();
     uapi.value = userInfo.api_key;
-    autoRestartFlag.value = userInfo.enable_auto_restart_server;
     upermission.value = userInfo.permission.toString();
     uhasEmail.value = userInfo.has_email;
     clientName.value = userInfo.client_username;
@@ -179,7 +173,6 @@ let useUserStore = defineStore("user", () => {
     localStorage.setItem("ADMINFLAG", adminFlag.value);
     localStorage.setItem("UCREATE", ucreate.value);
     localStorage.setItem("UEXPIRE", uexpire.value);
-    localStorage.setItem("AUTORESTARTFLAG", autoRestartFlag.value.toString());
     localStorage.setItem("UAPI", uapi.value);
     localStorage.setItem("HAS_EMAIL", uhasEmail.value.toString());
   };
@@ -194,7 +187,6 @@ let useUserStore = defineStore("user", () => {
     uunlimited.value = "";
     ucreate.value = "";
     uexpire.value = "";
-    autoRestartFlag.value = false;
     uapi.value = "";
     uhasEmail.value = false;
 
@@ -284,17 +276,6 @@ let useUserStore = defineStore("user", () => {
     // 发起请求
     try {
       let result = await reqSetResponseTo(info);
-      return result;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-
-  // 自动重启服务器
-  let userAutoRestart = async (enable: { enable: boolean }) => {
-    // 发起请求
-    try {
-      let result = await reqSetAutoRestartServer(enable);
       return result;
     } catch (error) {
       return Promise.reject(error);
@@ -424,7 +405,6 @@ let useUserStore = defineStore("user", () => {
     uunlimited,
     ucreate,
     uexpire,
-    autoRestartFlag,
     uapi,
     uhasEmail,
     userReqFBToken,
@@ -434,7 +414,6 @@ let useUserStore = defineStore("user", () => {
     userCode,
     userGenApi,
     userDisApi,
-    userAutoRestart,
     userRequestEmailVerifyCode,
     userResetPassword,
     userEmailBind,
