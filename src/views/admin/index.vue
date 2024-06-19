@@ -30,11 +30,10 @@
             <el-select
               v-model="generateRedeemCodeData.type"
               class="m-2"
-              placeholder="激活账号(1)"
+              placeholder="一个月账户有效期(1)"
             >
-              <el-option label="激活账号(1)" value="1" />
-              <el-option label="续费一个月(2)" value="2" />
-              <el-option label="续费三个月(3)" value="3" />
+              <el-option label="一个月账户有效期(1)" value="1" />
+              <el-option label="三个月账户有效期(2)" value="2" />
             </el-select>
           </el-form-item>
           <el-form-item label="数量" prop="count">
