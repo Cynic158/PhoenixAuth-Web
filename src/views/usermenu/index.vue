@@ -368,7 +368,6 @@
           max-height="250"
         >
           <el-table-column
-            fixed
             prop="create_at_str"
             label="创建时间"
             width="160"
