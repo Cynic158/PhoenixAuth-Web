@@ -7,6 +7,7 @@ import {
   reqSetSlotGameId,
   reqExtendSlotExpireTime,
 } from "@/api/slot";
+import { ref } from "vue";
 
 // 创建仓库
 let useSlotStore = defineStore("slot", () => {
@@ -40,11 +41,15 @@ let useSlotStore = defineStore("slot", () => {
     }
   };
 
+  // slot数据
+  let slotData = ref<Array<Slot>>([]);
+
   // 导出
   return {
     deleteSlot,
     setSlotGameID,
     extendSlotExpireTime,
+    slotData,
   };
 });
 

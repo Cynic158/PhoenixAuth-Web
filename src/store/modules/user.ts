@@ -35,6 +35,7 @@ import cloneDeep from "lodash/cloneDeep";
 import sha256 from "crypto-js/sha256";
 import md5 from "crypto-js/md5";
 import type { AxiosResponse } from "axios";
+import useSlotStore from "./slot";
 
 // 过滤权限路由，传入权限路由以及用户所拥有的的路由权限数组
 function filterRoute(asyncRoutes: any, permission: any) {
@@ -213,6 +214,12 @@ let useUserStore = defineStore("user", () => {
     if (result.success) {
       // 获取成功，存储用户信息
       setUser(result);
+      const slotStore = useSlotStore();
+      slotStore.slotData.values = result.slots;
+      console.log(result);
+
+      console.log(slotStore.slotData.values);
+
       // 根据得到的用户路由权限来渲染动态路由
       let filterArr: Array<string> = [];
       if (result.is_admin) {
@@ -287,7 +294,8 @@ let useUserStore = defineStore("user", () => {
     // 发起请求
     try {
       let result = await reqBindGameId(bindInfo);
-      return result;bindInfo
+      return result;
+      bindInfo;
     } catch (error) {
       return Promise.reject(error);
     }
