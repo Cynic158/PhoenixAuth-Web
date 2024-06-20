@@ -216,10 +216,6 @@ let useUserStore = defineStore("user", () => {
       setUser(result);
       const slotStore = useSlotStore();
       slotStore.slotData.values = result.slots;
-      console.log(result);
-
-      console.log(slotStore.slotData.values);
-
       // 根据得到的用户路由权限来渲染动态路由
       let filterArr: Array<string> = [];
       if (result.is_admin) {

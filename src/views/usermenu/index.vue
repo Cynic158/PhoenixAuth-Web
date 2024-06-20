@@ -155,6 +155,72 @@
       </div>
     </el-card>
 
+    <el-card
+      shadow="hover"
+      v-loading="slotLoading"
+      style="margin-top: 12px"
+      v-if="Number(userStore.upermission) > 0 && userStore.uid != '暂未获取'"
+    >
+      <template #header>
+        <div class="card-header">Slots</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray">Slot 允许您登入至其他游戏ID的服务器</span>
+        </div>
+        <el-divider />
+        <el-table
+          :data="slotStore.slotData.values"
+          class="limited-form-container"
+          max-height="250"
+        >
+          <el-table-column prop="game_id" label="游戏ID" width="120">
+            <template #default="scope">
+              <span v-if="scope.row.game_id == 0">
+                <el-button
+                  type="primary"
+                  size="small"
+                  @click.prevent=""
+                >
+                  绑定
+                </el-button>
+              </span>
+              <span v-if="scope.row.game_id != 0">{{ scope.row.game_id }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="有效期至" width="160">
+            <template  #default="scope">
+              {{ getTimeStr2(scope.row.expire_at) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="note" label="备注" min-width="300" />
+          <el-table-column fixed="right" label="操作" width="100">
+            <template #default="scope">
+              <el-button
+                link
+                type="primary"
+                size="small"
+                @click.prevent=""
+              >
+                续费
+              </el-button>
+              <el-button
+                link
+                type="danger"
+                size="small"
+                @click.prevent=""
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-card>
+
     <el-card v-loading="codeLoading" style="margin-top: 12px" shadow="hover">
       <template #header>
         <div class="card-header">兑换码</div>
@@ -385,7 +451,7 @@
             <template #default="scope">
               <el-button
                 link
-                type="primary"
+                type="danger"
                 size="small"
                 @click.prevent="removeWebAuthn(scope?.row?.id)"
               >
@@ -401,66 +467,6 @@
         >
           添加
         </el-button>
-      </div>
-    </el-card>
-
-    <el-card shadow="hover" v-loading="slotLoading" style="margin-top: 12px">
-      <template #header>
-        <div class="card-header">slot部分</div>
-      </template>
-      <div>
-        <div class="card-footer">
-          <el-icon>
-            <ChatDotRound />
-          </el-icon>
-          <span style="margin-left: 12px; color: dimgray">slot部分说明</span>
-        </div>
-        <el-divider />
-        <el-table
-          :data="slotStore.slotData"
-          class="limited-form-container"
-          max-height="250"
-        >
-          <el-table-column prop="game_id" label="游戏ID" width="160">
-            <template #default="scope">
-              <span v-if="scope.row.game_id == 0">无</span>
-              <span v-if="scope.row.game_id != 0">{{ scope.row.game_id }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column prop="expire_at" label="有效期至" width="240" />
-          <el-table-column prop="note" label="备注" width="240" />
-          <el-table-column fixed="right" label="操作" width="120">
-            <template #default="scope">
-              <el-button
-                v-if="scope.row.game_id == 0"
-                link
-                type="primary"
-                size="small"
-                @click.prevent="removeWebAuthn(scope?.row?.id)"
-              >
-                绑定
-              </el-button>
-              <el-button
-                v-if="scope.row.game_id != 0"
-                link
-                type="primary"
-                size="small"
-                @click.prevent="removeWebAuthn(scope?.row?.id)"
-              >
-                续费
-              </el-button>
-              <el-button
-                v-if="scope.row.game_id != 0"
-                link
-                type="primary"
-                size="small"
-                @click.prevent="removeWebAuthn(scope?.row?.id)"
-              >
-                删除
-              </el-button>
-            </template>
-          </el-table-column>
-        </el-table>
       </div>
     </el-card>
 
@@ -1474,24 +1480,24 @@ let clearBindGameIdForm = () => {
     //console.log(error);
   }
 };
-const bindGameIdRules = {
+const setSlotGameIdRules = {
   server_code: [
     {
       required: true,
-      message: "请输入租赁服号",
+      message: "请输入服务器号",
       trigger: "blur",
     },
   ],
 };
-let bindGameId = async () => {
+let setSlotGameId = async (slotID: number, serverCode: string) => {
   try {
     await bindGameIdform.value!.validate();
     // 显示加载
     slotLoading.value = true;
-    // 仓库发起绑定邮箱请求
+    // 仓库发起设置slot游戏ID请求
     let result = await slotStore.setSlotGameID({
-      id: ???,
-      email_verify_code: emailBindData.emailVerifyCode,
+      id: slotID,
+      server_code: serverCode,
     });
     if (result.success) {
       // 通知
@@ -1502,7 +1508,8 @@ let bindGameId = async () => {
         duration: 3000,
       });
       // 刷新信息
-      绑定成功后建议返回绑定的slot对象，就不需要再次获取一次用户信息
+      getInfo();
+      // TODO: 清空表单
     } else {
       // 请求失败，消息提示
       ElNotification({
@@ -1513,13 +1520,81 @@ let bindGameId = async () => {
       });
     }
   } catch (error: any) {
-    //console.log(error);
   } finally {
     // 请求完成，关闭加载
     slotLoading.value = false;
   }
 };
-
+let extendSlotExpireTime = async (slotID: number, redeemCode: string) => {
+  try {
+    await bindGameIdform.value!.validate();
+    // 显示加载
+    slotLoading.value = true;
+    // 仓库发起续费slot请求
+    let result = await slotStore.extendSlotExpireTime({
+      id: slotID,
+      redeem_code: redeemCode,
+    });
+    if (result.success) {
+      // 通知
+      ElNotification({
+        type: "success",
+        title: "Success",
+        message: result.message,
+        duration: 3000,
+      });
+      // 刷新信息
+      getInfo();
+      // TODO: 清空表单
+    } else {
+      // 请求失败，消息提示
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+  } finally {
+    // 请求完成，关闭加载
+    slotLoading.value = false;
+  }
+};
+let deleteSlot = async (slotID: number) => {
+  try {
+    // 显示加载
+    slotLoading.value = true;
+    // 仓库发起删除slot请求
+    let result = await slotStore.deleteSlot({
+      id: slotID,
+    });
+    if (result.success) {
+      // 通知
+      ElNotification({
+        type: "success",
+        title: "Success",
+        message: result.message,
+        duration: 3000,
+      });
+      // 刷新信息
+      getInfo();
+      // TODO: 清空表单
+    } else {
+      // 请求失败，消息提示
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        message: result.message,
+        duration: 3000,
+      });
+    }
+  } catch (error: any) {
+  } finally {
+    // 请求完成，关闭加载
+    slotLoading.value = false;
+  }
+};
 
 // 绑定游戏账号
 // 弹窗
