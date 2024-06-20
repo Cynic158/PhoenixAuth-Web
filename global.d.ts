@@ -176,19 +176,26 @@ declare global {
   interface UserRemoveAccountInfo {
     email_verify_code: string;
   }
+  // Slot 信息
+  interface Slot{
+    id: number;
+    game_id: number;
+    expire_at: number;
+    note: string;
+  }
   // 用户信息
   interface UserDetail {
     username: string;
     game_id: number;
-    client_username: string;
     unlimited_until: number;
     permission: number;
     is_admin: boolean;
     create_at: number;
     expire_at: number;
-    enable_auto_restart_server: boolean;
     api_key: string;
     has_email: boolean;
+    client_username: string;
+    slots: Array<Slot>;
   }
   interface UserQueryDetail {
     username: string;
@@ -210,5 +217,18 @@ declare global {
     create_at: number;
     raw_id: string;
     create_at_str: string;
+  }
+
+  // slot相关
+  interface DeleteSlotInfo{
+    id: number;
+  }
+  interface SetSlotGameIdInfo{
+    id: number;
+    server_code: string;
+  }
+  interface ExtendSlotExpireTime{
+    id: number;
+    redeem_code: string;
   }
 }
