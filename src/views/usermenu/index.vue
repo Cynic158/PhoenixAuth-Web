@@ -691,7 +691,7 @@
     </el-card>
 
     <el-dialog
-      max-width="500px"
+      :width="settingStore.createDialogWidth"
       v-model="bindDialogVisible"
       title="绑定游戏ID"
       align-center
@@ -709,7 +709,7 @@
     </el-dialog>
 
     <el-dialog
-      max-width="500px"
+      :width="settingStore.createDialogWidth"
       v-model="deleteSlotDialogVisible"
       title="删除 Slot"
       align-center
@@ -726,6 +726,7 @@
     </el-dialog>
 
     <el-dialog
+      :width="settingStore.createDialogWidth"
       v-model="extendSlotExpireTimeDialogVisible"
       title="续费 Slot"
       align-center
@@ -754,6 +755,7 @@
     </el-dialog>
 
     <el-dialog
+      :width="settingStore.createDialogWidth"
       v-model="setSlotGameIdDialogVisible"
       title="Slot - 绑定游戏ID"
       align-center

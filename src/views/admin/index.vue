@@ -415,7 +415,7 @@
     </el-card>
 
     <el-dialog
-      width="300px"
+      :width="settingStore.createDialogWidth"
       v-model="unBanUserDialogVisible"
       title="解封用户"
       align-center
@@ -424,7 +424,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="unBanUserDialogVisible = false">取消</el-button>
-          <el-button type="primary" native-type="submit" @click="unBanUser"
+          <el-button type="danger" native-type="submit" @click="unBanUser"
             >确定</el-button
           >
         </span>

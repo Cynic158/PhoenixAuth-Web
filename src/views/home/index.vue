@@ -109,7 +109,7 @@
       </el-dialog>
 
       <el-dialog
-        width="300px"
+        :width="settingStore.createDialogWidth"
         v-model="deleteDialogVisible"
         title="删除公告"
         align-center
@@ -120,7 +120,7 @@
             <el-button @click="deleteDialogVisible = false">取消</el-button>
             <el-button
               :loading="deleteloadingflag"
-              type="primary"
+              type="danger"
               @click="deleteNotice"
               >确定</el-button
             >

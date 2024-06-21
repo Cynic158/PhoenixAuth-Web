@@ -309,7 +309,7 @@
     </el-card>
 
     <el-dialog
-      width="300px"
+      :width="settingStore.createDialogWidth"
       v-model="unbindDialogVisible"
       title="解绑"
       align-center
@@ -318,7 +318,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="unbindDialogVisible = false">取消</el-button>
-          <el-button :loading="unbindLoading" type="primary" @click="unbindBot"
+          <el-button :loading="unbindLoading" type="danger" @click="unbindBot"
             >确定</el-button
           >
         </span>
@@ -326,7 +326,7 @@
     </el-dialog>
 
     <el-dialog
-      width="300px"
+      :width="settingStore.createDialogWidth"
       v-model="changeDialogVisible"
       title="更改游戏昵称"
       align-center
@@ -337,7 +337,7 @@
           <el-button @click="changeDialogVisible = false">取消</el-button>
           <el-button
             :loading="changeLoading"
-            type="primary"
+            type="danger"
             @click="changeBotName"
             >确定</el-button
           >
@@ -354,6 +354,9 @@ import useHelperStore from "@/store/modules/helper";
 import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 import type { AxiosResponse } from "axios";
+// 使用设置仓库的移动端适配
+import useSettingStore from "@/store/modules/setting";
+let settingStore = useSettingStore();
 
 // 人机验证显示
 const robotVisible = ref(false);

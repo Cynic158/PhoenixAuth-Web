@@ -300,7 +300,7 @@
     </el-card>
 
     <el-dialog
-      width="300px"
+      :width="settingStore.createDialogWidth"
       v-model="unbindDialogVisible"
       title="解绑"
       align-center
@@ -309,7 +309,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="unbindDialogVisible = false">取消</el-button>
-          <el-button :loading="unbindLoading" type="primary" @click="unbindBot"
+          <el-button :loading="unbindLoading" type="danger" @click="unbindBot"
             >确定</el-button
           >
         </span>
@@ -325,6 +325,9 @@ import useOwnerStore from "@/store/modules/owner";
 import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
 import type { AxiosResponse } from "axios";
+// 使用设置仓库的移动端适配
+import useSettingStore from "@/store/modules/setting";
+let settingStore = useSettingStore();
 // 人机验证显示
 const robotVisible = ref(false);
 // 导出本地仓库给HTML使用
