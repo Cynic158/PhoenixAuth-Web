@@ -19,7 +19,7 @@
       <el-card
         v-loading="loading"
         v-for="item in annList"
-        :key="item.ID"
+        :key="item.id"
         shadow="hover"
         class="notice-container"
       >
@@ -42,7 +42,7 @@
             >
               <el-button
                 style="margin-left: 8px"
-                @click="editDialog(item.ID, item.title, item.content)"
+                @click="editDialog(item.id, item.title, item.content)"
                 v-if="userStore.adminFlag == '是'"
                 type="primary"
                 round
@@ -53,7 +53,7 @@
               </el-button>
               <el-button
                 style="margin-left: 8px"
-                @click="deletedialog(item.ID)"
+                @click="deletedialog(item.id)"
                 v-if="userStore.adminFlag == '是'"
                 type="danger"
                 round
@@ -79,8 +79,8 @@
           :rules="rules"
           ref="noticeform"
         >
-          <el-form-item label="公告ID" v-if="noticeData.ID != 0">
-            <el-input v-model="noticeData.ID" disabled />
+          <el-form-item label="公告ID" v-if="noticeData.id != 0">
+            <el-input v-model="noticeData.id" disabled />
           </el-form-item>
           <el-form-item label="标题" prop="title">
             <el-input v-model="noticeData.title" placeholder="请输入标题" />
@@ -249,13 +249,13 @@ let createdialog = () => {
 let noticeform: EleFormRef = ref(null);
 // 表单数据
 let noticeData = reactive({
-  ID: 0,
+  id: 0,
   title: "",
   content: "",
 });
 // 清空表单
 let clearForm = () => {
-  noticeData.ID = 0;
+  noticeData.id = 0;
   noticeData.title = "";
   noticeData.content = "";
   // 清空校验提示
@@ -311,15 +311,15 @@ let submitNotice = async () => {
     // 显示加载
     noticeloadingflag.value = true;
     let noticeInfo = {
-      ID: 0,
+      id: 0,
       title: "",
       content: "",
     };
-    noticeInfo.ID = noticeData.ID;
+    noticeInfo.id = noticeData.id;
     noticeInfo.title = noticeData.title;
     noticeInfo.content = noticeData.content;
     // 如果id为0，说明是新公告，将调用创建接口，否则调用编辑接口
-    if (noticeData.ID == 0) {
+    if (noticeData.id == 0) {
       // 仓库发起请求
       let result = await annStore.annCreate(noticeInfo);
       if (result.success) {
@@ -373,7 +373,7 @@ let submitNotice = async () => {
 };
 // 编辑公告
 let editDialog = (id: number, title: string, content: string) => {
-  noticeData.ID = id;
+  noticeData.id = id;
   noticeData.title = title;
   noticeData.content = content;
   dialogVisible.value = true;

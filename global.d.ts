@@ -74,13 +74,13 @@ declare global {
   }
   // 请求创建或者编辑公告
   interface AnnouncementInfo {
-    ID: number;
+    id: number;
     title: string;
     content: string;
   }
   // 公告对象
   interface AnnOnj {
-    ID: number;
+    id: number;
     title: string;
     content: string;
     author_name: string;
