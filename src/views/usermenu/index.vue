@@ -176,6 +176,7 @@
           :data="slotStore.slotData.values"
           class="limited-form-container"
           max-height="250"
+          :row-class-name="slotsTableRowClassName"
         >
           <el-table-column prop="game_id" label="游戏ID" width="120">
             <template #default="scope">
@@ -184,6 +185,7 @@
                   type="primary"
                   size="small"
                   @click.prevent=""
+                  @click="setSlotGameIdDialog(scope.row.id)"
                 >
                   绑定
                 </el-button>
@@ -204,6 +206,7 @@
                 type="primary"
                 size="small"
                 @click.prevent=""
+                @click="popExtendSlotExpireTimeDialog(scope.row.id)"
               >
                 续费
               </el-button>
@@ -212,6 +215,7 @@
                 type="danger"
                 size="small"
                 @click.prevent=""
+                @click="popDeleteSlotDialog(scope.row.id)"
               >
                 删除
               </el-button>
@@ -231,7 +235,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >使用兑换码更新您的用户中心账户</span
+            >使用兑换码更新您的用户中心账户或新建 Slot</span
           >
         </div>
         <el-divider />
@@ -697,8 +701,81 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="bindDialogVisible = false">取消</el-button>
-          <el-button :loading="bindLoading" type="warning" @click="gamdIDBind"
+          <el-button :loading="bindLoading" type="danger" @click="gamdIDBind"
             >确定</el-button
+          >
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog
+      max-width="500px"
+      v-model="deleteSlotDialogVisible"
+      title="删除 Slot"
+      align-center
+    >
+      确定要删除该 slot 吗? 删除成功后无法恢复
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="deleteSlotDialogVisible = false">取消</el-button>
+          <el-button type="danger" @click="deleteSlot"
+            >确定</el-button
+          >
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog
+      v-model="extendSlotExpireTimeDialogVisible"
+      title="续费 Slot"
+      align-center
+    >
+      <el-form
+        @submit.prevent
+        :model="extendSlotExpireTimeData"
+        :rules="extendSlotExpireTimeRules"
+        ref="extendSlotExpireTimeForm"
+      >
+        <el-form-item label="兑换码" prop="redeem_code">
+          <el-input v-model="extendSlotExpireTimeData.redeem_code" placeholder="请输入兑换码"/>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="extendSlotExpireTimeDialogVisible = false">取消</el-button>
+          <el-button
+            :loading="slotLoading"
+            type="warning"
+            @click="extendSlotExpireTime"
+            >提交</el-button
+          >
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog
+      v-model="setSlotGameIdDialogVisible"
+      title="Slot - 绑定游戏ID"
+      align-center
+    >
+      <el-form
+        @submit.prevent
+        :model="setSlotGameIdData"
+        :rules="setSlotGameIdRules"
+        ref="setSlotGameIdForm"
+      >
+        <el-form-item label="服务器号" prop="server_code">
+          <el-input v-model="setSlotGameIdData.server_code" placeholder="请输入要绑定的服务器号"/>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="setSlotGameIdDialogVisible = false">取消</el-button>
+          <el-button
+            :loading="slotLoading"
+            type="warning"
+            @click="setSlotGameId"
+            >提交</el-button
           >
         </span>
       </template>
@@ -1065,7 +1142,7 @@ const bindRules = {
   server_code: [
     {
       required: true,
-      message: "服务器号不能为空",
+      message: "请输入服务器号",
       trigger: "blur",
     },
   ],
@@ -1074,7 +1151,7 @@ const redeemRules = {
   redeem_code: [
     {
       required: true,
-      message: "兑换码不能为空",
+      message: "请输入兑换码",
       trigger: "blur",
     },
     { validator: validateRedeemCode, trigger: "blur" },
@@ -1088,6 +1165,25 @@ const deleteAccountRules = {
       trigger: "blur",
     },
     { min: 6, max: 6, message: "邮箱验证码有误", trigger: "blur" },
+  ],
+};
+const setSlotGameIdRules = {
+  server_code: [
+    {
+      required: true,
+      message: "请输入服务器号",
+      trigger: "blur",
+    },
+  ],
+};
+const extendSlotExpireTimeRules = {
+  redeem_code: [
+    {
+      required: true,
+      message: "请输入兑换码",
+      trigger: "blur",
+    },
+    { validator: validateRedeemCode, trigger: "blur" },
   ],
 };
 
@@ -1461,43 +1557,35 @@ let removeWebAuthn = async (credentialID: number) => {
 // slot部分
 let slotLoading = ref(false)
 // 绑定表单部分
-let bindGameIdform: EleFormRef = ref(null);
-let bindGameIdData = reactive({
-  server_code: '',
+let setSlotGameIdForm: EleFormRef = ref(null);
+// 弹窗
+let setSlotGameIdDialogVisible = ref(false);
+// 表单数据
+let setSlotGameIdData = reactive({
+  slotID: 0,
+  server_code: "",
 });
-let clearBindGameIdForm = () => {
-  bindGameIdData.server_code = "";
-  // 清空校验提示
+// 弹窗
+let setSlotGameIdDialog = async(slotID: number) => {
   try {
-    setTimeout(() => {
-      if (bindGameIdform.value) {
-        bindGameIdform.value.clearValidate([
-          "server_code",
-        ]);
-      }
-    }, 200);
-  } catch (error) {
-    //console.log(error);
-  }
+    setSlotGameIdData.slotID = slotID;
+    setSlotGameIdData.server_code = "";
+    setSlotGameIdForm.value!.clearValidate([
+      "server_code",
+    ]);
+  } catch (error) {}
+  setSlotGameIdDialogVisible.value = true;
 };
-const setSlotGameIdRules = {
-  server_code: [
-    {
-      required: true,
-      message: "请输入服务器号",
-      trigger: "blur",
-    },
-  ],
-};
-let setSlotGameId = async (slotID: number, serverCode: string) => {
+let setSlotGameId = async () => {
+  await setSlotGameIdForm.value!.validate();
   try {
-    await bindGameIdform.value!.validate();
     // 显示加载
+    setSlotGameIdDialogVisible.value = false;
     slotLoading.value = true;
     // 仓库发起设置slot游戏ID请求
     let result = await slotStore.setSlotGameID({
-      id: slotID,
-      server_code: serverCode,
+      id: setSlotGameIdData.slotID,
+      server_code: setSlotGameIdData.server_code,
     });
     if (result.success) {
       // 通知
@@ -1509,7 +1597,6 @@ let setSlotGameId = async (slotID: number, serverCode: string) => {
       });
       // 刷新信息
       getInfo();
-      // TODO: 清空表单
     } else {
       // 请求失败，消息提示
       ElNotification({
@@ -1523,17 +1610,38 @@ let setSlotGameId = async (slotID: number, serverCode: string) => {
   } finally {
     // 请求完成，关闭加载
     slotLoading.value = false;
+    setSlotGameIdDialogVisible.value = false;
   }
 };
-let extendSlotExpireTime = async (slotID: number, redeemCode: string) => {
+// 续费表单部分
+let extendSlotExpireTimeForm: EleFormRef = ref(null);
+// 弹窗
+let extendSlotExpireTimeDialogVisible = ref(false);
+// 表单数据
+let extendSlotExpireTimeData = reactive({
+  slotID: 0,
+  redeem_code: "",
+});
+// 弹窗
+let popExtendSlotExpireTimeDialog = async(slotID: number) => {
   try {
-    await bindGameIdform.value!.validate();
+    extendSlotExpireTimeData.slotID = slotID;
+    extendSlotExpireTimeData.redeem_code = "";
+    extendSlotExpireTimeForm.value!.clearValidate([
+      "redeem_code",
+    ]);
+  } catch (error) {}
+  extendSlotExpireTimeDialogVisible.value = true;
+};
+let extendSlotExpireTime = async () => {
+  try {
+    await extendSlotExpireTimeForm.value!.validate();
     // 显示加载
     slotLoading.value = true;
     // 仓库发起续费slot请求
     let result = await slotStore.extendSlotExpireTime({
-      id: slotID,
-      redeem_code: redeemCode,
+      id: extendSlotExpireTimeData.slotID,
+      redeem_code: extendSlotExpireTimeData.redeem_code,
     });
     if (result.success) {
       // 通知
@@ -1545,7 +1653,6 @@ let extendSlotExpireTime = async (slotID: number, redeemCode: string) => {
       });
       // 刷新信息
       getInfo();
-      // TODO: 清空表单
     } else {
       // 请求失败，消息提示
       ElNotification({
@@ -1559,15 +1666,31 @@ let extendSlotExpireTime = async (slotID: number, redeemCode: string) => {
   } finally {
     // 请求完成，关闭加载
     slotLoading.value = false;
+    extendSlotExpireTimeDialogVisible.value = false;
   }
 };
-let deleteSlot = async (slotID: number) => {
+
+// 弹窗
+let deleteSlotDialogVisible = ref(false);
+// 表单数据
+let deleteData = reactive({
+  slotID: 0,
+});
+// 弹窗
+let popDeleteSlotDialog = async(slotID: number) => {
+  try {
+    deleteData.slotID = slotID;
+    deleteSlotDialogVisible.value = true;
+  } catch (error) {}
+};
+let deleteSlot = async () => {
+  deleteSlotDialogVisible.value = false;
   try {
     // 显示加载
     slotLoading.value = true;
     // 仓库发起删除slot请求
     let result = await slotStore.deleteSlot({
-      id: slotID,
+      id: deleteData.slotID,
     });
     if (result.success) {
       // 通知
@@ -1578,8 +1701,7 @@ let deleteSlot = async (slotID: number) => {
         duration: 3000,
       });
       // 刷新信息
-      getInfo();
-      // TODO: 清空表单
+      await getInfo();
     } else {
       // 请求失败，消息提示
       ElNotification({
@@ -1593,6 +1715,14 @@ let deleteSlot = async (slotID: number) => {
   } finally {
     // 请求完成，关闭加载
     slotLoading.value = false;
+  }
+};
+
+// 设置表格样式
+let slotsTableRowClassName = ({ row }: { row: any; rowIndex: number }) => {
+  // Error: expired
+  if (row.expire_at < Date.now()) {
+    return "error-row";
   }
 };
 

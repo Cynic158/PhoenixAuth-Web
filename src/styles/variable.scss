@@ -53,3 +53,14 @@ $login-form-reg-active: $color-deep-green;
 
 // 滚动条
 $scrollbar-default-bgcolor: $color-gray;
+
+// 表格颜色
+.el-table .success-row {
+  --el-table-tr-bg-color: var(--el-color-success-light-9);
+}
+.el-table .warning-row {
+  --el-table-tr-bg-color: var(--el-color-warning-light-9);
+}
+.el-table .error-row {
+  --el-table-tr-bg-color: var(--el-color-error-light-9);
+}

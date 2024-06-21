@@ -31,7 +31,7 @@
         <div class="notice-content" v-html="item.content"></div>
         <el-divider />
         <div class="notice-author">
-          <span>{{ item.formatted_create_time }}</span>
+          <span>{{ getTimeStr2(item.create_at) }}</span>
           <div
             class="notice-option"
             :style="{ width: settingStore.pageSmall ? '100%' : 'auto' }"
@@ -156,6 +156,8 @@ import { onMounted, reactive, ref } from "vue";
 import { ElNotification, ElMessageBox } from "element-plus";
 // 导入缓动函数
 import { verticalScroll } from "@/utils";
+// 导入时间转换函数
+import { getTimeStr2 } from "@/utils";
 
 // 使用用户仓库的管理员信息
 let userStore = useUserStore();
