@@ -93,46 +93,54 @@
             <el-input v-model="phoneData.code" placeholder="请输入验证码" />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button
-              type="primary"
-              native-type="submit"
-              @click="createBotByPhone"
-              >绑定</el-button
-            >
-            <el-popover
-              :width="326"
-              :visible="!botInfo.set && robotVisible"
-              placement="right-end"
-            >
-              <template #reference>
-                <el-button
-                  v-if="!codeTimeShow"
-                  type="primary"
-                  @click="getCode"
-                  :loading="codeloadingflag || captchaExecutingFlag"
-                  :disabled="codedisabled"
-                  >获取验证码</el-button
-                >
-              </template>
-              <div
-                class="cf-turnstile"
-                data-sitekey="0x4AAAAAAAQhC3f_WRwvJ19O"
-                data-callback="onRobotSuccess"
-                data-error-callback="onRobotError"
-                data-expired-callback="onRobotError"
-                data-before-interactive-callback="onRobotBeforeInteractive"
-                data-after-interactive-callback="onRobotAfterInteractive"
-                data-size="normal"
-                :data-theme="
-                  exportedLocalStorage.getItem('DARKMODE') === 'true'
-                    ? 'dark'
-                    : 'light'
-                "
-              ></div>
-            </el-popover>
-            <el-button v-if="codeTimeShow" type="primary" disabled>{{
-              codeTimes
-            }}</el-button>
+            <div style="display: inline-flex; align-items: center; flex-wrap: wrap">
+              <el-button
+                type="primary"
+                native-type="submit"
+                @click="createBotByPhone"
+                >绑定</el-button
+              >
+              <el-popover
+                :width="326"
+                :visible="!botInfo.set && robotVisible"
+                placement="right-end"
+              >
+                <template #reference>
+                  <el-button
+                    v-if="!codeTimeShow"
+                    type="primary"
+                    @click="getCode"
+                    :loading="codeloadingflag || captchaExecutingFlag"
+                    :disabled="codedisabled"
+                    >获取验证码</el-button
+                  >
+                </template>
+                <div
+                  class="cf-turnstile"
+                  data-sitekey="0x4AAAAAAAQhC3f_WRwvJ19O"
+                  data-callback="onRobotSuccess"
+                  data-error-callback="onRobotError"
+                  data-expired-callback="onRobotError"
+                  data-before-interactive-callback="onRobotBeforeInteractive"
+                  data-after-interactive-callback="onRobotAfterInteractive"
+                  data-size="normal"
+                  :data-theme="
+                    exportedLocalStorage.getItem('DARKMODE') === 'true'
+                      ? 'dark'
+                      : 'light'
+                  "
+                ></div>
+              </el-popover>
+              <el-button v-if="codeTimeShow" type="primary" disabled>{{
+                codeTimes
+              }}</el-button>
+              <el-button
+                type="warning"
+                @click="verifyLink"
+                v-if="phoneVerify"
+                >验证</el-button
+              >
+            </div>
           </el-form-item>
         </el-form>
       </div>
@@ -189,13 +197,21 @@
             />
           </el-form-item>
           <el-form-item style="margin-bottom: 0">
-            <el-button
-              type="primary"
-              native-type="submit"
-              @click="createBotByEmail"
-              >创建</el-button
-            >
-            <el-button @click="clearForm">清空表单</el-button>
+            <div style="display: inline-flex; align-items: center; flex-wrap: wrap">
+              <el-button
+                type="primary"
+                native-type="submit"
+                @click="createBotByEmail"
+                >绑定</el-button
+              >
+              <el-button @click="clearForm">清空表单</el-button>
+              <el-button
+                type="warning"
+                @click="verifyLink"
+                v-if="emailVerify"
+                >验证</el-button
+              >
+            </div>
           </el-form-item>
         </el-form>
       </div>
@@ -355,6 +371,11 @@ let showUnbind = ref(false);
 let alertType = ref("warning");
 // 提示消息
 let alertTitle = ref("点击刷新来查询");
+// 验证链接函数
+let verify_url = ""
+let verifyLink = () => {
+  window.open(verify_url, "_blank");
+};
 // 获取bot信息
 let getBotStatus = async () => {
   try {
@@ -378,8 +399,8 @@ let getBotStatus = async () => {
         showUnbind.value = true;
       }
       // 清空表单
-      clearForm();
-      clearPhoneForm();
+      // clearForm();
+      // clearPhoneForm();
     } else {
       // 获取失败
       ElNotification({
@@ -389,9 +410,7 @@ let getBotStatus = async () => {
         duration: 3000,
       });
     }
-  } catch (error: any) {
-    //console.log(error);
-  } finally {
+  } catch (error: any) {} finally {
     queryLoading.value = false;
     banUnbind.value = false;
   }
@@ -420,9 +439,7 @@ let clearForm = () => {
         emailform.value.clearValidate(["username", "password"]);
       }
     }, 200);
-  } catch (error) {
-    //console.log(error);
-  }
+  } catch (error) {}
 };
 let validateEmail = (_: any, value: any, callback: any) => {
   // 邮箱正则表达式
@@ -470,6 +487,8 @@ const giftCodeRules = {
 let emailAlertType = ref("warning");
 // 提示消息
 let emailAlertTitle = ref("");
+// 验证按钮
+let emailVerify = ref(false);
 // 邮箱登录
 let createBotByEmail = async () => {
   try {
@@ -485,27 +504,25 @@ let createBotByEmail = async () => {
     emailInfo.password = emailData.password;
     // 仓库发起邮箱登录请求
     let result = await ownerStore.botCreateByEmail(emailInfo);
+    emailVerify.value = false;
+    emailAlertTitle.value = result.message;
     if (result.success) {
-      // 获取成功
-      if (result.need_verify) {
-        emailAlertType.value = "warning";
-      } else {
-        emailAlertType.value = "success";
-        getBotStatus();
-      }
-      emailAlertTitle.value = result.message;
+      emailAlertType.value = "success";
+      clearForm();
     } else {
-      // 请求失败，消息提示
-      ElNotification({
-        type: "warning",
-        title: "Warning",
-        message: result.message,
-        duration: 3000,
-      });
+      emailAlertType.value = "warning";
+      if (result.verify_url) {
+        verify_url = result.verify_url;
+        emailVerify.value = true;
+        ElNotification({
+          type: "warning",
+          title: "Warning",
+          message: "请按要求完成验证后再次点击绑定按钮",
+          duration: 3000,
+        });
+      }
     }
-  } catch (error: any) {
-    //console.log(error);
-  } finally {
+  } catch (error: any) {} finally {
     createDefaultLoading.value = false;
   }
 };
@@ -529,14 +546,11 @@ let clearPhoneForm = () => {
         phoneform.value.clearValidate(["phone"]);
       }
     }, 200);
-  } catch (error) {
-    //console.log(error);
-  }
+  } catch (error) {}
 };
 let validatePhone = (_: any, value: any, callback: any) => {
   // 手机正则表达式
   const phoneRegex = /^1[3456789]\d{9}$/;
-
   if (!phoneRegex.test(value)) {
     callback(new Error("手机格式不正确"));
   } else {
@@ -575,6 +589,8 @@ let refreshCaptcha = () => {
   turnstile.reset();
   turnstile.execute();
 };
+// 验证按钮
+let phoneVerify = ref(false);
 
 // 人机验证成功回调
 var onRobotSuccess = async () => {
@@ -639,39 +655,37 @@ let getCode = async () => {
   try {
     // 仓库发起验证码请求
     let result = await ownerStore.botPhoneCode(codeInfo);
+    phoneVerify.value = false;
+    phoneAlertTitle.value = result.message;
     if (result.success) {
-      // 获取成功
-      if (result.need_verify) {
-        phoneAlertType.value = "warning";
-        codedisabled.value = false;
-      } else {
-        phoneAlertType.value = "success";
-        // 成功，开始倒计时
-        codedisabled.value = true;
-        codeTimeShow.value = true;
-        const timer = setInterval(() => {
-          codeTimes.value--;
-          if (codeTimes.value < 1) {
-            codeTimes.value = 60;
-            codedisabled.value = false;
-            codeTimeShow.value = false;
-            clearInterval(timer);
-          }
-        }, 1000);
-      }
-      phoneAlertTitle.value = result.message;
+      phoneAlertType.value = "success";
+      // 成功，开始倒计时
+      codedisabled.value = true;
+      codeTimeShow.value = true;
+      const timer = setInterval(() => {
+        codeTimes.value--;
+        if (codeTimes.value < 1) {
+          codeTimes.value = 60;
+          codedisabled.value = false;
+          codeTimeShow.value = false;
+          clearInterval(timer);
+        }
+      }, 1000);
     } else {
-      // 请求失败，消息提示
-      ElNotification({
-        type: "warning",
-        title: "Warning",
-        message: result.message,
-        duration: 3000,
-      });
+      phoneAlertType.value = "warning";
+      if (result.verify_url) {
+        verify_url = result.verify_url;
+        phoneVerify.value = true;
+        ElNotification({
+          type: "warning",
+          title: "Warning",
+          message: "请按要求完成验证后再点击获取验证码按钮",
+          duration: 3000,
+        });
+      }
       codedisabled.value = false;
     }
   } catch (error: any) {
-    //console.log(error);
     codedisabled.value = false;
   } finally {
     refreshCaptcha();
@@ -691,26 +705,24 @@ let createBotByPhone = async () => {
     // 仓库发起手机登录请求
     let result = await ownerStore.botCreateByPhone(phoneInfo);
     if (result.success) {
-      // 获取成功
-      if (result.need_verify) {
-        phoneAlertType.value = "warning";
-      } else {
-        phoneAlertType.value = "success";
-        getBotStatus();
-      }
-      phoneAlertTitle.value = result.message;
+      phoneAlertType.value = "success";
+      phoneVerify.value = false;
+      getBotStatus();
+      clearPhoneForm();
     } else {
-      // 请求失败，消息提示
-      ElNotification({
-        type: "warning",
-        title: "Warning",
-        message: result.message,
-        duration: 3000,
-      });
+      phoneAlertType.value = "warning";
+      if (result.verify_url) {
+        verify_url = result.verify_url;
+        phoneVerify.value = true;
+        ElNotification({
+          type: "warning",
+          title: "Warning",
+          message: "请按要求完成验证后再次点绑定按钮",
+          duration: 3000,
+        });
+      }
     }
-  } catch (error: any) {
-    //console.log(error);
-  } finally {
+  } catch (error: any) {} finally {
     createDefaultLoading.value = false;
   }
 };
@@ -743,9 +755,7 @@ let unbindBot = async () => {
         duration: 3000,
       });
     }
-  } catch (error: any) {
-    //console.log(error);
-  } finally {
+  } catch (error: any) {} finally {
     unbindLoading.value = false;
     unbindDialogVisible.value = false;
     getBotStatus();
@@ -773,9 +783,7 @@ let signinBot = async () => {
         duration: 3000,
       });
     }
-  } catch (error: any) {
-    //console.log(error);
-  } finally {
+  } catch (error: any) {} finally {
     signLoading.value = false;
   }
 };
@@ -801,9 +809,7 @@ let getMailReward = async () => {
         duration: 3000,
       });
     }
-  } catch (error: any) {
-    //console.log(error);
-  } finally {
+  } catch (error: any) {} finally {
     getMailRewardLoading.value = false;
   }
 };
@@ -849,9 +855,7 @@ let useGiftCode = async () => {
       giftCodeAlertType.value = "warning";
     }
     giftCodeAlertTitle.value = result.message;
-  } catch (error) {
-    //console.log(error);
-  } finally {
+  } catch (error) {} finally {
     giftCodeLoading.value = false;
   }
 };
