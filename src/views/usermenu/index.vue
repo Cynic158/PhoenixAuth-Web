@@ -374,13 +374,13 @@
         >
           <el-form-item label="邮箱验证码" prop="emailVerifyCode">
             <el-row class="row-bg" justify="center" style="width: 100%">
-              <el-col :span="20" style="padding-right: 10px">
+              <el-col :span="18" style="padding-right: 10px">
                 <el-input
                   v-model="passwordData.emailVerifyCode"
                   placeholder="输入邮箱验证码"
                 />
               </el-col>
-              <el-col :span="4">
+              <el-col :span="6">
                 <el-button
                   ref="changePasswordEmailCodeBtnRef"
                   type="primary"
@@ -506,13 +506,13 @@
         </el-form-item>
         <el-form-item label="邮箱验证码" prop="emailVerifyCode">
           <el-row class="row-bg" justify="center" style="width: 100%">
-            <el-col :span="20" style="padding-right: 10px">
+            <el-col :span="18" style="padding-right: 10px">
               <el-input
                 v-model="emailBindData.emailVerifyCode"
                 placeholder="输入邮箱验证码"
               />
             </el-col>
-            <el-col :span="4">
+            <el-col :span="6">
               <el-button
                 ref="emailBindEmailCodeBtnRef"
                 type="primary"
@@ -599,13 +599,13 @@
       >
         <el-form-item label="邮箱验证码" prop="emailVerifyCode">
           <el-row class="row-bg" justify="center" style="width: 100%">
-            <el-col :span="20" style="padding-right: 10px">
+            <el-col :span="18" style="padding-right: 10px">
               <el-input
                 v-model="emailUnbindData.emailVerifyCode"
                 placeholder="输入邮箱验证码"
               />
             </el-col>
-            <el-col :span="4">
+            <el-col :span="6">
               <el-button
                 ref="emailUnbindEmailCodeBtnRef"
                 type="primary"
@@ -657,13 +657,13 @@
       >
         <el-form-item label="邮箱验证码" prop="emailVerifyCode">
           <el-row class="row-bg" justify="center" style="width: 100%">
-            <el-col :span="20" style="padding-right: 10px">
+            <el-col :span="18" style="padding-right: 10px">
               <el-input
                 v-model="deleteAccountData.emailVerifyCode"
                 placeholder="输入邮箱验证码"
               />
             </el-col>
-            <el-col :span="4">
+            <el-col :span="6">
               <el-button
                 ref="deleteAccountEmailCodeBtnRef"
                 type="primary"
