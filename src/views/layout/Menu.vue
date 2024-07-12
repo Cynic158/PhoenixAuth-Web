@@ -261,6 +261,7 @@ onMounted(() => {
   z-index: 4;
 }
 .logo {
+  height: 60px;
   :deep(.el-sub-menu__title) {
     padding: 0 !important;
     height: 60px;
@@ -269,7 +270,6 @@ onMounted(() => {
   :deep(.el-sub-menu__icon-arrow) {
     display: none !important;
   }
-  height: 60px;
 }
 .fold-btn {
   :deep(.el-sub-menu__icon-arrow) {
@@ -287,6 +287,7 @@ onMounted(() => {
   }
 }
 .el-menu-vertical-demo {
+  background-color: var(--el-bg-color);
   :deep(.el-sub-menu__icon-arrow) {
     display: none;
   }
@@ -294,7 +295,6 @@ onMounted(() => {
     opacity: 0;
     transition: $ani-opacity;
   }
-  background-color: var(--el-bg-color);
 }
 .el-scrollbar {
   height: calc(100vh - $size-logo-container-height);

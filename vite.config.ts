@@ -47,7 +47,9 @@ export default ({ mode }) =>
             }
           },
         },
+        external: ['path'],
       },
+      chunkSizeWarningLimit: 2000,
     },
     plugins: [
       vue(),
