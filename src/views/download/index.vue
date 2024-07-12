@@ -55,16 +55,15 @@
           安卓 / Linux / macOS 可尝试在终端输入以下内容使用官方提供的安装脚本, 并根据提示使用对应的命令来启动程序
         </span>
         <Precode :code="fbMainInstaller" :type="'bash'"></Precode>
-        <Precode :code="fbLibreInstaller" :type="'bash'"></Precode>
         <span style="display: inline-block; margin-top: 16px">
           您也可以点击以下链接下载预先构建好的二进制文件来使用
         </span>
         <p style="margin-top: 16px">
           <a
             style="white-space: normal; word-wrap: break-word"
-            href="https://github.com/LNSSPsd/PhoenixBuilder/releases/latest"
+            href="https://github.com/bouldev/PhoenixBuilder/releases/latest"
             target="_blank"
-            >https://github.com/LNSSPsd/PhoenixBuilder/releases/latest
+            >https://github.com/bouldev/PhoenixBuilder/releases/latest
           </a>
         </p>
       </div>
@@ -76,7 +75,7 @@
 // 导入代码显示
 
 let fbBuildCmds = [
-  "git clone git@github.com:LNSSPsd/PhoenixBuilder.git",
+  "git clone git@github.com:bouldev/PhoenixBuilder.git",
   "cd PhoenixBuilder",
   "make current",
   "# 初次使用在执行完一次 make 后执行下面的命令\n"+
@@ -85,11 +84,7 @@ let fbBuildCmds = [
   "./build/phoenixbuilder",
 ]
 
-let fbMainInstaller = "# 主分支\n"+
-  `export LOCAL=1 && export PB_USE_GH_REPO=1 && curl -o install.sh https://raw.githubusercontent.com/LNSSPsd/PhoenixBuilder/main/install.sh && bash install.sh && rm install.sh`;
-
-let fbLibreInstaller = "# Libre 分支\n"+
-  `export LOCAL=1 && export PB_USE_GH_REPO=1 && curl -o install.sh https://raw.githubusercontent.com/LNSSPsd/PhoenixBuilder/libre/install.sh && bash install.sh && rm install.sh`;
+let fbMainInstaller = `export LOCAL=1 && export PB_USE_GH_REPO=1 && curl -o install.sh https://raw.githubusercontent.com/bouldev/PhoenixBuilder/main/install.sh && bash install.sh && rm install.sh`;
 
 let neo = `curl -o install.sh https://omega-1259160345.cos.ap-nanjing.myqcloud.com/fastbuilder_launcher/install.sh && bash install.sh && rm install.sh`;
 </script>
