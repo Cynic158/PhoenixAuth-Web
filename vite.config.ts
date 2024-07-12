@@ -47,7 +47,6 @@ export default ({ mode }) =>
             }
           },
         },
-        external: ['path'],
       },
       chunkSizeWarningLimit: 2000,
     },
@@ -93,6 +92,7 @@ export default ({ mode }) =>
     resolve: {
       alias: {
         "@": path.resolve("./src"), // 相对路径别名配置，使用 @ 代替 src
+        'path': 'path-browserify',
       },
     },
     // scss全局变量
