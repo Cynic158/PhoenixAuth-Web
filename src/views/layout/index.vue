@@ -52,7 +52,7 @@ const handleResize2 = () => {
   const screenWidth = window.innerWidth;
 
   // 根据窗口宽度进行判断
-  if (screenWidth <= 900) {
+  if (screenWidth <= 768) {
     indexFlag.value = true;
     // 同时将滚动条颜色变更
     // 获取根元素

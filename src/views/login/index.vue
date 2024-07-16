@@ -17,7 +17,7 @@
         >
           <template #reference>
             <div class="login-form">
-              <h1>Welcome</h1>
+              <h1>UserCenter</h1>
               <el-form
                 @submit.prevent
                 :model="forgetData"
@@ -866,14 +866,13 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .login-container {
     // background-image: url("../../assets/images/bg_m.webp") !important;
     background-image: url("https://img.picgo.net/2024/01/24/bg_m747b3a845541b9e0.webp") !important;
   }
   .login-form {
-    width: 100% !important;
-    border-radius: 0 !important;
+    width: 94% !important;
     padding: 20px 16px !important;
     h1 {
       font-size: 30px !important;
@@ -907,6 +906,16 @@ onMounted(() => {
   float: right;
   margin-top: 10px;
   margin-right: 10px;
+}
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.1);
+  pointer-events: none;
 }
 .login-container {
   width: 100%;
@@ -948,8 +957,8 @@ onMounted(() => {
       left: 100%;
     }
     h1 {
-      color: $color-blue;
-      font-size: 40px;
+      color: $login-form-h1;
+      font-size: 30px;
       margin-bottom: 12px;
       user-select: none;
     }

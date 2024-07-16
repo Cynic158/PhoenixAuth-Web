@@ -24,15 +24,19 @@ $ani-opacity: opacity 0.3s;
 // 布局变量
 // 登录表单
 $login-form-bgcolor: rgba(
-  $color: $color-deep-white,
-  $alpha: 0.3,
+  $color: #E5EAF3,
+  $alpha: 0.4,
 );
 $login-form-shadow: 0 0 8px 8px
   rgba(
     $color: #525252,
-    $alpha: 0.1,
+    $alpha: 0.3,
   );
 // 标题提示
+$login-form-h1: rgba(
+  $color: #409EFF,
+  $alpha: 1,
+);
 $login-form-h2: rgba(
   $color: $color-deep-gray,
   $alpha: 0.6,
