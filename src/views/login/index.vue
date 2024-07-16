@@ -936,7 +936,6 @@ onMounted(() => {
     border-radius: 10px;
     background-color: $login-form-bgcolor;
     padding: 20px 32px;
-    backdrop-filter: blur(5px);
     box-shadow: $login-form-shadow;
     overflow: hidden;
     white-space: nowrap;
