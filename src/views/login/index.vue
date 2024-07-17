@@ -39,14 +39,14 @@
                   </el-form-item>
                   <el-form-item prop="email_verify_code">
                     <el-row class="row-bg" justify="center" style="width: 100%">
-                      <el-col :span="20" style="padding-right: 10px">
+                      <el-col :span="18" style="padding-right: 10px">
                         <el-input
                           v-model="forgetData.email_verify_code"
                           prefix-icon="Lock"
                           placeholder="请输入邮箱验证码"
                         />
                       </el-col>
-                      <el-col :span="4">
+                      <el-col :span="6">
                         <el-button
                           type="primary"
                           style="width: 100%"
@@ -889,11 +889,12 @@ onMounted(() => {
 :deep(.el-input__wrapper) {
   background-color: var(--el-mask-color-extra-light) !important;
   --el-input-placeholder-color: var(--el-text-color-primary) !important;
+  --el-input-icon-color: var(--el-text-color-primary) !important;
   // color: black !important;
   // border-color: white !important;
 }
 :deep(.el-input input:-webkit-autofill) {
-  -webkit-text-fill-color: #000000 !important;
+  -webkit-text-fill-color: $color-deep-gray !important;
 }
 // :deep(.el-input__inner) {
 //   background-color: transparent !important;
@@ -948,12 +949,15 @@ onMounted(() => {
     }
     .login-page.login-forgetpage {
       left: -100%;
+      overflow: hidden;
     }
     .login-page.login-loginpage {
       left: 32px;
+      overflow: hidden;
     }
     .login-page.login-regpage {
       left: 100%;
+      overflow: hidden;
     }
     h1 {
       color: $login-form-h1;
