@@ -85,12 +85,12 @@
           max-height="250"
         >
           <el-table-column prop="id" label="ID" width="60" />
-          <el-table-column prop="create_at" label="创建时间" width="200" >
+          <el-table-column prop="server_code" label="服务器号" width="120" />
+          <el-table-column prop="create_at" label="创建时间" min-width="200" >
             <template  #default="scope">
               {{ getTimeStr2(scope.row.create_at) }}
             </template>
           </el-table-column>
-          <el-table-column prop="server_code" label="服务器号"  />
           <el-table-column fixed="right" label="操作" width="60">
             <template #default="scope">
               <el-button
