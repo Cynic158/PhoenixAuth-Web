@@ -183,6 +183,12 @@ declare global {
     expire_at: number;
     note: string;
   }
+  // WebCredential 信息
+  interface WebCredential{
+    id: number;
+    create_at: number;
+    raw_id: string;
+  }
   // 用户信息
   interface UserDetail {
     username: string;
@@ -196,6 +202,7 @@ declare global {
     has_email: boolean;
     client_username: string;
     slots: Array<Slot>;
+    credentials: Array<WebCredential>;
   }
   interface UserQueryDetail {
     username: string;

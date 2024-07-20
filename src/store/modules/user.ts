@@ -36,6 +36,7 @@ import sha256 from "crypto-js/sha256";
 import md5 from "crypto-js/md5";
 import type { AxiosResponse } from "axios";
 import useSlotStore from "./slot";
+import useWebAuthnStore from "./webauthn";
 
 // 过滤权限路由，传入权限路由以及用户所拥有的的路由权限数组
 function filterRoute(asyncRoutes: any, permission: any) {
@@ -216,6 +217,8 @@ let useUserStore = defineStore("user", () => {
       setUser(result);
       const slotStore = useSlotStore();
       slotStore.slotData.values = result.slots;
+      const webauthnStore = useWebAuthnStore();
+      webauthnStore.credentialsData.values = result.credentials;
       // 根据得到的用户路由权限来渲染动态路由
       let filterArr: Array<string> = [];
       if (result.is_admin) {

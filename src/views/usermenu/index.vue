@@ -445,11 +445,15 @@
         </div>
         <el-divider />
         <el-table
-          :data="webAuthnInfoList"
+          :data="webAuthnStore.credentialsData.values"
           class="limited-form-container"
           max-height="250"
         >
-          <el-table-column prop="create_at_str" label="创建时间" width="160" />
+          <el-table-column prop="create_at" label="创建时间" width="160" >
+            <template  #default="scope">
+              {{ getTimeStr2(scope.row.create_at) }}
+            </template>
+          </el-table-column>
           <el-table-column prop="raw_id" label="RawID" width="480" />
           <el-table-column fixed="right" label="操作" width="60">
             <template #default="scope">
@@ -1443,36 +1447,14 @@ let changePassword = async () => {
         duration: 3000,
       });
     }
-  } catch (error: any) {
-    ////console.log(error);
-  } finally {
+  } catch (error: any) {} finally {
     // 请求完成，关闭加载
     passwordloadingflag.value = false;
   }
 };
 
-// WebAuthn信息列表数组
-let webAuthnInfoList = ref<WebAuthnInfo[]>([]);
+// WebAuthn信息列表
 let webAuthnLoading = ref(false);
-
-// 获取WebAuthn列表信息
-let getWebAuthnList = async () => {
-  webAuthnLoading.value = true;
-  try {
-    // 仓库请求WebAuthn列表
-    let result = await webAuthnStore.queryByUser();
-    // 将credentials的create_at格式化为时间字符串
-    for (let item of result.credentials) {
-      item.create_at_str = getTimeStr2(item.create_at);
-    }
-    webAuthnInfoList.value = result.credentials;
-  } catch (error: any) {
-    //console.log(error);
-  } finally {
-    // 请求完成，关闭加载
-    webAuthnLoading.value = false;
-  }
-};
 
 // 添加通行密钥
 let addWebAuthn = async () => {
@@ -1502,7 +1484,7 @@ let addWebAuthn = async () => {
         duration: 3000,
       });
       // 请求刷新列表
-      getWebAuthnList();
+      getInfo();
     } else {
       ElNotification({
         type: "warning",
@@ -1540,7 +1522,7 @@ let removeWebAuthn = async (credentialID: number) => {
         duration: 3000,
       });
       // 请求刷新列表
-      getWebAuthnList();
+      getInfo();
     } else {
       ElNotification({
         type: "warning",
@@ -1926,8 +1908,6 @@ onMounted(() => {
   window.onRobotError = onRobotError;
   turnstile.render(".cf-turnstile");
   getInfo();
-  // 获取credentials列表
-  getWebAuthnList();
   // 设置游戏名
   clientUsernameData.client_username = userStore.clientName;
 });

@@ -9,7 +9,6 @@ import {
   reqRegisterVerification,
   reqGetLoginOptions,
   reqLoginVerification,
-  reqQueryByUser,
   reqRemoveById,
 } from "@/api/webauthn";
 
@@ -17,6 +16,8 @@ import type {
   RegistrationResponseJSON,
   AuthenticationResponseJSON,
 } from "@simplewebauthn/types";
+
+import { ref } from "vue";
 
 // 创建仓库
 let useWebAuthnStore = defineStore("webauthn", () => {
@@ -61,16 +62,6 @@ let useWebAuthnStore = defineStore("webauthn", () => {
     }
   };
 
-  // 请求通行密钥查询
-  let queryByUser = async () => {
-    try {
-      let result = await reqQueryByUser();
-      return result;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-
   // 请求通行密钥删除
   let removeById = async (info: WebauthnRemoveInfo) => {
     try {
@@ -81,14 +72,17 @@ let useWebAuthnStore = defineStore("webauthn", () => {
     }
   };
 
+  // credentials数据
+  let credentialsData = ref<Array<WebCredential>>([]);
+
   // 导出
   return {
     registerOptions,
     registerVerification,
     loginOptions,
     loginVerification,
-    queryByUser,
     removeById,
+    credentialsData
   };
 });
 
