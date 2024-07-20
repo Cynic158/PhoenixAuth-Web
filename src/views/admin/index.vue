@@ -63,6 +63,59 @@
 
     <el-card
       shadow="hover"
+      v-loading="unlimitedServerLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
+        <div class="card-header">无限制服务器</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >所有有效用户可无限制地登录到这些服务器</span
+          >
+        </div>
+        <el-divider />
+        <el-table
+          :data="unlimitedServerList"
+          class="form-container"
+          max-height="250"
+        >
+          <el-table-column prop="id" label="ID" width="60" />
+          <el-table-column prop="create_at" label="创建时间" width="200" >
+            <template  #default="scope">
+              {{ getTimeStr2(scope.row.create_at) }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="server_code" label="服务器号"  />
+          <el-table-column fixed="right" label="操作" width="60">
+            <template #default="scope">
+              <el-button
+                link
+                type="danger"
+                size="small"
+                @click.prevent="deleteUnlimitedServer(scope?.row?.id)"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-button
+          style="width: 100%; margin-top: 10px"
+          class="form-container"
+          @click.prevent="popAddUnlimitedServerDialog"
+        >
+          添加
+        </el-button>
+      </div>
+    </el-card>
+
+    <el-card
+      shadow="hover"
       v-loading="queryUserLoading"
       style="margin-top: 12px"
     >
@@ -416,6 +469,35 @@
 
     <el-dialog
       :width="settingStore.createDialogWidth"
+      v-model="addUnlimitedServerDialogVisible"
+      title="添加无限制服务器"
+      align-center
+    >
+      <el-form
+        @submit.prevent
+        :model="addUnlimitedServerData"
+        :rules="addUnlimitedServerRule"
+        ref="addUnlimitedServerForm"
+      >
+        <el-form-item label="服务器号" prop="server_code">
+          <el-input v-model="addUnlimitedServerData.server_code" placeholder="请输入服务器号"/>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="addUnlimitedServerDialogVisible = false">取消</el-button>
+          <el-button
+            :loading="unlimitedServerLoading"
+            type="warning"
+            @click="addUnlimitedServer"
+            >提交</el-button
+          >
+        </span>
+      </template>
+    </el-dialog>
+
+    <el-dialog
+      :width="settingStore.createDialogWidth"
       v-model="unBanUserDialogVisible"
       title="解封用户"
       align-center
@@ -443,6 +525,9 @@ import { reactive, ref, computed } from "vue";
 import { getTimeStr2, getTimeStr3 } from "@/utils";
 // 导入设置仓库
 import useSettingStore from "@/store/modules/setting";
+import {
+  onMounted,
+} from "vue";
 
 // 使用设置仓库的移动端适配
 let settingStore = useSettingStore();
@@ -494,6 +579,14 @@ const generateRedeemCodeFormRule = {
   ],
   note: [{ required: true, message: "请输入备注", trigger: "blur" }],
 };
+// 添加无限制服务器
+const addUnlimitedServerRule = {
+  server_code: [
+    { required: true, message: "请输入服务器号", trigger: "blur" },
+    { min: 1, message: "服务器号不能为空", trigger: "blur" },
+  ],
+};
+
 // 查询用户
 const queryUserFormRule = {
   username: [
@@ -604,6 +697,107 @@ let generateCode = async () => {
     //console.log(error);
   } finally {
     generateRedeemCodeLoading.value = false;
+  }
+};
+
+// 无限制服务器
+// 无限制服务器loading
+let unlimitedServerLoading = ref(false);
+let unlimitedServerList = ref<UnlimitedRentalServer[]>([]);
+// 弹窗
+let addUnlimitedServerDialogVisible = ref(false);
+// 表单元素
+let addUnlimitedServerForm: EleFormRef = ref(null);
+// 表单数据
+let addUnlimitedServerData = reactive({
+  server_code: "",
+});
+// 清空表单
+let clearAddUnlimitedServerForm = () => {
+  addUnlimitedServerData.server_code = "";
+  // 清空校验提示
+  try {
+    setTimeout(() => {
+      if (addUnlimitedServerForm.value) {
+        addUnlimitedServerForm.value.clearValidate(["server_code"]);
+      }
+    }, 200);
+  } catch (error) {}
+};
+// 获取无限制服务器列表
+let getUnlimitedServerList = async () => {
+  let res = await adminStore.getUnlimitedRentalServerList();
+  unlimitedServerList.value = res.unlimited_rental_servers;
+};
+// 调用添加无限制服务器弹窗
+let popAddUnlimitedServerDialog = () => {
+  addUnlimitedServerDialogVisible.value = true;
+  clearAddUnlimitedServerForm();
+};
+// 添加无限制服务器
+let addUnlimitedServer = async () => {
+  try {
+    await addUnlimitedServerForm.value!.validate();
+    // 显示加载
+    unlimitedServerLoading.value = true;
+    let addServerInfo = {
+      server_code: addUnlimitedServerData.server_code,
+    };
+    // 仓库发起请求
+    let result = await adminStore.addUnlimitedRentalServer(addServerInfo);
+    if (result.success) {
+      ElNotification({
+        type: "success",
+        title: "Success",
+        message: result.message,
+        duration: 3000,
+      });
+      clearAddUnlimitedServerForm();
+      // 查询无限制服务器
+      getUnlimitedServerList();
+    } else {
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        message: result.message,
+        duration: 3000,
+      });
+    }
+    addUnlimitedServerDialogVisible.value = false;
+  } catch (error) {} finally {
+    unlimitedServerLoading.value = false;
+  }
+};
+// 删除无限制服务器
+let deleteUnlimitedServer = async (id: number) => {
+  try {
+    // 显示加载
+    unlimitedServerLoading.value = true;
+    let removeServerInfo = {
+      rental_server_id: id,
+    };
+    // 仓库发起请求
+    let result = await adminStore.deleteUnlimitedRentalServer(removeServerInfo);
+    if (result.success) {
+      ElNotification({
+        type: "success",
+        title: "Success",
+        message: result.message,
+        duration: 3000,
+      });
+      // 查询无限制服务器
+      getUnlimitedServerList();
+    } else {
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        message: result.message,
+        duration: 3000,
+      });
+    }
+    unlimitedServerLoading.value = false;
+  } catch (error) {} finally {
+    unlimitedServerLoading.value = false;
   }
 };
 
@@ -1021,6 +1215,11 @@ let extendUserUnlimited = async () => {
     extendUserUnlimitedLoading.value = false;
   }
 };
+
+onMounted(() => {
+  // 查询无限制服务器
+  getUnlimitedServerList();
+});
 </script>
 
 <style scoped lang="scss">

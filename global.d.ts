@@ -183,12 +183,6 @@ declare global {
     expire_at: number;
     note: string;
   }
-  // WebCredential 信息
-  interface WebCredential{
-    id: number;
-    create_at: number;
-    raw_id: string;
-  }
   // 用户信息
   interface UserDetail {
     username: string;
@@ -219,11 +213,10 @@ declare global {
   interface WebauthnRemoveInfo {
     credential_id: number;
   }
-  interface WebAuthnInfo {
+  interface WebCredential{
     id: number;
     create_at: number;
     raw_id: string;
-    create_at_str: string;
   }
 
   // slot相关
@@ -237,5 +230,12 @@ declare global {
   interface ExtendSlotExpireTime{
     id: number;
     redeem_code: string;
+  }
+
+  // 无限制服务器相关
+  interface UnlimitedRentalServer{
+    id: number;
+    create_at: number;
+    server_code: string;
   }
 }

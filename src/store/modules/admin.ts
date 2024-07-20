@@ -10,6 +10,9 @@ import {
   reqExtendUserExpireTime,
   reqExtendUserUnlimitedTime,
   reqGenerateRedeemCode,
+  reqGetUnlimitedRentalServerList,
+  reqAddUnlimitedRentalServer,
+  reqDeleteUnlimitedRentalServer,
 } from "@/api/admin";
 
 // 创建仓库
@@ -90,6 +93,36 @@ let useAdminStore = defineStore("admin", () => {
     }
   };
 
+  // 查询无限制服务器列表
+  let getUnlimitedRentalServerList = async () => {
+    try {
+      let result = await reqGetUnlimitedRentalServerList();
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 添加无限制服务器
+  let addUnlimitedRentalServer = async (info: { server_code: string }) => {
+    try {
+      let result = await reqAddUnlimitedRentalServer(info);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  // 删除无限制服务器
+  let deleteUnlimitedRentalServer = async (info: { rental_server_id: number }) => {
+    try {
+      let result = await reqDeleteUnlimitedRentalServer(info);
+      return result;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   return {
     userQuery,
     userBan,
@@ -98,6 +131,9 @@ let useAdminStore = defineStore("admin", () => {
     userExtendExpireTime,
     userExtendUnlimitedTime,
     genCode,
+    getUnlimitedRentalServerList,
+    addUnlimitedRentalServer,
+    deleteUnlimitedRentalServer,
   };
 });
 

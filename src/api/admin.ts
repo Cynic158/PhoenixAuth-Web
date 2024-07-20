@@ -10,6 +10,9 @@ enum API {
   EXTEND_USER_EXPIRE_TIME = "/admin/extend_user_expire_time",
   EXTEND_USER_UNLIMITED_TIME = "/admin/extend_user_unlimited_time",
   GENERATE_REDEEM_CODE = "/admin/generate_redeem_code",
+  GET_UNLIMITED_RENTAL_SERVER_LIST = "/admin/get_unlimited_rental_server_list",
+  ADD_UNLIMITED_RENTAL_SERVER = "/admin/add_unlimited_rental_server",
+  DELETE_UNLIMITED_RENTAL_SERVER = "/admin/delete_unlimited_rental_server",
 }
 
 // 导出api
@@ -36,3 +39,12 @@ export const reqExtendUserUnlimitedTime = (
 // 请求生成兑换码
 export const reqGenerateRedeemCode = (codeInfo: AdminCodeInfo) =>
   request.post(API.GENERATE_REDEEM_CODE, codeInfo);
+// 请求获取无限制服务器列表
+export const reqGetUnlimitedRentalServerList = () =>
+  request.get(API.GET_UNLIMITED_RENTAL_SERVER_LIST);
+// 请求添加无限制服务器
+export const reqAddUnlimitedRentalServer = (info: { server_code: string }) =>
+  request.post(API.ADD_UNLIMITED_RENTAL_SERVER, info);
+// 请求删除无限制服务器
+export const reqDeleteUnlimitedRentalServer = (info: { rental_server_id: number }) =>
+  request.post(API.DELETE_UNLIMITED_RENTAL_SERVER, info);
