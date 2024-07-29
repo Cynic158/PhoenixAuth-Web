@@ -1618,8 +1618,8 @@ let popExtendSlotExpireTimeDialog = async(slotID: number) => {
   extendSlotExpireTimeDialogVisible.value = true;
 };
 let extendSlotExpireTime = async () => {
+  await extendSlotExpireTimeForm.value!.validate();
   try {
-    await extendSlotExpireTimeForm.value!.validate();
     // 显示加载
     slotLoading.value = true;
     // 仓库发起续费slot请求
@@ -1646,8 +1646,7 @@ let extendSlotExpireTime = async () => {
         duration: 3000,
       });
     }
-  } catch (error: any) {
-  } finally {
+  } catch (error: any) {} finally {
     // 请求完成，关闭加载
     slotLoading.value = false;
     extendSlotExpireTimeDialogVisible.value = false;
@@ -1705,7 +1704,7 @@ let deleteSlot = async () => {
 // 设置表格样式
 let slotsTableRowClassName = ({ row }: { row: any; rowIndex: number }) => {
   // Error: expired
-  if (row.expire_at < Date.now()) {
+  if (row.game_id != 0 && row.expire_at < Date.now()) {
     return "error-row";
   }
 };
