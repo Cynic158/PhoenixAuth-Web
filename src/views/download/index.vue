@@ -28,14 +28,14 @@
       </template>
       <div>
         <span style="display: inline-block">
-          点击以下链接前往 ToolDelta Wiki 查看使用教程
+          点击以下链接前往 ToolDelta GitHub 仓库 查看使用教程
         </span>
         <p style="margin-top: 16px">
           <a
             style="white-space: normal; word-wrap: break-word"
-            href="https://tooldelta-wiki.tblstudio.cn"
+            href="https://github.com/ToolDelta-Basic/ToolDelta"
             target="_blank"
-            >https://tooldelta-wiki.tblstudio.cn
+            >https://github.com/ToolDelta-Basic/ToolDelta
           </a>
         </p>
       </div>
