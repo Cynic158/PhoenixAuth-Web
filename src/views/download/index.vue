@@ -28,7 +28,7 @@
       </template>
       <div>
         <span style="display: inline-block">
-          点击以下链接前往 ToolDelta GitHub 仓库 查看使用教程
+          点击以下链接前往 ToolDelta 仓库查看使用教程
         </span>
         <p style="margin-top: 16px">
           <a
@@ -45,18 +45,12 @@
         <div class="card-header">PhoenixBuilder</div>
       </template>
       <div>
-        <span>
-          您可以从源码构建 PhoenixBuilder 以使用
-        </span>
-        <div v-for="cmd in fbBuildCmds">
-          <Precode :code="cmd" :type="'bash'"></Precode>
-        </div>
-        <span style="display: inline-block; margin-top: 16px">
+        <span style="display: inline-block">
           安卓 / Linux / macOS 可尝试在终端输入以下内容使用官方提供的安装脚本, 并根据提示使用对应的命令来启动程序
         </span>
         <Precode :code="fbMainInstaller" :type="'bash'"></Precode>
         <span style="display: inline-block; margin-top: 16px">
-          您也可以点击以下链接下载预先构建好的二进制文件来使用
+          您可以点击以下链接下载预先构建好的二进制文件来使用
         </span>
         <p style="margin-top: 16px">
           <a
@@ -68,21 +62,29 @@
         </p>
       </div>
     </el-card>
+    <el-card style="margin-top: 12px" shadow="hover">
+      <template #header>
+        <div class="card-header">Eulogist</div>
+      </template>
+      <div>
+        <span>
+          点击以下链接前往 Eulogist 客户端仓库查看使用教程
+        </span>
+        <p style="margin-top: 16px">
+          <a
+            style="white-space: normal; word-wrap: break-word"
+            href="https://github.com/Happy2018new/Eulogist-User-Client"
+            target="_blank"
+            >https://github.com/Happy2018new/Eulogist-User-Client
+          </a>
+        </p>
+      </div>
+    </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
 // 导入代码显示
-
-let fbBuildCmds = [
-  "git clone git@github.com:bouldev/PhoenixBuilder.git",
-  "cd PhoenixBuilder",
-  "make current",
-  "# 初次使用在执行完一次 make 后执行下面的命令\n"+
-  `sed "s/currentProtocol byte = */currentProtocol byte = 8/g" ~/go/pkg/mod/github.com/sandertv/go-raknet@v1.12.0/conn.go`,
-  "make current",
-  "./build/phoenixbuilder",
-]
 
 let fbMainInstaller = `export LOCAL=1 && export PB_USE_GH_REPO=1 && curl -o install.sh https://raw.githubusercontent.com/bouldev/PhoenixBuilder/main/install.sh && bash install.sh && rm install.sh`;
 
