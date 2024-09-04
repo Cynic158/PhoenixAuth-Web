@@ -8,9 +8,13 @@
 
     pnpm install
 
-**运行命令**
+**运行命令 (使用本地后端)**
     
     pnpm run dev
+
+**运行命令 (使用生产环境后端)**
+    
+    pnpm run test
 
 **打包命令**
     
