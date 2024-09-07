@@ -486,14 +486,22 @@ let createBotByDefault = async () => {
     if (result.success) {
       createAlertType.value = "success";
     } else {
-      createAlertType.value = "warning";
       if (result.verify_url) {
+        createAlertType.value = "warning";
         verify_url = result.verify_url;
         guestVerify.value = true;
         ElNotification({
           type: "warning",
           title: "Warning",
           message: "请按要求完成验证后再次点击创建按钮",
+          duration: 3000,
+        });
+      }else{
+        createAlertType.value = "error";
+        ElNotification({
+          type: "error",
+          title: "Error",
+          message: result.message,
           duration: 3000,
         });
       }
@@ -581,16 +589,12 @@ let createBotByEmail = async () => {
       emailAlertType.value = "success";
       clearForm();
     } else {
-      emailAlertType.value = "warning";
       if (result.verify_url) {
+        emailAlertType.value = "warning";
         verify_url = result.verify_url;
         emailVerify.value = true;
-        ElNotification({
-          type: "warning",
-          title: "Warning",
-          message: "请按要求完成验证后再次点击创建按钮",
-          duration: 3000,
-        });
+      }else{
+        emailAlertType.value = "error";
       }
     }
   } catch (error: any) {} finally {
@@ -744,16 +748,12 @@ let getCode = async () => {
         }
       }, 1000);
     } else {
-      phoneAlertType.value = "warning";
       if (result.verify_url) {
+        phoneAlertType.value = "warning";
         verify_url = result.verify_url;
         phoneVerify.value = true;
-        ElNotification({
-          type: "warning",
-          title: "Warning",
-          message: "请按要求完成验证后再点击获取验证码按钮",
-          duration: 3000,
-        });
+      }else{
+        phoneAlertType.value = "error";
       }
       codedisabled.value = false;
     }
@@ -784,16 +784,12 @@ let createBotByPhone = async () => {
       getBotStatus();
       clearPhoneForm();
     } else {
-      phoneAlertType.value = "warning";
       if (result.verify_url) {
+        phoneAlertType.value = "warning";
         verify_url = result.verify_url;
         phoneVerify.value = true;
-        ElNotification({
-          type: "warning",
-          title: "Warning",
-          message: "请按要求完成验证后再次点击创建按钮",
-          duration: 3000,
-        });
+      }else{
+        phoneAlertType.value = "error";
       }
     }
   } catch (error: any) {} finally {

@@ -510,16 +510,12 @@ let createBotByEmail = async () => {
       emailAlertType.value = "success";
       clearForm();
     } else {
-      emailAlertType.value = "warning";
       if (result.verify_url) {
+        emailAlertType.value = "warning";
         verify_url = result.verify_url;
         emailVerify.value = true;
-        ElNotification({
-          type: "warning",
-          title: "Warning",
-          message: "请按要求完成验证后再次点击绑定按钮",
-          duration: 3000,
-        });
+      }else{
+        emailAlertType.value = "error";
       }
     }
   } catch (error: any) {} finally {
@@ -672,16 +668,12 @@ let getCode = async () => {
         }
       }, 1000);
     } else {
-      phoneAlertType.value = "warning";
       if (result.verify_url) {
+        phoneAlertType.value = "warning";
         verify_url = result.verify_url;
         phoneVerify.value = true;
-        ElNotification({
-          type: "warning",
-          title: "Warning",
-          message: "请按要求完成验证后再点击获取验证码按钮",
-          duration: 3000,
-        });
+      }else{
+        phoneAlertType.value = "error";
       }
       codedisabled.value = false;
     }
@@ -704,22 +696,19 @@ let createBotByPhone = async () => {
     };
     // 仓库发起手机登录请求
     let result = await ownerStore.botCreateByPhone(phoneInfo);
+    phoneAlertTitle.value = result.message;
     if (result.success) {
       phoneAlertType.value = "success";
       phoneVerify.value = false;
       getBotStatus();
       clearPhoneForm();
     } else {
-      phoneAlertType.value = "warning";
       if (result.verify_url) {
+        phoneAlertType.value = "warning";
         verify_url = result.verify_url;
         phoneVerify.value = true;
-        ElNotification({
-          type: "warning",
-          title: "Warning",
-          message: "请按要求完成验证后再次点绑定按钮",
-          duration: 3000,
-        });
+      } else {
+        phoneAlertType.value = "error";
       }
     }
   } catch (error: any) {} finally {
