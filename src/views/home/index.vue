@@ -180,6 +180,9 @@ let getAnnList = async (page_num: number) => {
   // 显示开始加载
   loading.value = true;
   try {
+    // 回滚到顶部
+    let scrollEl = document.querySelector(".el-main");
+    await verticalScroll(scrollEl as Element);
     // 发起请求
     let result = await annStore.getAnn({ page_num, page_size: 5 });
     if (result.success) {
@@ -188,9 +191,6 @@ let getAnnList = async (page_num: number) => {
       annList.value = result.announcements;
       // 更新总数
       annTotal.value = result.total;
-      // 回滚到顶部
-      let scrollEl = document.querySelector(".el-main");
-      await verticalScroll(scrollEl as Element);
     } else {
       ElNotification({
         type: "warning",
