@@ -1,23 +1,17 @@
 <template>
   <div class="login-container">
-    <el-row>
-      <el-col :span="12" :xs="0" :sm="4" :md="8" :lg="12" style="height: 100vh">
-      </el-col>
+    <el-row style="height: 100vh;">
+      <el-col :span="blankColSpan"></el-col>
       <el-col
-        :span="12"
-        :xs="24"
-        :sm="20"
-        :md="16"
-        :lg="12"
+        :span="loginColSpan"
         style="height: 100vh; position: relative"
-      >
+        >
         <el-popover
           :width="326"
           :visible="robotVisible && currentForm !== 'login'"
         >
           <template #reference>
             <div class="login-form">
-              <h1>UserCenter</h1>
               <el-form
                 @submit.prevent
                 :model="forgetData"
@@ -25,25 +19,23 @@
                 ref="forgetform"
                 class="login-page login-forgetpage"
               >
-                <h2>
-                  通过验证您绑定的邮箱来重置密码
-                  <el-tag type="warning" style="margin-right: 5px;">人机验证</el-tag>
-                </h2>
                 <div class="input-container">
                   <el-form-item prop="username">
                     <el-input
                       v-model="forgetData.username"
                       prefix-icon="User"
                       placeholder="请输入用户名"
+                      size="large"
                     />
                   </el-form-item>
                   <el-form-item prop="email_verify_code">
-                    <el-row class="row-bg" justify="center" style="width: 100%">
-                      <el-col :span="18" style="padding-right: 10px">
+                    <el-row class="row-bg" justify="center" style="width: 100%" :gutter="10">
+                      <el-col :span="18">
                         <el-input
                           v-model="forgetData.email_verify_code"
-                          prefix-icon="Lock"
+                          prefix-icon="Message"
                           placeholder="请输入邮箱验证码"
+                          size="large"
                         />
                       </el-col>
                       <el-col :span="6">
@@ -53,8 +45,9 @@
                           :disabled="codeTimes > 0"
                           :loading="loadingflag || captchaExecutingFlag"
                           @click="requestEmailVerifyCode"
+                          size="middle"
                         >
-                          {{ codeTimes > 0 ? `${codeTimes}s` : "发送" }}
+                          {{ codeTimes > 0 ? `${codeTimes}s` : captchaExecutingFlag ? "检查中" : loadingflag ? "处理中" : "发送" }}
                         </el-button>
                       </el-col>
                     </el-row>
@@ -67,6 +60,7 @@
                       show-password
                       prefix-icon="Lock"
                       autocomplete="new-password"
+                      size="large"
                     />
                   </el-form-item>
                   <el-form-item prop="repassword">
@@ -77,29 +71,33 @@
                       show-password
                       prefix-icon="Lock"
                       autocomplete="new-password"
+                      size="large"
                     />
                   </el-form-item>
                   <el-form-item>
                     <el-button
-                      type="warning"
+                      type="primary"
                       native-type="submit"
                       class="login-btn"
                       @click="requestResetPassword"
                       :loading="loadingflag"
-                      >提交</el-button
+                      size="middle"
+                      round
+                      >{{ loadingflag ? "处理中" : "修改密码" }}</el-button
                     >
                   </el-form-item>
                   <el-form-item>
                     <el-row class="row-bg" justify="center" style="width: 100%">
-                      <el-col :span="16"></el-col>
-                      <el-col :span="8">
-                        <el-button
+                      <el-col :span="20"></el-col>
+                      <el-col :span="4">
+                        <el-text
                           type="primary"
                           class="login-reg"
                           @click="switchpage('login')"
+                          style="float: right;"
                           >返回登录
                           <el-icon><ArrowRight /></el-icon>
-                        </el-button>
+                        </el-text>
                       </el-col>
                     </el-row>
                   </el-form-item>
@@ -113,13 +111,13 @@
                 ref="loginform"
                 class="login-page login-loginpage"
               >
-                <h2>验证您的账号密码以登录到用户中心</h2>
                 <div class="input-container">
                   <el-form-item prop="username">
                     <el-input
                       v-model="loginData.username"
                       prefix-icon="User"
                       placeholder="请输入用户名"
+                      size="large"
                     />
                   </el-form-item>
                   <el-form-item prop="password">
@@ -129,47 +127,60 @@
                       placeholder="请输入密码"
                       show-password
                       prefix-icon="Lock"
+                      size="large"
                     />
                   </el-form-item>
-                  <el-form-item>
-                    <el-button
-                      type="warning"
-                      native-type="submit"
-                      class="login-btn"
-                      @click="login"
-                      :loading="loadingflag"
-                      >登录</el-button
-                    >
-                  </el-form-item>
-                  <el-form-item v-if="browserSupportsWebAuthn()">
-                    <el-button
-                      type="success"
-                      class="login-btn"
-                      @click="webauthnLogin"
-                      :loading="loadingflag"
-                      >通行密钥</el-button
-                    >
-                  </el-form-item>
-                  <el-form-item>
-                    <el-row class="row-bg" justify="center" style="width: 100%">
-                      <el-col :span="8">
+                  <el-row :gutter="10">
+                    <el-col :span="browserSupportsWebAuthn() ? 18 : 24">
+                      <el-form-item>
                         <el-button
+                          type="primary"
+                          native-type="submit"
+                          class="login-btn"
+                          @click="login"
+                          :loading="loadingflag"
+                          size="middle"
+                          round
+                          >
+                          {{ loadingflag ? "处理中" : "登录" }}
+                          </el-button
+                        >
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="browserSupportsWebAuthn() ? 6 : 0">
+                      <el-form-item>
+                        <el-button
+                          type="success"
+                          class="login-btn"
+                          @click="webauthnLogin"
+                          :loading="loadingflag"
+                          size="middle"
+                          round
+                          >{{ loadingflag ? "处理中" : "通行密钥" }}</el-button
+                        >
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
+                  <el-form-item>
+                    <el-row class="row-bg" justify="space-between" style="width: 100%">
+                      <el-col :span="4">
+                        <el-text
                           type="primary"
                           class="login-reg"
                           @click="switchpage('forget')"
                           ><el-icon><ArrowLeft /></el-icon>
                           忘记密码
-                        </el-button>
+                        </el-text>
                       </el-col>
-                      <el-col :span="8"></el-col>
-                      <el-col :span="8">
-                        <el-button
+                      <el-col :span="4">
+                        <el-text
                           type="primary"
                           class="login-reg"
                           @click="switchpage('reg')"
-                          >注册账号
+                          style="float: right"
+                          >用户注册
                           <el-icon><ArrowRight /></el-icon>
-                        </el-button>
+                        </el-text>
                       </el-col>
                     </el-row>
                   </el-form-item>
@@ -182,16 +193,13 @@
                 ref="regform"
                 class="login-page login-regpage"
               >
-                <h2>
-                  创建一个新的账号来使用我们的服务
-                  <el-tag type="warning" style="margin-right: 5px;">人机验证</el-tag>
-                </h2>
                 <div class="input-container">
                   <el-form-item prop="username">
                     <el-input
                       v-model="regData.username"
                       prefix-icon="User"
                       placeholder="请输入用户名"
+                      size="large"
                     />
                   </el-form-item>
                   <el-form-item prop="password">
@@ -202,6 +210,7 @@
                       show-password
                       prefix-icon="Lock"
                       autocomplete="new-password"
+                      size="large"
                     />
                   </el-form-item>
                   <el-form-item prop="repassword">
@@ -212,50 +221,52 @@
                       show-password
                       prefix-icon="Lock"
                       autocomplete="new-password"
+                      size="large"
                     />
                   </el-form-item>
                   <el-form-item>
                     <el-button
-                      type="warning"
+                      type="primary"
                       native-type="submit"
                       class="login-btn"
                       @click="register"
                       :loading="loadingflag || captchaExecutingFlag"
-                      >注册</el-button
+                      size="middle"
+                      round
+                      >
+                      {{ captchaExecutingFlag ? "检查环境中" : loadingflag ? "处理中" : "注册" }}
+                      </el-button
                     >
                   </el-form-item>
                   <el-form-item>
                     <el-row class="row-bg" justify="center" style="width: 100%">
-                      <el-col :span="8">
-                        <el-button
+                      <el-col :span="4">
+                        <el-text
                           type="primary"
                           class="login-reg"
                           @click="switchpage('login')"
                           ><el-icon><ArrowLeft /></el-icon>
                           返回登录
-                        </el-button>
+                        </el-text>
                       </el-col>
-                      <el-col :span="16"></el-col>
+                      <el-col :span="20"></el-col>
                     </el-row>
                   </el-form-item>
                 </div>
               </el-form>
             </div>
-          </template>
+          </template>     
           <div
             class="cf-turnstile"
             data-sitekey="0x4AAAAAAAQhC3f_WRwvJ19O"
             data-callback="onRobotSuccess"
             data-error-callback="onRobotError"
             data-expired-callback="onRobotError"
+            data-timeout-callback="onRobotError"
             data-before-interactive-callback="onRobotBeforeInteractive"
             data-after-interactive-callback="onRobotAfterInteractive"
             data-size="normal"
-            :data-theme="
-              exportedLocalStorage.getItem('DARKMODE') === 'true'
-                ? 'dark'
-                : 'light'
-            "
+            data-theme="light"
           ></div>
         </el-popover>
       </el-col>
@@ -288,8 +299,27 @@ let webAuthnStore = useWebAuthnStore();
 let $router = useRouter();
 // 人机验证显示
 const robotVisible = ref(false);
-// 导出本地仓库给HTML使用
-let exportedLocalStorage = localStorage;
+
+// 登录卡片左侧空白col span
+let blankColSpan = ref(16);
+// 登录卡片col span
+let loginColSpan = ref(8);
+
+// 函数：根据媒体查询调整 span
+const handleMediaQueryChange = () => {
+  const screenWidth = window.innerWidth;
+
+  const mediaQuery = window.matchMedia(
+    "(hover: none) and (pointer: coarse)"
+  );
+  if (screenWidth <= 768 || mediaQuery.matches) {
+    blankColSpan.value = 0;
+    loginColSpan.value = 24;
+  } else {
+    blankColSpan.value = 12;
+    loginColSpan.value = 12;
+  }
+};
 
 let validateUserName = (_: any, value: any, callback: any) => {
   const regex = /^[a-zA-Z0-9]+$/;
@@ -436,7 +466,7 @@ let switchpage = (type: "login" | "reg" | "forget") => {
   switch (type) {
     case "reg":
       (document.querySelector(".login-form") as HTMLFormElement).style.height =
-        "384px";
+        "290px";
       (
         document.querySelector(".login-forgetpage") as HTMLFormElement
       ).style.left = "-200%";
@@ -448,7 +478,7 @@ let switchpage = (type: "login" | "reg" | "forget") => {
       break;
     case "login":
       (document.querySelector(".login-form") as HTMLFormElement).style.height =
-        browserSupportsWebAuthn() ? "384px" : "344px";
+        "230px";
       (
         document.querySelector(".login-forgetpage") as HTMLFormElement
       ).style.left = "-100%";
@@ -460,7 +490,7 @@ let switchpage = (type: "login" | "reg" | "forget") => {
       break;
     case "forget":
       (document.querySelector(".login-form") as HTMLFormElement).style.height =
-        "434px";
+        "346px";
       (
         document.querySelector(".login-forgetpage") as HTMLFormElement
       ).style.left = "32px";
@@ -521,14 +551,16 @@ let requestEmailVerifyCode = async () => {
     return;
   }
   // 校验表单
-  if (!forgetData.username) {
+  let usernameLength = forgetData.username.length;
+  if (usernameLength < 5 || usernameLength > 12) {
     // 消息提示
     ElNotification({
       type: "warning",
       title: "Warning",
-      message: "请先输入用户名",
+      message: "用户名长度为5到12位",
       duration: 3000,
     });
+    return;
   }
   loadingflag.value = true;
   try {
@@ -833,6 +865,9 @@ onUnmounted(() => {
   window.onRobotError = null;
 });
 onMounted(() => {
+  handleMediaQueryChange(); 
+  window.addEventListener("resize", handleMediaQueryChange);
+
   window.onRobotBeforeInteractive = onRobotBeforeInteractive;
   window.onRobotAfterInteractive = onRobotAfterInteractive;
   window.onRobotSuccess = onRobotSuccess;
@@ -855,10 +890,9 @@ onMounted(() => {
     if (element) {
       (element as HTMLDivElement).style.backgroundImage =
         `url("https://img.picgo.net/2024/01/24/bg_dark76c3ac9b1eee892b.webp")`;
-      // 转为黑夜模式
-      document.documentElement.className = "dark";
     }
   }
+  document.documentElement.className = "light";
 
   // 初始化卡片
   switchpage("login");
@@ -866,7 +900,7 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-@media (max-width: 768px), (hover: none) and (pointer: coarse) {
+@media only screen and (max-width: 768px), (hover: none) and (pointer: coarse) {
   .login-container {
     // background-image: url("../../assets/images/bg_m.webp") !important;
     background-image: url("https://img.picgo.net/2024/01/24/bg_m747b3a845541b9e0.webp") !important;
@@ -880,28 +914,17 @@ onMounted(() => {
     h2 {
       font-size: 16px !important;
     }
-    .input-container {
-      padding-left: 20px !important;
-      padding-right: 20px !important;
-    }
   }
 }
 :deep(.el-input__wrapper) {
   background-color: var(--el-mask-color-extra-light) !important;
-  --el-input-placeholder-color: var(--el-text-color-primary) !important;
+  // --el-input-placeholder-color: var(--el-text-color-primary) !important;
   --el-input-icon-color: var(--el-text-color-primary) !important;
-  // color: black !important;
-  // border-color: white !important;
 }
 :deep(.el-input input:-webkit-autofill) {
   -webkit-text-fill-color: $color-deep-gray !important;
 }
-// :deep(.el-input__inner) {
-//   background-color: transparent !important;
-// }
-// :deep(.el-input) {
-//   border-color: white !important;
-// }
+
 .tip {
   font-size: 16px;
   float: right;
@@ -927,8 +950,13 @@ onMounted(() => {
   background-size: cover;
   background-position: center;
   position: relative;
+  user-select: none;
+  -webkit-user-select: none; 
+  -moz-user-select: none; 
+  -ms-user-select: none; 
   .login-form {
     width: 80%;
+    min-width: 360px;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -945,7 +973,6 @@ onMounted(() => {
       width: calc(100% - 64px);
       display: inline-block;
       position: absolute;
-      top: 85px;
     }
     .login-page.login-forgetpage {
       left: -100%;
@@ -959,31 +986,16 @@ onMounted(() => {
       left: 100%;
       overflow: hidden;
     }
-    h1 {
-      color: $login-form-h1;
-      font-size: 30px;
-      margin-bottom: 12px;
-      user-select: none;
-    }
-    h2 {
-      color: $login-form-h2;
-      font-size: 16px;
-      margin-bottom: 12px;
-      display: inline-block;
-      user-select: none;
-    }
-    .input-container {
-      width: 100%;
-      padding-left: 40px;
-      padding-right: 40px;
-    }
-    .login-reg {
-      width: 100% !important;
-    }
     .login-btn {
       width: 100%;
       border: 0;
       transition: all 0.3s;
+    }
+    .login-reg {
+      cursor: pointer;
+    }
+    .login-reg:hover {
+      color: #1E90FF;
     }
   }
 }
