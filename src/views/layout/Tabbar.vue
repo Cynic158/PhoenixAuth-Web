@@ -131,7 +131,7 @@ let setDark = () => {
   document.documentElement.className = dark.value ? "dark" : "";
   localStorage.setItem("DARKMODE", dark.value.toString());
 };
-if (window.innerWidth <= 768) {
+if (window.innerWidth <= 768 || (window.matchMedia('(hover: none) and (pointer: coarse)').matches)) {
   // 移动端暗黑模式设置函数
   let setupMobileDarkmode = function () {
     dark.value = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -266,7 +266,7 @@ let logoutFunc = async () => {
 </script>
 
 <style scoped lang="scss">
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 768px), (hover: none) and (pointer: coarse) {
   .funcBtn {
     display: none;
   }
