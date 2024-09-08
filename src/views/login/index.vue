@@ -526,6 +526,7 @@ var onRobotAfterInteractive = async () => {
 // 人机验证成功回调
 var onRobotSuccess = async () => {
   captchaExecutingFlag.value = false;
+  robotVisible.value = false;
 };
 
 // 人机验证错误回调
