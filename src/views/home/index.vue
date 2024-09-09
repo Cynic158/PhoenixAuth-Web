@@ -29,7 +29,7 @@
           </div>
         </template>
         <div class="notice-content" v-html="item.content"></div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <div class="notice-author">
           <span>{{ getTimeStr2(item.create_at) }}</span>
           <div

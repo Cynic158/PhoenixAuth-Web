@@ -63,16 +63,6 @@ export const defaultRoutes = [
       },
     ],
   },
-  {
-    path: "/404",
-    component: () => import("@/views/404/index.vue"),
-    name: "404",
-    meta: {
-      title: "404",
-      hidden: true,
-      icon: "Tools",
-    },
-  },
 ];
 
 // 权限路由
@@ -136,11 +126,8 @@ export const defaultRoutes2 = [
 // 通配路由
 export const anyRoute = {
   path: "/:pathMatch(.*)*",
-  redirect: "/404",
-  name: "notfound",
+  redirect: "/home",
   meta: {
-    title: "404",
     hidden: true,
-    icon: "Tools",
   },
 };

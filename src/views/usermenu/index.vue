@@ -35,7 +35,7 @@
             您可以登入绑定的游戏ID下的所有服务器
           </span>
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-descriptions
           class="margin-top"
           :direction="settingStore.infoDirection"
@@ -129,7 +129,7 @@
             >输入服务器号来绑定您的游戏ID, 绑定前需要先创建 Bot 账号</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-form
           @submit.prevent
           class="limited-form-container"
@@ -171,7 +171,7 @@
           </el-icon>
           <span style="margin-left: 12px; color: dimgray">Slot 允许您登入至其他游戏ID的服务器</span>
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-table
           :data="slotStore.slotData.values"
           class="limited-form-container"
@@ -238,7 +238,7 @@
             >使用兑换码更新您的用户中心账户或新建 Slot</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-form
           @submit.prevent
           class="limited-form-container"
@@ -275,7 +275,7 @@
             限制</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <Precode
           v-if="tokenContent"
           :code="tokenContent"
@@ -322,7 +322,7 @@
             >在此处设置程序的默认游戏名, 可以不设置</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-form
           @submit.prevent
           class="limited-form-container"
@@ -363,8 +363,7 @@
             >更新您的登录密码</span
           >
         </div>
-        <el-divider />
-
+        <el-divider border-style="dashed"/>
         <el-form
           @submit.prevent
           class="password-form-container"
@@ -443,7 +442,7 @@
             >管理绑定至您账户的通行密钥</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-table
           :data="webAuthnStore.credentialsData.values"
           class="limited-form-container"
@@ -497,7 +496,7 @@
           >为您的账户绑定安全邮箱, 绑定后可进行修改密码等操作</span
         >
       </div>
-      <el-divider />
+      <el-divider border-style="dashed"/>
       <el-form
         @submit.prevent
         class="limited-form-container"
@@ -547,37 +546,32 @@
       <template #header>
         <div class="card-header">API Key</div>
       </template>
-      <div>
-        <div class="card-footer">
-          <el-icon>
-            <ChatDotRound />
-          </el-icon>
-          <span style="margin-left: 12px; color: dimgray"
-            >为 API 调用提供的用户凭证, API Key 会给予调用者控制您账户的权限,
-            请勿随意泄露</span
-          >
-        </div>
-        <el-divider />
-        <Precode v-if="userStore.uapi" :code="userStore.uapi" :type="'none'" />
-        <el-button
-          style="margin-top: 12px"
-          type="primary"
-          round
-          @click="apikeyGen"
-          v-if="!userStore.uapi"
-          >生成</el-button
-        >
-        <el-button
-          style="margin-top: 12px"
-          type="danger"
-          round
-          @click="apikeyDis"
-          v-if="userStore.uapi"
-          >删除</el-button
+      <div class="card-footer">
+        <el-icon>
+          <ChatDotRound />
+        </el-icon>
+        <span style="margin-left: 12px; color: dimgray"
+          >为 API 调用提供的用户凭证, API Key 会给予调用者控制您账户的权限,
+          请勿随意泄露</span
         >
       </div>
+      <el-divider border-style="dashed"/>
+      <Precode v-if="userStore.uapi" :code="userStore.uapi" :type="'none'" />
+      <el-button
+        type="primary"
+        round
+        @click="apikeyGen"
+        v-if="!userStore.uapi"
+        >生成</el-button
+      >
+      <el-button
+        type="danger"
+        round
+        @click="apikeyDis"
+        v-if="userStore.uapi"
+        >删除</el-button
+      >
     </el-card>
-
     <el-card style="margin-top: 12px" shadow="hover" v-if="userStore.uhasEmail">
       <template #header>
         <div class="card-header">
@@ -593,7 +587,7 @@
           解绑您的账户的安全邮箱, 解绑后无法进行修改密码等操作
         </span>
       </div>
-      <el-divider />
+      <el-divider border-style="dashed"/>
       <el-form
         @submit.prevent
         class="limited-form-container"
@@ -651,7 +645,7 @@
           立即删除账户的所有信息且无法恢复, 请谨慎操作
         </span>
       </div>
-      <el-divider />
+      <el-divider border-style="dashed"/>
       <el-form
         @submit.prevent
         class="limited-form-container"

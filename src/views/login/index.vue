@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-row style="height: 100vh;">
-      <el-col :span="blankColSpan"></el-col>
+      <el-col :span="24 - loginColSpan"></el-col>
       <el-col
         :span="loginColSpan"
         style="height: 100vh; position: relative"
@@ -300,23 +300,17 @@ let $router = useRouter();
 // 人机验证显示
 const robotVisible = ref(false);
 
-// 登录卡片左侧空白col span
-let blankColSpan = ref(16);
 // 登录卡片col span
 let loginColSpan = ref(8);
 
 // 函数：根据媒体查询调整 span
 const handleMediaQueryChange = () => {
-  const screenWidth = window.innerWidth;
-
   const mediaQuery = window.matchMedia(
     "(hover: none) and (pointer: coarse)"
   );
-  if (screenWidth <= 768 || mediaQuery.matches) {
-    blankColSpan.value = 0;
+  if (window.innerWidth <= 768 || mediaQuery.matches) {
     loginColSpan.value = 24;
   } else {
-    blankColSpan.value = 12;
     loginColSpan.value = 12;
   }
 };
@@ -926,12 +920,6 @@ onMounted(() => {
   -webkit-text-fill-color: $color-deep-gray !important;
 }
 
-.tip {
-  font-size: 16px;
-  float: right;
-  margin-top: 10px;
-  margin-right: 10px;
-}
 .login-container::before {
   content: '';
   position: absolute;

@@ -6,6 +6,7 @@
 import { onMounted } from "vue";
 import { SwaggerUIBundle } from "swagger-ui-dist";
 import "swagger-ui-dist/swagger-ui.css"
+import "@/styles/swagger_dark.css";
 
 onMounted(async () => {
   try {

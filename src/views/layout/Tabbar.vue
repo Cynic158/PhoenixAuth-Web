@@ -25,10 +25,6 @@
     </div>
     <!-- 功能按钮组以及头像 -->
     <div class="tabbar-right">
-      <!-- 刷新按钮 -->
-      <el-button circle size="large" class="funcBtn" @click="refreshFunc">
-        <el-icon size="18"><Refresh /></el-icon>
-      </el-button>
       <!-- 全屏按钮 -->
       <el-button circle size="large" class="funcBtn" @click="screenFunc">
         <el-icon size="18"><FullScreen /></el-icon>
@@ -36,6 +32,17 @@
       <!-- 设置按钮 -->
       <el-button circle size="large" class="funcBtn" @click="showSetting">
         <el-icon size="18"><Setting /></el-icon>
+      </el-button>
+      <!-- 风格切换按钮 -->
+      <el-button
+        circle
+        size="large"
+        :icon="dark ? 'Moon' : 'Sunny'"
+        @click="switchDark"
+      ></el-button>
+      <!-- 刷新按钮 -->
+      <el-button circle size="large" @click="refreshFunc">
+        <el-icon size="18"><Refresh /></el-icon>
       </el-button>
       <!-- 用户名以及退出登录 -->
       <el-dropdown>
@@ -50,14 +57,8 @@
         </template>
       </el-dropdown>
     </div>
-    <el-drawer v-model="drawer" title="设置">
+    <el-drawer v-model="drawer" title="页面设置">
       <div class="setting-container">
-        <el-row class="setting-dark">
-          <el-col :span="12">暗黑模式</el-col>
-          <el-col :span="12">
-            <el-switch v-model="dark" @change="setDark" />
-          </el-col>
-        </el-row>
         <el-row class="setting-theme">
           <el-col :span="12">主题切换</el-col>
           <el-col :span="12">
@@ -127,6 +128,10 @@ let showSetting = () => {
 };
 // 设置暗黑模式
 let dark = ref(localStorage.getItem("DARKMODE") === "true");
+let switchDark = () => {
+  dark.value = !dark.value;
+  setDark();
+};
 let setDark = () => {
   document.documentElement.className = dark.value ? "dark" : "";
   localStorage.setItem("DARKMODE", dark.value.toString());
@@ -276,6 +281,10 @@ let logoutFunc = async () => {
 }
 .tabbar-container {
   //   background-color: blueviolet;
+  user-select: none;
+  -webkit-user-select: none; 
+  -moz-user-select: none; 
+  -ms-user-select: none; 
   border-bottom: 1px solid var(--el-menu-border-color);
   width: 100%;
   height: 100%;
@@ -308,7 +317,6 @@ let logoutFunc = async () => {
   }
   .setting-container {
     padding: 0 10px;
-    .setting-dark,
     .setting-theme,
     .setting-tabbar {
       height: 50px;

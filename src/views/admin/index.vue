@@ -17,7 +17,7 @@
             >使用管理权限生成兑换码</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
 
         <el-form
           @submit.prevent
@@ -78,7 +78,7 @@
             >所有有效用户可无限制地登录到这些服务器</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-table
           :data="unlimitedServerList"
           class="form-container"
@@ -131,7 +131,7 @@
             >通过用户名查询用户详细信息</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
 
         <el-form
           @submit.prevent
@@ -272,7 +272,7 @@
             >禁止用户进行登录, 封禁用户可在用户查询卡片解封</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-form
           @submit.prevent
           class="form-container"
@@ -322,7 +322,7 @@
             >通过用户名设置用户权限</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
 
         <el-form
           @submit.prevent
@@ -376,7 +376,7 @@
             >延长或缩短用户的有效期</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
 
         <el-form
           @submit.prevent
@@ -430,8 +430,7 @@
             >延长或缩短用户的无限制权限 (开发者/商用许可) 有效期</span
           >
         </div>
-        <el-divider />
-
+        <el-divider border-style="dashed"/>
         <el-form
           @submit.prevent
           class="form-container"

@@ -11,7 +11,7 @@
         <p style="display: inline-block; margin-top: 16px">
           如果您在使用过程中遇到问题, 可以向您的代理商寻求帮助
         </p>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-icon>
           <ChatDotRound />
         </el-icon>

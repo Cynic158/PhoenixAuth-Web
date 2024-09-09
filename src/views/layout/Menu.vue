@@ -3,7 +3,7 @@
     <!-- 菜单项 -->
     <el-menu
       :default-active="$route.path"
-      class="el-menu-vertical-demo"
+      class="el-menu-vertical"
       :collapse="settingStore.isCollapse"
       :router="true"
     >
@@ -81,7 +81,7 @@ let closeOpacity = () => {
   // 将所有菜单项的标题隐藏
   (
     document.querySelectorAll(
-      ".el-menu-vertical-demo span"
+      ".el-menu-vertical span"
     ) as NodeListOf<HTMLSpanElement>
   ).forEach((item) => {
     item.style.opacity = "0";
@@ -124,7 +124,7 @@ let openOpacity = () => {
   // 将所有菜单项的标题显示
   (
     document.querySelectorAll(
-      ".el-menu-vertical-demo span"
+      ".el-menu-vertical span"
     ) as NodeListOf<HTMLSpanElement>
   ).forEach((item) => {
     item.style.opacity = "1";
@@ -276,7 +276,7 @@ onMounted(() => {
     display: none !important;
   }
 }
-.el-menu-vertical-demo:not(.el-menu--collapse) {
+.el-menu-vertical:not(.el-menu--collapse) {
   width: $size-menu-width;
   :deep(.el-sub-menu__icon-arrow) {
     display: block;
@@ -286,7 +286,11 @@ onMounted(() => {
     transition: $ani-opacity;
   }
 }
-.el-menu-vertical-demo {
+.el-menu-vertical {
+  user-select: none;
+  -webkit-user-select: none; 
+  -moz-user-select: none; 
+  -ms-user-select: none; 
   background-color: var(--el-bg-color);
   :deep(.el-sub-menu__icon-arrow) {
     display: none;

@@ -17,14 +17,14 @@
             且只能与绑定的游戏ID一致</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-alert
           :title="alertTitle"
           :type="alertType"
           show-icon
           :closable="false"
         />
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <div style="display: inline-flex; align-items: center; flex-wrap: wrap">
           <el-button
             @click="getBotStatus"
@@ -69,7 +69,7 @@
             </span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-alert
           v-if="phoneAlertTitle"
           style="margin-bottom: 16px"
@@ -167,7 +167,7 @@
             >绑定您的邮箱账号</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-alert
           v-if="emailAlertTitle"
           style="margin-bottom: 16px"
@@ -235,7 +235,7 @@
             >可以获得游戏内道具奖励</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
 
         <el-button type="success" round @click="signinBot">签到</el-button>
       </div>
@@ -259,7 +259,7 @@
             >将所有邮件状态变为已读, 且领取邮件奖励</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
 
         <el-button type="success" round @click="getMailReward">领取</el-button>
       </div>
@@ -283,7 +283,7 @@
             >使用游戏内礼包兑换码</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-alert
           v-if="giftCodeAlertTitle"
           style="margin-bottom: 16px"

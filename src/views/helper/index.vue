@@ -16,14 +16,14 @@
             >Bot 账号是进入服务器时使用的账号, 建议使用游客登录</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-alert
           :title="alertTitle"
           :type="alertType"
           show-icon
           :closable="false"
         />
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <div style="display: inline-flex; align-items: center; flex-wrap: wrap">
           <el-button
             @click="getBotStatus"
@@ -72,7 +72,7 @@
             >新建一个游客账号作为Bot</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-alert
           v-if="createAlertTitle"
           style="margin-bottom: 16px"
@@ -120,7 +120,7 @@
             </span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-alert
           v-if="phoneAlertTitle"
           style="margin-bottom: 16px"
@@ -217,7 +217,7 @@
             >使用您提供的邮箱账号作为Bot</span
           >
         </div>
-        <el-divider />
+        <el-divider border-style="dashed"/>
         <el-alert
           v-if="emailAlertTitle"
           style="margin-bottom: 16px"
@@ -285,8 +285,7 @@
             >可以获得游戏内道具奖励</span
           >
         </div>
-        <el-divider />
-
+        <el-divider border-style="dashed"/>
         <el-button type="success" round @click="signinBot">签到</el-button>
       </div>
     </el-card>
@@ -309,8 +308,7 @@
             >更改 Bot 的游戏昵称</span
           >
         </div>
-        <el-divider />
-
+        <el-divider border-style="dashed"/>
         <el-form
           @submit.prevent
           class="botname-form-container"
