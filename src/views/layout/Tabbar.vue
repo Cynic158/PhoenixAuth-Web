@@ -136,22 +136,23 @@ let setDark = () => {
   document.documentElement.className = dark.value ? "dark" : "";
   localStorage.setItem("DARKMODE", dark.value.toString());
 };
-if (window.innerWidth <= 768 || (window.matchMedia('(hover: none) and (pointer: coarse)').matches)) {
-  // 移动端暗黑模式设置函数
-  let setupMobileDarkmode = function () {
-    dark.value = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setDark();
-  };
-  // 监听移动端系统主题变化
-  window
-    .matchMedia("(prefers-color-scheme: dark)")
-    .addEventListener("change", setupMobileDarkmode);
-  // 移动端首次触发
-  setupMobileDarkmode();
-} else {
-  // PC端首次触发
-  setDark();
-}
+// if (window.innerWidth <= 768 || (window.matchMedia('(hover: none) and (pointer: coarse)').matches)) {
+//   // 移动端暗黑模式设置函数
+//   let setupMobileDarkmode = function () {
+//     dark.value = window.matchMedia("(prefers-color-scheme: dark)").matches;
+//     setDark();
+//   };
+//   // 监听移动端系统主题变化
+//   window
+//     .matchMedia("(prefers-color-scheme: dark)")
+//     .addEventListener("change", setupMobileDarkmode);
+//   // 移动端首次触发
+//   setupMobileDarkmode();
+// } else {
+//   // PC端首次触发
+//   setDark();
+// }
+setDark();
 // 设置主题
 let themeColor = ref(localStorage.getItem("THEMECOLOR") || "#409EFF");
 // 颜色预设

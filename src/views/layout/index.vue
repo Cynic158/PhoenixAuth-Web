@@ -112,6 +112,7 @@ onUnmounted(() => {
   height: 100%;
   .el-main {
     padding: 20px;
+    background-color: var(--el-bg-color);
   }
   .el-aside {
     overflow: hidden;
