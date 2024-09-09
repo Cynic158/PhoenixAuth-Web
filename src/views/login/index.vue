@@ -8,7 +8,7 @@
         >
         <el-popover
           :width="326"
-          :visible="robotVisible && currentForm !== 'login'"
+          :visible="!loginFormTransacting && robotVisible && currentForm !== 'login'"
         >
           <template #reference>
             <div class="login-form">
@@ -302,6 +302,8 @@ const robotVisible = ref(false);
 
 // 登录卡片col span
 let loginColSpan = ref(8);
+// 登录卡片动画状态
+let loginFormTransacting = ref(false);
 
 // 函数：根据媒体查询调整 span
 const handleMediaQueryChange = () => {
@@ -313,6 +315,10 @@ const handleMediaQueryChange = () => {
   } else {
     loginColSpan.value = 12;
   }
+};
+
+const handleLoginFormTransitionend = () => {
+  loginFormTransacting.value = false;
 };
 
 let validateUserName = (_: any, value: any, callback: any) => {
@@ -457,6 +463,7 @@ let switchpage = (type: "login" | "reg" | "forget") => {
   // 清空表单内容
   clearForm();
   // 切换页面
+  loginFormTransacting.value = true;
   switch (type) {
     case "reg":
       (document.querySelector(".login-form") as HTMLFormElement).style.height =
@@ -862,6 +869,9 @@ onUnmounted(() => {
 onMounted(() => {
   handleMediaQueryChange(); 
   window.addEventListener("resize", handleMediaQueryChange);
+  document
+    .querySelector(".login-form")
+    ?.addEventListener("transitionend", handleLoginFormTransitionend);
 
   window.onRobotBeforeInteractive = onRobotBeforeInteractive;
   window.onRobotAfterInteractive = onRobotAfterInteractive;
