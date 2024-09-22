@@ -54,7 +54,6 @@
       <template #header>
         <div class="card-header">
           手机登录
-          <el-tag type="danger" style="margin-left: 5px">不推荐</el-tag>
           <el-tag type="warning" style="margin-left: 5px">人机验证</el-tag>  
         </div>
       </template>
@@ -155,7 +154,6 @@
       <template #header>
         <div class="card-header">
           邮箱登录
-          <el-tag type="danger" style="margin-left: 5px">不推荐</el-tag> 
         </div>
       </template>
       <div>

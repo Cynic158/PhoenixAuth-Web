@@ -105,7 +105,6 @@
       <template #header>
         <div class="card-header">
           手机登录
-          <el-tag type="danger" style="margin-left: 5px">不推荐</el-tag>
           <el-tag type="warning" style="margin-left: 5px">人机验证</el-tag>  
         </div>
       </template>
@@ -116,7 +115,7 @@
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
             >
-            使用您提供的手机账号作为Bot
+            使用您提供的手机账号作为Bot (可自行更换皮肤)
             </span
           >
         </div>
@@ -205,7 +204,6 @@
       <template #header>
         <div class="card-header">
           邮箱登录
-          <el-tag type="danger" style="margin-left: 5px">不推荐</el-tag> 
         </div>
       </template>
       <div>
@@ -214,7 +212,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >使用您提供的邮箱账号作为Bot</span
+            >使用您提供的邮箱账号作为Bot (可自行更换皮肤)</span
           >
         </div>
         <el-divider border-style="dashed"/>
