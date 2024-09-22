@@ -8,7 +8,6 @@ enum API {
   BIND_GUEST_ACCOUNT = "/helper/bind_guest_account",
   BIND_EMAIL_ACCOUNT = "/helper/bind_email_account",
   UNBIND = "/helper/unbind",
-  DAILY_SIGN = "/helper/daily_sign",
   BIND_MOBILE_ACCOUNT = "/helper/bind_mobile_account/verify",
   GET_LOGIN_SMSCODE = "/helper/bind_mobile_account/get_sms",
 }
@@ -29,8 +28,6 @@ export const reqBindMobileAccount = (phoneInfo: HelperPhoneInfo) =>
   request.post(API.BIND_MOBILE_ACCOUNT, phoneInfo);
 // 请求解绑机器人
 export const reqUnbind = () => request.get(API.UNBIND);
-// 请求签到
-export const reqSignIn = () => request.get(API.DAILY_SIGN);
 // 获取验证码
 export const reqGetLoginSmscode = (codeInfo: HelperCodeInfo) =>
   request.post(API.GET_LOGIN_SMSCODE, codeInfo);

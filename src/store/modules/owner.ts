@@ -10,7 +10,6 @@ import {
   reqBindEmailAccount,
   reqGetStatus,
   reqUnbind,
-  reqSignIn,
   reqBindMobileAccount,
   reqGetLoginSmscode,
   reqGetMailReward,
@@ -73,16 +72,6 @@ let useOwnerStore = defineStore("owner", () => {
     }
   };
 
-  // 签到
-  let botSignIn = async () => {
-    try {
-      let result = await reqSignIn();
-      return result;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-
   // 获取邮件奖励
   let botGetMailReward = async () => {
     try {
@@ -107,7 +96,6 @@ let useOwnerStore = defineStore("owner", () => {
     getBot,
     botCreateByEmail,
     botUnbind,
-    botSignIn,
     botCreateByPhone,
     botPhoneCode,
     botGetMailReward,

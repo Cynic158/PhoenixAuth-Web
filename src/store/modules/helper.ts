@@ -12,7 +12,6 @@ import {
   reqCreate,
   reqGetStatus,
   reqUnbind,
-  reqSignIn,
   reqBindMobileAccount,
   reqGetLoginSmscode,
 } from "@/api/helper";
@@ -93,23 +92,12 @@ let useHelperStore = defineStore("helper", () => {
     }
   };
 
-  // 签到
-  let botSignIn = async () => {
-    try {
-      let result = await reqSignIn();
-      return result;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-
   return {
     getBot,
     botCreate,
     botCreateByEmail,
     botUnbind,
     botChangeName,
-    botSignIn,
     botCreateByPhone,
     botPhoneCode,
   };

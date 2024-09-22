@@ -270,29 +270,6 @@
     <el-card
       shadow="hover"
       v-if="botInfo.username"
-      v-loading="signLoading || queryLoading"
-      style="margin-top: 12px"
-    >
-      <template #header>
-        <div class="card-header">每日签到</div>
-      </template>
-      <div>
-        <div class="card-footer">
-          <el-icon>
-            <ChatDotRound />
-          </el-icon>
-          <span style="margin-left: 12px; color: dimgray"
-            >可以获得游戏内道具奖励</span
-          >
-        </div>
-        <el-divider border-style="dashed"/>
-        <el-button type="success" round @click="signinBot">签到</el-button>
-      </div>
-    </el-card>
-
-    <el-card
-      shadow="hover"
-      v-if="botInfo.username"
       v-loading="queryLoading"
       style="margin-top: 12px"
     >
@@ -896,33 +873,6 @@ let changeBotName = async () => {
   } catch (error: any) {} finally {
     changeLoading.value = false;
     changeDialogVisible.value = false;
-    getBotStatus();
-  }
-};
-
-// bot签到
-let signLoading = ref(false);
-let signinBot = async () => {
-  try {
-    signLoading.value = true;
-    let result = await helperStore.botSignIn();
-    if (result.success) {
-      ElNotification({
-        type: "success",
-        title: "Success",
-        message: result.message,
-        duration: 3000,
-      });
-    } else {
-      ElNotification({
-        type: "warning",
-        title: "Warning",
-        message: result.message,
-        duration: 3000,
-      });
-    }
-  } catch (error: any) {} finally {
-    signLoading.value = false;
     getBotStatus();
   }
 };
