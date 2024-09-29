@@ -13,8 +13,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >游戏账号是调用部分功能所使用的账号 (不包括进服),
-            且只能与绑定的游戏ID一致</span
+            >游戏账号是调用部分功能所使用的账号 (不包括进服)</span
           >
         </div>
         <el-divider border-style="dashed"/>
