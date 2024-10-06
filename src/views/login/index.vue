@@ -45,7 +45,7 @@
                           :disabled="codeTimes > 0"
                           :loading="loadingflag || captchaExecutingFlag"
                           @click="requestEmailVerifyCode"
-                          size="middle"
+                          size="default"
                         >
                           {{ codeTimes > 0 ? `${codeTimes}s` : captchaExecutingFlag ? "检查中" : loadingflag ? "处理中" : "发送" }}
                         </el-button>
@@ -81,7 +81,7 @@
                       class="login-btn"
                       @click="requestResetPassword"
                       :loading="loadingflag"
-                      size="middle"
+                      size="default"
                       round
                       >{{ loadingflag ? "处理中" : "修改密码" }}</el-button
                     >
@@ -139,7 +139,7 @@
                           class="login-btn"
                           @click="login"
                           :loading="loadingflag"
-                          size="middle"
+                          size="default"
                           round
                           >
                           {{ loadingflag ? "处理中" : "登录" }}
@@ -154,7 +154,7 @@
                           class="login-btn"
                           @click="webauthnLogin"
                           :loading="loadingflag"
-                          size="middle"
+                          size="default"
                           round
                           >{{ loadingflag ? "处理中" : "通行密钥" }}</el-button
                         >
@@ -231,7 +231,7 @@
                       class="login-btn"
                       @click="register"
                       :loading="loadingflag || captchaExecutingFlag"
-                      size="middle"
+                      size="default"
                       round
                       >
                       {{ captchaExecutingFlag ? "检查环境中" : loadingflag ? "处理中" : "注册" }}

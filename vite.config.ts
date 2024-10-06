@@ -100,7 +100,8 @@ export default ({ mode }) =>
       preprocessorOptions: {
         scss: {
           javascriptEnabled: true,
-          additionalData: '@import "./src/styles/variable.scss";',
+          additionalData: '@import "@/styles/variable.scss";',
+          api: 'modern-compiler'
         },
       },
     },

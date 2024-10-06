@@ -216,9 +216,9 @@ let useUserStore = defineStore("user", () => {
       // 获取成功，存储用户信息
       setUser(result);
       const slotStore = useSlotStore();
-      slotStore.slotData.values = result.slots;
+      slotStore.slotData = result.slots;
       const webauthnStore = useWebAuthnStore();
-      webauthnStore.credentialsData.values = result.credentials;
+      webauthnStore.credentialsData = result.credentials;
       // 根据得到的用户路由权限来渲染动态路由
       let filterArr: Array<string> = [];
       if (result.is_admin) {

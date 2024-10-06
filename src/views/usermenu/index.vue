@@ -5,7 +5,7 @@
       placement="top"
       :width="326"
       :virtual-ref="dynamicTurnstileVirtualRef"
-      :visible="robotVisible && dynamicTurnstileVirtualRef?.value"
+      :visible="robotVisible && (dynamicTurnstileVirtualRef !== undefined)"
       virtual-triggering
     >
       <div
@@ -173,7 +173,7 @@
         </div>
         <el-divider border-style="dashed"/>
         <el-table
-          :data="slotStore.slotData.values"
+          :data="slotStore.slotData"
           class="limited-form-container"
           max-height="250"
           :row-class-name="slotsTableRowClassName"
@@ -444,12 +444,12 @@
         </div>
         <el-divider border-style="dashed"/>
         <el-table
-          :data="webAuthnStore.credentialsData.values"
+          :data="webAuthnStore.credentialsData"
           class="limited-form-container"
           max-height="250"
         >
           <el-table-column prop="create_at" label="创建时间" width="160" >
-            <template  #default="scope">
+            <template #default="scope">
               {{ getTimeStr2(scope.row.create_at) }}
             </template>
           </el-table-column>
@@ -822,7 +822,7 @@ let slotStore = useSlotStore()
 // 使用路由
 let $router = useRouter();
 // 人机验证动态虚拟ref
-const dynamicTurnstileVirtualRef = ref();
+let dynamicTurnstileVirtualRef = ref(undefined);
 // 人机验证显示
 const robotVisible = ref(false);
 // 人机验证
@@ -1212,34 +1212,15 @@ let sendEmailCode = async (type: String) => {
   // 如果人机验证正在执行
   if (captchaExecutingFlag.value) {
     // 等待完成
-    let result = await new Promise((resolve) => {
+    await new Promise((resolve) => {
       let timer = setInterval(() => {
         // 如果人机验证完成
         if (!captchaExecutingFlag.value) {
           clearInterval(timer);
           resolve(true);
         }
-        // 如果人机需要人工交互
-        if (robotVisible.value) {
-          clearInterval(timer);
-          resolve(false);
-        }
       }, 200);
     });
-    // 检查结果
-    if (!result) {
-      ElNotification({
-        type: "warning",
-        title: "Warning",
-        message: "需要完成人机验证交互",
-        duration: 3000,
-      });
-      emailCodeLoadingFlag.value = false;
-      return;
-    } else {
-      // 解绑动态虚拟ref
-      dynamicTurnstileVirtualRef.value = null;
-    }
   }
   // 尝试获取验证码
   let captchaToken = turnstile.getResponse();
@@ -1255,6 +1236,8 @@ let sendEmailCode = async (type: String) => {
     refreshCaptcha();
     return;
   }
+  // 解绑动态虚拟ref
+  dynamicTurnstileVirtualRef.value = undefined;
   // 根据类型组装请求参数
   let requestEmailVerifyCodeInfo = {
     email: "",

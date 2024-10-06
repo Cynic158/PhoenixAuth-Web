@@ -41,7 +41,7 @@ let useSettingStore = defineStore("setting", () => {
   // 页码最大数
   let pageCount = ref(7);
   // 分页器大小
-  let pageSmall = ref(false);
+  let pageSize = ref("default");
   // 信息列数
   let infoCol = ref(2);
   // 信息排列方式
@@ -56,14 +56,14 @@ let useSettingStore = defineStore("setting", () => {
     if (screenWidth <= 768 || (window.matchMedia('(hover: none) and (pointer: coarse)').matches)) {
       createDialogWidth.value = "100%";
       pageCount.value = 4;
-      pageSmall.value = true;
+      pageSize.value = "small";
       infoCol.value = 1;
       infoDirection.value = "vertical";
       mmenuFlag.value = true;
     } else {
       createDialogWidth.value = "50%";
       pageCount.value = 7;
-      pageSmall.value = false;
+      pageSize.value = "default";
       infoCol.value = 2;
       infoDirection.value = "horizontal";
       mmenuFlag.value = false;
@@ -94,7 +94,7 @@ let useSettingStore = defineStore("setting", () => {
     refresh,
     createDialogWidth,
     pageCount,
-    pageSmall,
+    pageSize,
     infoCol,
     infoDirection,
     mmenuFlag,

@@ -34,7 +34,7 @@
           <span>{{ getTimeStr2(item.create_at) }}</span>
           <div
             class="notice-option"
-            :style="{ width: settingStore.pageSmall ? '100%' : 'auto' }"
+            :style="{ width: settingStore.pageSize == 'small' ? '100%' : 'auto' }"
           >
             <span>Author: {{ item.author_name }}</span>
             <div
@@ -134,7 +134,7 @@
         v-model:current-page="currentPage"
         :page-size="5"
         :pager-count="5"
-        :small="settingStore.pageSmall"
+        :size="settingStore.pageSize"
         background
         layout="total, prev, pager, next"
         :total="annTotal"
