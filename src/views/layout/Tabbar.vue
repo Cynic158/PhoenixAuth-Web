@@ -86,6 +86,7 @@
       v-model="dialogVisible"
       title="退出登录"
       align-center
+      append-to-body
     >
       <span>确定要退出登录吗？</span>
       <template #footer>
