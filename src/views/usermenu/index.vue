@@ -1212,15 +1212,22 @@ let sendEmailCode = async (type: String) => {
   // 如果人机验证正在执行
   if (captchaExecutingFlag.value) {
     // 等待完成
-    await new Promise((resolve) => {
+    let result = await new Promise((resolve) => {
       let timer = setInterval(() => {
         // 如果人机验证完成
         if (!captchaExecutingFlag.value) {
           clearInterval(timer);
           resolve(true);
         }
-      }, 200);
+        if (dynamicTurnstileVirtualRef.value === undefined){
+          clearInterval(timer);
+          resolve(false);
+        }
+      }, 1000);
     });
+    if (!result) {
+      return;
+    }
   }
   // 尝试获取验证码
   let captchaToken = turnstile.getResponse();
@@ -1870,6 +1877,10 @@ let deleteAccount = async () => {
   }
 };
 
+$router.beforeResolve(() => {
+  dynamicTurnstileVirtualRef.value = undefined;
+});
+
 onUnmounted(() => {
   turnstile.remove();
   window.onRobotBeforeInteractive = null;
@@ -1882,6 +1893,7 @@ onMounted(() => {
   window.onRobotAfterInteractive = onRobotAfterInteractive;
   window.onRobotSuccess = onRobotSuccess;
   window.onRobotError = onRobotError;
+  turnstile.remove();
   turnstile.render(".cf-turnstile");
   getInfo();
   // 设置游戏名

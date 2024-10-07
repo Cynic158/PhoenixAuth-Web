@@ -583,6 +583,7 @@ onMounted(() => {
   window.onRobotAfterInteractive = onRobotAfterInteractive;
   window.onRobotSuccess = onRobotSuccess;
   window.onRobotError = onRobotError;
+  turnstile.remove();
   turnstile.render(".cf-turnstile");
 });
 // 销毁全局变量

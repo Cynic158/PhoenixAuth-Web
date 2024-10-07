@@ -877,6 +877,7 @@ onMounted(() => {
   window.onRobotAfterInteractive = onRobotAfterInteractive;
   window.onRobotSuccess = onRobotSuccess;
   window.onRobotError = onRobotError;
+  turnstile.remove();
   turnstile.render(".cf-turnstile");
 
   // 清空校验提示，防止登出时回到登录页还有校验提示
