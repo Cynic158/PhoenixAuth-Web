@@ -1876,10 +1876,6 @@ let deleteAccount = async () => {
   }
 };
 
-$router.beforeResolve(() => {
-  dynamicTurnstileVirtualRef.value = undefined;
-});
-
 onUnmounted(() => {
   turnstile.remove();
   window.onRobotBeforeInteractive = null;
