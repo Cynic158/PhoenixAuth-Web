@@ -419,7 +419,6 @@
               @click="changePassword"
               >修改密码</el-button
             >
-            <el-button @click="clearForm">清空表单</el-button>
           </el-form-item>
         </el-form>
       </div>

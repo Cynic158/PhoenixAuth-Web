@@ -252,7 +252,6 @@
                 @click="createBotByEmail"
                 >创建</el-button
               >
-              <el-button @click="clearForm">清空表单</el-button>
               <el-button
                 type="warning"
                 @click="verifyLink"
