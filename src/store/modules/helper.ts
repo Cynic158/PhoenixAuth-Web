@@ -16,12 +16,32 @@ import {
   reqGetLoginSmscode,
 } from "@/api/helper";
 
+import { ref } from "vue";
+
 // 创建仓库
 let useHelperStore = defineStore("helper", () => {
+  // 是否设置
+  let set = ref(false);
+
+  // 实名认证url
+  let realname_url = ref("");
+
+  // 游戏昵称
+  let username = ref("");
+
   // 获取机器人游戏信息
   let getBot = async () => {
     try {
       let result = await reqGetStatus();
+      // 设置信息
+      set.value = false;
+      realname_url.value = "";
+      username.value = "";
+      if (result.data) {
+        set.value = result.data.set;
+        realname_url.value = result.data.realname_url;
+        username.value = result.data.username;
+      }
       return result;
     } catch (error) {
       return Promise.reject(error);
@@ -93,6 +113,9 @@ let useHelperStore = defineStore("helper", () => {
   };
 
   return {
+    set,
+    realname_url,
+    username,
     getBot,
     botCreate,
     botCreateByEmail,

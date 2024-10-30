@@ -3,16 +3,16 @@ import request from "@/utils/request";
 
 // 统一管理url
 enum API {
-  QUERY_USER = "/admin/query_user",
-  BAN_USER = "/admin/ban_user",
-  UNBAN_USER = "/admin/unban_user",
-  SET_USER_PERMISSION = "/admin/set_user_permission",
-  EXTEND_USER_EXPIRE_TIME = "/admin/extend_user_expire_time",
-  EXTEND_USER_UNLIMITED_TIME = "/admin/extend_user_unlimited_time",
-  GENERATE_REDEEM_CODE = "/admin/generate_redeem_code",
-  GET_UNLIMITED_RENTAL_SERVER_LIST = "/admin/get_unlimited_rental_server_list",
-  ADD_UNLIMITED_RENTAL_SERVER = "/admin/add_unlimited_rental_server",
-  DELETE_UNLIMITED_RENTAL_SERVER = "/admin/delete_unlimited_rental_server",
+  QUERY_USER = "/admin/user/query",
+  BAN_USER = "/admin/user/ban",
+  UNBAN_USER = "/admin/user/unban",
+  SET_USER_PERMISSION = "/admin/user/set_permission",
+  EXTEND_USER_EXPIRE_TIME = "/admin/user/extend_expire_time",
+  EXTEND_USER_UNLIMITED_TIME = "/admin/user/extend_unlimited_time",
+  GENERATE_REDEEM_CODE = "/admin/redeem_code/generate",
+  GET_UNLIMITED_RENTAL_SERVER_LIST = "/admin/unlimited_server/get_list",
+  ADD_UNLIMITED_RENTAL_SERVER = "/admin/unlimited_server/add",
+  DELETE_UNLIMITED_RENTAL_SERVER = "/admin/unlimited_server/delete",
 }
 
 // 导出api

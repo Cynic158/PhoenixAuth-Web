@@ -726,7 +726,7 @@ let clearAddUnlimitedServerForm = () => {
 // 获取无限制服务器列表
 let getUnlimitedServerList = async () => {
   let res = await adminStore.getUnlimitedRentalServerList();
-  unlimitedServerList.value = res.unlimited_rental_servers;
+  unlimitedServerList.value = res.data;
 };
 // 调用添加无限制服务器弹窗
 let popAddUnlimitedServerDialog = () => {
@@ -878,7 +878,7 @@ let queryUser = async () => {
         message: result.message,
         duration: 3000,
       });
-      setUserInfo(result.user);
+      setUserInfo(result.data);
     } else {
       ElNotification({
         type: "warning",

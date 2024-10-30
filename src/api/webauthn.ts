@@ -7,11 +7,11 @@ import type {
 
 // 统一管理url
 enum API {
-  REGISTER_OPTIONS = "/webauthn/register_options",
-  REGISTER_VERIFICATION = "/webauthn/register_verification",
-  LOGIN_OPTIONS = "/webauthn/login_options",
-  LOGIN_VERIFICATION = "/webauthn/login_verification",
-  REMOVE_BY_ID = "/webauthn/remove_by_id",
+  REGISTER_OPTIONS = "/webauthn/register/options",
+  REGISTER_VERIFICATION = "/webauthn/register/verification",
+  LOGIN_OPTIONS = "/webauthn/login/options",
+  LOGIN_VERIFICATION = "/webauthn/login/verification",
+  REMOVE = "/webauthn/remove",
 }
 
 // 导出api
@@ -27,4 +27,4 @@ export const reqLoginVerification = (data: AuthenticationResponseJSON) =>
   request.post(API.LOGIN_VERIFICATION, data);
 // 请求通行密钥删除
 export const reqRemoveById = (info: WebauthnRemoveInfo) =>
-  request.post(API.REMOVE_BY_ID, info);
+  request.post(API.REMOVE, info);

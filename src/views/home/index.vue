@@ -150,7 +150,7 @@ import useUserStore from "@/store/modules/user";
 // 导入设置仓库
 import useSettingStore from "@/store/modules/setting";
 // 导入公告仓库
-import useAnnouncementStore from "@/store/modules/announcement";
+import useNoticeStore from "@/store/modules/notice";
 import { onMounted, reactive, ref } from "vue";
 // 导入通知
 import { ElNotification, ElMessageBox } from "element-plus";
@@ -164,7 +164,7 @@ let userStore = useUserStore();
 // 使用设置仓库的移动端适配
 let settingStore = useSettingStore();
 // 使用公告仓库的请求
-let annStore = useAnnouncementStore();
+let annStore = useNoticeStore();
 
 // 查看公告
 // 列表加载flag
@@ -185,12 +185,12 @@ let getAnnList = async (page_num: number) => {
     await verticalScroll(scrollEl as Element);
     // 发起请求
     let result = await annStore.getAnn({ page_num, page_size: 5 });
-    if (result.success) {
+    if (result.success && result.data) {
       // 获取成功
       // 更新列表
-      annList.value = result.announcements;
+      annList.value = result.data.notices;
       // 更新总数
-      annTotal.value = result.total;
+      annTotal.value = result.data.total;
     } else {
       ElNotification({
         type: "warning",

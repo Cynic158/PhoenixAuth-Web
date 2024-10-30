@@ -1,6 +1,9 @@
 <template>
   <div>
-    <el-card shadow="hover">
+    <el-card
+      shadow="hover"
+      v-loading="createDefaultLoading || queryLoading"
+      >
       <template #header>
         <div class="card-header">
           <span style="margin-right: 16px">游戏账号</span>
@@ -33,8 +36,7 @@
             >刷新</el-button
           >
           <el-button
-            :disabled="banUnbind"
-            v-if="showUnbind && botInfo.set"
+            v-if="ownerStore.set && isLoaded"
             @click="unbindDialog"
             type="danger"
             round
@@ -46,7 +48,7 @@
 
     <el-card
       shadow="hover"
-      v-show="!botInfo.set"
+      v-show="!ownerStore.set && isLoaded"
       v-loading="createDefaultLoading || queryLoading"
       style="margin-top: 12px"
     >
@@ -100,7 +102,7 @@
               >
               <el-popover
                 :width="326"
-                :visible="!botInfo.set && robotVisible"
+                :visible="!ownerStore.set && robotVisible"
                 placement="right-end"
               >
                 <template #reference>
@@ -146,7 +148,7 @@
 
     <el-card
       shadow="hover"
-      v-if="botInfo.set == false"
+      v-if="!ownerStore.set && isLoaded"
       v-loading="createDefaultLoading || queryLoading"
       style="margin-top: 12px"
     >
@@ -215,7 +217,7 @@
 
     <el-card
       shadow="hover"
-      v-if="botInfo.username"
+      v-if="ownerStore.username && isLoaded"
       v-loading="getMailRewardLoading || queryLoading"
       style="margin-top: 12px"
     >
@@ -241,7 +243,7 @@
       v-loading="giftCodeLoading || queryLoading"
       style="margin-top: 12px"
       shadow="hover"
-      v-if="botInfo.username"
+      v-if="ownerStore.username && isLoaded"
     >
       <template #header>
         <div class="card-header">礼包兑换码</div>
@@ -312,7 +314,6 @@ import useOwnerStore from "@/store/modules/owner";
 // 导入消息通知组件
 import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
-import type { AxiosResponse } from "axios";
 // 使用设置仓库的移动端适配
 import useSettingStore from "@/store/modules/setting";
 let settingStore = useSettingStore();
@@ -323,22 +324,10 @@ let exportedLocalStorage = localStorage;
 // bot信息部分
 // 使用bot仓库
 let ownerStore = useOwnerStore();
-// bot信息
-let botInfo = reactive({
-  set: true,
-  username: "",
-});
-// 设置bot信息
-let setBotInfo = (info: OwnerRobotInfo | AxiosResponse<any, any>) => {
-  botInfo.set = info.set;
-  botInfo.username = info.username;
-};
 // 查询loading
 let queryLoading = ref(false);
-// 解绑按钮禁止
-let banUnbind = ref(false);
-// 首次不显示解绑按钮
-let showUnbind = ref(false);
+// 是否请求完成
+let isLoaded = ref(false);
 // 提示类型
 let alertType = ref("warning");
 // 提示消息
@@ -352,39 +341,22 @@ let verifyLink = () => {
 let getBotStatus = async () => {
   try {
     queryLoading.value = true;
-    banUnbind.value = true;
     let result = await ownerStore.getBot();
     if (result.success) {
       // 获取成功
-      setBotInfo(result);
-      if (result.username) {
+      if (result.data) {
         alertType.value = "success";
         alertTitle.value =
-          result.username +
-          ` [Lv.${result.lv} (${result.exp}/${result.total_exp})]`;
-      } else {
-        alertType.value = "warning";
-        alertTitle.value = result.message;
+          result.data.username +
+          ` [Lv.${result.data.lv} (${result.data.exp}/${result.data.total_exp})]`;
       }
-      if (showUnbind.value == false) {
-        // 任意一次获取信息成功都会导致解绑按钮允许显示
-        showUnbind.value = true;
-      }
-      // 清空表单
-      // clearForm();
-      // clearPhoneForm();
     } else {
-      // 获取失败
-      ElNotification({
-        type: "warning",
-        title: "Warning",
-        message: result.message,
-        duration: 3000,
-      });
+      alertType.value = "warning";
+      alertTitle.value = result.message;
     }
+    isLoaded.value = true;
   } catch (error: any) {} finally {
     queryLoading.value = false;
-    banUnbind.value = false;
   }
 };
 
@@ -482,9 +454,9 @@ let createBotByEmail = async () => {
       emailAlertType.value = "success";
       clearForm();
     } else {
-      if (result.verify_url) {
+      if (result.data && result.data.verify_url) {
         emailAlertType.value = "warning";
-        verify_url = result.verify_url;
+        verify_url = result.data.verify_url;
         emailVerify.value = true;
       }else{
         emailAlertType.value = "error";
@@ -641,9 +613,9 @@ let getCode = async () => {
         }
       }, 1000);
     } else {
-      if (result.verify_url) {
+      if (result.data && result.data.verify_url) {
         phoneAlertType.value = "warning";
-        verify_url = result.verify_url;
+        verify_url = result.data.verify_url;
         phoneVerify.value = true;
       }else{
         phoneAlertType.value = "error";
@@ -676,9 +648,9 @@ let createBotByPhone = async () => {
       getBotStatus();
       clearPhoneForm();
     } else {
-      if (result.verify_url) {
+      if (result.data && result.data.verify_url) {
         phoneAlertType.value = "warning";
-        verify_url = result.verify_url;
+        verify_url = result.data.verify_url;
         phoneVerify.value = true;
       } else {
         phoneAlertType.value = "error";

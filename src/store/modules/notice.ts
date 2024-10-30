@@ -7,10 +7,10 @@ import {
   reqCreate,
   reqDelete,
   reqEdit,
-} from "@/api/announcement";
+} from "@/api/notice";
 
 // 创建仓库
-let useAnnouncementStore = defineStore("announcement", () => {
+let useNoticeStore = defineStore("notice", () => {
   // 获取公告数组
   let getAnn = async (pageInfo: AnnPageInfo) => {
     try {
@@ -22,9 +22,9 @@ let useAnnouncementStore = defineStore("announcement", () => {
   };
 
   // 创建公告
-  let annCreate = async (announcementInfo: AnnouncementInfo) => {
+  let annCreate = async (noticeInfo: NoticeInfo) => {
     try {
-      let result = await reqCreate(announcementInfo);
+      let result = await reqCreate(noticeInfo);
       return result;
     } catch (error) {
       return Promise.reject(error);
@@ -32,9 +32,9 @@ let useAnnouncementStore = defineStore("announcement", () => {
   };
 
   // 编辑公告
-  let annEdit = async (announcementInfo: AnnouncementInfo) => {
+  let annEdit = async (noticeInfo: NoticeInfo) => {
     try {
-      let result = await reqEdit(announcementInfo);
+      let result = await reqEdit(noticeInfo);
       return result;
     } catch (error) {
       return Promise.reject(error);
@@ -59,4 +59,4 @@ let useAnnouncementStore = defineStore("announcement", () => {
   };
 });
 
-export default useAnnouncementStore;
+export default useNoticeStore;

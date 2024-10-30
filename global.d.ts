@@ -66,14 +66,14 @@ declare global {
     note?: string;
   }
 
-  // announcement相关
+  // notice相关
   // 请求公告
   interface AnnPageInfo {
     page_num: number;
     page_size: number;
   }
   // 请求创建或者编辑公告
-  interface AnnouncementInfo {
+  interface NoticeInfo {
     id: number;
     title: string;
     content: string;

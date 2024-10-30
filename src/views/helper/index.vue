@@ -1,6 +1,9 @@
 <template>
   <div>
-    <el-card shadow="hover">
+    <el-card
+      shadow="hover"
+      v-loading="createDefaultLoading || queryLoading"
+      >
       <template #header>
         <div class="card-header">
           <span style="margin-right: 16px">Bot 账号</span>
@@ -33,15 +36,14 @@
             >刷新</el-button
           >
           <el-button
-            v-if="botInfo.realname_url"
+            v-if="helperStore.realname_url"
             @click="realNameLink"
             type="warning"
             round
             >实名</el-button
           >
           <el-button
-            :disabled="banUnbind"
-            v-if="showUnbind && botInfo.set"
+            v-if="helperStore.set && isLoaded"
             @click="unbindDialog"
             type="danger"
             round
@@ -52,7 +54,7 @@
     </el-card>
 
     <el-card
-      v-if="botInfo.set == false"
+      v-if="!helperStore.set && isLoaded"
       v-loading="createDefaultLoading || queryLoading"
       style="margin-top: 12px"
       shadow="hover"
@@ -98,7 +100,7 @@
 
     <el-card
       shadow="hover"
-      v-show="botInfo.set == false"
+      v-show="!helperStore.set && isLoaded"
       v-loading="createDefaultLoading || queryLoading"
       style="margin-top: 12px"
     >
@@ -151,7 +153,7 @@
               >
               <el-popover
                 :width="326"
-                :visible="!botInfo.set && robotVisible"
+                :visible="!helperStore.set && robotVisible"
                 placement="right-end"
               >
                 <template #reference>
@@ -197,7 +199,7 @@
 
     <el-card
       shadow="hover"
-      v-if="botInfo.set == false"
+      v-if="!helperStore.set && isLoaded"
       v-loading="createDefaultLoading || queryLoading"
       style="margin-top: 12px"
     >
@@ -266,7 +268,7 @@
 
     <el-card
       shadow="hover"
-      v-if="botInfo.username"
+      v-if="helperStore.username && isLoaded"
       v-loading="queryLoading"
       style="margin-top: 12px"
     >
@@ -350,7 +352,6 @@ import useHelperStore from "@/store/modules/helper";
 // 导入消息通知组件
 import { ElNotification } from "element-plus";
 import { onMounted, onUnmounted, reactive, ref } from "vue";
-import type { AxiosResponse } from "axios";
 // 使用设置仓库的移动端适配
 import useSettingStore from "@/store/modules/setting";
 let settingStore = useSettingStore();
@@ -363,31 +364,17 @@ let exportedLocalStorage = localStorage;
 // bot信息部分
 // 使用bot仓库
 let helperStore = useHelperStore();
-// bot信息
-let botInfo = reactive({
-  set: true,
-  realname_url: "",
-  username: "",
-});
-// 设置bot信息
-let setBotInfo = (info: HelperRobotInfo | AxiosResponse<any, any>) => {
-  botInfo.set = info.set;
-  botInfo.realname_url = info.realname_url;
-  botInfo.username = info.username;
-};
 // 查询loading
 let queryLoading = ref(false);
 // 解绑按钮禁止
-let banUnbind = ref(false);
-// 首次不显示解绑按钮
-let showUnbind = ref(false);
+let isLoaded = ref(false);
 // 提示类型
 let alertType = ref("warning");
 // 提示消息
 let alertTitle = ref("查询中");
 // 实名链接函数
 let realNameLink = () => {
-  window.open(botInfo.realname_url, "_blank");
+  window.open(helperStore.realname_url, "_blank");
 };
 // 验证链接函数
 let verify_url = ""
@@ -398,39 +385,21 @@ let verifyLink = () => {
 let getBotStatus = async () => {
   try {
     queryLoading.value = true;
-    banUnbind.value = true;
     let result = await helperStore.getBot();
     if (result.success) {
-      // 获取成功
-      setBotInfo(result);
-      if (result.username) {
-        alertType.value = "success";
+      alertType.value = "success";
+      if (result.data) {
         alertTitle.value =
-          result.username +
-          ` [Lv.${result.lv} (${result.exp}/${result.total_exp})]`;
-      } else {
-        alertType.value = "warning";
-        alertTitle.value = result.message;
+        result.data.username +
+        ` [Lv.${result.data.lv} (${result.data.exp}/${result.data.total_exp})]`;
       }
-      if (showUnbind.value == false) {
-        // 任意一次获取信息成功都会导致解绑按钮允许显示
-        showUnbind.value = true;
-      }
-      // 清空表单
-      // clearForm();
-      // clearPhoneForm();
     } else {
-      // 获取失败
-      ElNotification({
-        type: "warning",
-        title: "Warning",
-        message: result.message,
-        duration: 3000,
-      });
+      alertType.value = "warning";
+      alertTitle.value = result.message;
     }
+    isLoaded.value = true;
   } catch (error: any) {} finally {
     queryLoading.value = false;
-    banUnbind.value = false;
   }
 };
 // 初次进入就查询一次
@@ -458,9 +427,9 @@ let createBotByDefault = async () => {
     if (result.success) {
       createAlertType.value = "success";
     } else {
-      if (result.verify_url) {
+      if (result.data && result.data.verify_url) {
         createAlertType.value = "warning";
-        verify_url = result.verify_url;
+        verify_url = result.data.verify_url;
         guestVerify.value = true;
         ElNotification({
           type: "warning",
@@ -561,9 +530,9 @@ let createBotByEmail = async () => {
       emailAlertType.value = "success";
       clearForm();
     } else {
-      if (result.verify_url) {
+      if (result.data && result.data.verify_url) {
         emailAlertType.value = "warning";
-        verify_url = result.verify_url;
+        verify_url = result.data.verify_url;
         emailVerify.value = true;
       }else{
         emailAlertType.value = "error";
@@ -721,9 +690,9 @@ let getCode = async () => {
         }
       }, 1000);
     } else {
-      if (result.verify_url) {
+      if (result.data && result.data.verify_url) {
         phoneAlertType.value = "warning";
-        verify_url = result.verify_url;
+        verify_url = result.data.verify_url;
         phoneVerify.value = true;
       }else{
         phoneAlertType.value = "error";
@@ -757,9 +726,9 @@ let createBotByPhone = async () => {
       getBotStatus();
       clearPhoneForm();
     } else {
-      if (result.verify_url) {
+      if (result.data && result.data.verify_url) {
         phoneAlertType.value = "warning";
-        verify_url = result.verify_url;
+        verify_url = result.data.verify_url;
         phoneVerify.value = true;
       }else{
         phoneAlertType.value = "error";

@@ -864,8 +864,8 @@ let apikeyGen = async () => {
   apikeyLoading.value = true;
   try {
     let result = await userStore.userGenApi();
-    if (result.success) {
-      userStore.uapi = result.api_key;
+    if (result.success && result.data) {
+      userStore.uapi = result.data.api_key;
       ElNotification({
         type: "success",
         title: "Success",
@@ -1456,7 +1456,7 @@ let addWebAuthn = async () => {
     // 仓库请求注册 WebAuthn Options
     let result = await webAuthnStore.registerOptions();
     // 向验证器发起挑战
-    let attResp = await startRegistration(result.publicKey);
+    let attResp = await startRegistration(result.data.publicKey);
     // 仓库发起验证注册请求
     let registerResult = await webAuthnStore.registerVerification(attResp);
     if (registerResult.success) {

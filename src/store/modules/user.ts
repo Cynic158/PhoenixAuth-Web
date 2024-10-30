@@ -212,16 +212,16 @@ let useUserStore = defineStore("user", () => {
   let userInfo = async () => {
     // 发起请求
     let result = await reqGetStatus();
-    if (result.success) {
+    if (result.success && result.data) {
       // 获取成功，存储用户信息
-      setUser(result);
+      setUser(result.data);
       const slotStore = useSlotStore();
-      slotStore.slotData = result.slots;
+      slotStore.slotData = result.data.slots;
       const webauthnStore = useWebAuthnStore();
-      webauthnStore.credentialsData = result.credentials;
+      webauthnStore.credentialsData = result.data.credentials;
       // 根据得到的用户路由权限来渲染动态路由
       let filterArr: Array<string> = [];
-      if (result.is_admin) {
+      if (result.data.is_admin) {
         filterArr = ["admin"];
       }
       let userRoutes = filterRoute(cloneDeep(permissionRoutes), filterArr);

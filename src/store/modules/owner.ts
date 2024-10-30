@@ -16,12 +16,27 @@ import {
   reqUseGiftCode,
 } from "@/api/owner";
 
+import { ref } from "vue";
+
 // 创建仓库
 let useOwnerStore = defineStore("owner", () => {
+  // 是否设置
+  let set = ref(false);
+
+  // 游戏昵称
+  let username = ref("");
+
   // 获取机器人游戏信息
   let getBot = async () => {
     try {
       let result = await reqGetStatus();
+      // 设置信息
+      set.value = false;
+      username.value = "";
+      if (result.data){
+        set.value = result.data.set;
+        username.value = result.data.username;
+      }
       return result;
     } catch (error) {
       return Promise.reject(error);
@@ -93,6 +108,8 @@ let useOwnerStore = defineStore("owner", () => {
   };
 
   return {
+    set,
+    username,
     getBot,
     botCreateByEmail,
     botUnbind,

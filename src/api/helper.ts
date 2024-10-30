@@ -5,11 +5,11 @@ import request from "@/utils/request";
 enum API {
   GET_STATUS = "/helper/get_status",
   CHANGE_NAME = "/helper/change_name",
-  BIND_GUEST_ACCOUNT = "/helper/bind_guest_account",
-  BIND_EMAIL_ACCOUNT = "/helper/bind_email_account",
+  BIND_GUEST_ACCOUNT = "/helper/bind_account/guest",
+  BIND_EMAIL_ACCOUNT = "/helper/bind_account/email",
   UNBIND = "/helper/unbind",
-  BIND_MOBILE_ACCOUNT = "/helper/bind_mobile_account/verify",
-  GET_LOGIN_SMSCODE = "/helper/bind_mobile_account/get_sms",
+  BIND_MOBILE_ACCOUNT = "/helper/bind_account/mobile",
+  GET_LOGIN_SMSCODE = "/helper/bind_account/send_sms",
 }
 
 // 导出api

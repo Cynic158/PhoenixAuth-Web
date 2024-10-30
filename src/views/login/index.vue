@@ -739,7 +739,7 @@ let webauthnLogin = async () => {
     // 仓库请求登录 WebAuthn Options
     let result = await webAuthnStore.loginOptions();
     // 向验证器发起挑战
-    let attResp = await startAuthentication(result.publicKey);
+    let attResp = await startAuthentication(result.data.publicKey);
     // 仓库发起验证注册请求
     let registerResult = await webAuthnStore.loginVerification(attResp);
     if (registerResult.success) {
