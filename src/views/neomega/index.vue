@@ -16,6 +16,7 @@
                 :width="width"
                 :height="height"
                 @end-reached="loadRecord"
+                fixed
               />
             </template>
           </el-auto-resizer>
@@ -170,18 +171,18 @@ let recordColumns = [
     key: "index",
     dataKey: "index",
     title: "Index",
-    width: 200,
+    width: 60,
     cellRenderer: (data: any) => {
       return data.rowIndex + 1;
     }
   },
-  { key: "uid", dataKey: "uid", title: "UID", width: 300 },
-  { key: "server_id", dataKey: "server_id", title: "服务器号", width: 300 },
+  { key: "uid", dataKey: "uid", title: "UID", width: 100 },
+  { key: "server_id", dataKey: "server_id", title: "服务器号", width: 80 },
   {
     key: "product_type",
     dataKey: "product_type",
     title: "产品类型",
-    width: 300,
+    width: 80,
     cellRenderer: (data: any) => {
       switch (data.rowData.product_type) {
         case 1:
@@ -197,7 +198,7 @@ let recordColumns = [
     key: "days",
     dataKey: "days",
     title: "累计天数",
-    width: 300,
+    width: 80,
     align: "center"
   }
 ];
@@ -450,5 +451,8 @@ a {
 }
 .limited-form-container {
   max-width: 600px;
+}
+:deep(.el-table-v2__body) > div:nth-child(1) {
+  overflow: auto !important;
 }
 </style>
