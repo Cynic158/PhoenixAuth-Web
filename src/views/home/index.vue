@@ -74,7 +74,6 @@
       >
         <el-form
           @submit.prevent
-          class="notice-form-container"
           :model="noticeData"
           :rules="rules"
           ref="noticeform"

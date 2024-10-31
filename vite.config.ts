@@ -8,6 +8,7 @@ import path from "path";
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
 import { prismjsPlugin } from "vite-plugin-prismjs";
 import { visualizer } from "rollup-plugin-visualizer";
+import vueJsx from '@vitejs/plugin-vue-jsx';
 
 const getEnvFn = (mode: string, target: string) => {
   return loadEnv(mode, process.cwd())[target];
@@ -52,6 +53,7 @@ export default ({ mode }) =>
     },
     plugins: [
       vue(),
+      vueJsx(),
       prismjsPlugin({
         languages: [
           "bash",

@@ -17,9 +17,11 @@ import store from "./store";
 import { hasBtn } from "./directive/has";
 
 const app = createApp(App);
+
+// 使用全局组件和插件
 app.use(gloablComponent);
 app.use(store);
 app.use(router);
 hasBtn(app);
+
 app.mount("#app");
-// createApp(App).mount('#app')

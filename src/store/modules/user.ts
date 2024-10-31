@@ -222,14 +222,14 @@ let useUserStore = defineStore("user", () => {
       // 根据得到的用户路由权限来渲染动态路由
       let filterArr: Array<string> = [];
       if (result.data.is_admin) {
-        filterArr = ["admin"];
+        filterArr = ["admin", "neomega"];
       }
       let userRoutes = filterRoute(cloneDeep(permissionRoutes), filterArr);
       let removePermission = removeFilter(
         cloneDeep(permissionRoutes),
         filterArr
       );
-      menuRoutes.value = [...defaultRoutes, ...userRoutes, ...defaultRoutes2];
+      menuRoutes.value = [...defaultRoutes, ...defaultRoutes2, ...userRoutes];
       // 动态添加路由
       userRoutes.forEach((route: any) => {
         router.addRoute("layout", route);

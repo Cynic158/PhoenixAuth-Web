@@ -1,5 +1,7 @@
 // 通用路由
-export const defaultRoutes = [
+import { RouteRecordRaw } from 'vue-router';
+
+export const defaultRoutes: RouteRecordRaw[] = [
   {
     path: "/login",
     component: () => import("@/views/login/index.vue"),
@@ -32,9 +34,9 @@ export const defaultRoutes = [
         },
       },
       {
-        path: "/usermenu",
+        path: "/user",
         component: () => import("@/views/usermenu/index.vue"),
-        name: "usermenu",
+        name: "user",
         meta: {
           title: "用户菜单",
           hidden: false,
@@ -42,9 +44,9 @@ export const defaultRoutes = [
         },
       },
       {
-        path: "/robotaccount",
+        path: "/helper",
         component: () => import("@/views/helper/index.vue"),
-        name: "robotaccount",
+        name: "helper",
         meta: {
           title: "Bot 账号",
           hidden: false,
@@ -52,9 +54,9 @@ export const defaultRoutes = [
         },
       },
       {
-        path: "/gameaccount",
+        path: "/owner",
         component: () => import("@/views/owner/index.vue"),
-        name: "gameaccount",
+        name: "owner",
         meta: {
           title: "游戏账号",
           hidden: false,
@@ -77,14 +79,24 @@ export const permissionRoutes = [
       icon: "Tools",
     },
   },
+  {
+    path: "/neomega",
+    component: () => import("@/views/neomega/index.vue"),
+    name: "neomega",
+    meta: {
+      title: "NeOmega",
+      hidden: false,
+      icon: "Tools",
+    },
+  },
 ];
 
 // 通用路由2
 export const defaultRoutes2 = [
   {
-    path: "/agents",
-    component: () => import("@/views/agents/index.vue"),
-    name: "agents",
+    path: "/service",
+    component: () => import("@/views/service/index.vue"),
+    name: "service",
     meta: {
       title: "获取服务",
       hidden: false,
@@ -102,9 +114,9 @@ export const defaultRoutes2 = [
     },
   },
   {
-    path: "/apilist",
-    component: () => import("@/views/apiList/index.vue"),
-    name: "apilist",
+    path: "/openapi",
+    component: () => import("@/views/openapi/index.vue"),
+    name: "openapi",
     meta: {
       title: "OpenAPI",
       hidden: false,
