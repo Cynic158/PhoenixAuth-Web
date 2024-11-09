@@ -68,14 +68,14 @@
       </template>
       <div>
         <span>
-          点击以下链接前往 Eulogist 客户端仓库查看使用教程
+          点击以下链接前往 Eulogist 仓库查看使用教程
         </span>
         <p style="margin-top: 16px">
           <a
             style="white-space: normal; word-wrap: break-word"
-            href="https://github.com/Happy2018new/Eulogist-User-Client"
+            href="https://github.com/YingLunTown-DreamLand/Eulogist-Community"
             target="_blank"
-            >https://github.com/Happy2018new/Eulogist-User-Client
+            >https://github.com/YingLunTown-DreamLand/Eulogist-Community
           </a>
         </p>
       </div>

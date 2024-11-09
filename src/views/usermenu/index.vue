@@ -169,7 +169,7 @@
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px; color: dimgray">Slot 允许您登入至其他游戏ID的服务器</span>
+          <span style="margin-left: 12px; color: dimgray">Slot 均为玩家 Slot, 额外允许您登入至指定玩家拥有的全部服务器 </span>
         </div>
         <el-divider border-style="dashed"/>
         <el-table
