@@ -111,6 +111,42 @@
       </div>
     </el-card>
 
+    <el-card v-loading="codeLoading" style="margin-top: 12px" shadow="hover">
+      <template #header>
+        <div class="card-header">兑换码</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >使用兑换码更新您的用户中心账户或新建 Slot</span
+          >
+        </div>
+        <el-divider border-style="dashed"/>
+        <el-form
+          @submit.prevent
+          class="limited-form-container"
+          :model="codeData"
+          :rules="redeemRules"
+          ref="codeform"
+        >
+          <el-form-item label="兑换码" prop="redeem_code">
+            <el-input
+              v-model="codeData.redeem_code"
+              placeholder="请输入兑换码"
+            />
+          </el-form-item>
+          <el-form-item style="margin-bottom: 0">
+            <el-button type="primary" native-type="submit" @click="codeUse"
+              >兑换</el-button
+            >
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+
     <el-card
       v-loading="bindLoading"
       style="margin-top: 12px"
@@ -159,7 +195,6 @@
       shadow="hover"
       v-loading="slotLoading"
       style="margin-top: 12px"
-      v-if="Number(userStore.upermission) > 0 && userStore.uid != '暂未获取'"
     >
       <template #header>
         <div class="card-header">Slots</div>
@@ -169,7 +204,8 @@
           <el-icon>
             <ChatDotRound />
           </el-icon>
-          <span style="margin-left: 12px; color: dimgray">Slot 均为玩家 Slot, 额外允许您登入至指定玩家拥有的全部服务器 </span>
+          <span style="margin-left: 12px; color: dimgray">Slot 均为玩家 Slot (绑定玩家游戏ID), 且仅在账户有效期内可用
+          </span>
         </div>
         <el-divider border-style="dashed"/>
         <el-table
@@ -222,42 +258,6 @@
             </template>
           </el-table-column>
         </el-table>
-      </div>
-    </el-card>
-
-    <el-card v-loading="codeLoading" style="margin-top: 12px" shadow="hover">
-      <template #header>
-        <div class="card-header">兑换码</div>
-      </template>
-      <div>
-        <div class="card-footer">
-          <el-icon>
-            <ChatDotRound />
-          </el-icon>
-          <span style="margin-left: 12px; color: dimgray"
-            >使用兑换码更新您的用户中心账户或新建 Slot</span
-          >
-        </div>
-        <el-divider border-style="dashed"/>
-        <el-form
-          @submit.prevent
-          class="limited-form-container"
-          :model="codeData"
-          :rules="redeemRules"
-          ref="codeform"
-        >
-          <el-form-item label="兑换码" prop="redeem_code">
-            <el-input
-              v-model="codeData.redeem_code"
-              placeholder="请输入兑换码"
-            />
-          </el-form-item>
-          <el-form-item style="margin-bottom: 0">
-            <el-button type="primary" native-type="submit" @click="codeUse"
-              >兑换</el-button
-            >
-          </el-form-item>
-        </el-form>
       </div>
     </el-card>
 
