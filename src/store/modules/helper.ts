@@ -9,6 +9,7 @@ import { getPasswordLevel } from "@/utils";
 import {
   reqBindEmailAccount,
   reqChangeName,
+  reqJoinRealms,
   reqCreate,
   reqGetStatus,
   reqUnbind,
@@ -84,6 +85,10 @@ let useHelperStore = defineStore("helper", () => {
   let botChangeName = async (username: { username: string }) =>
     reqChangeName(username);
 
+  // 加入山头服务器
+  let botJoinRealms = async (codeInfo: HelperJoinRealmsInfo) =>
+    reqJoinRealms(codeInfo);
+
   return {
     set,
     realname_url,
@@ -93,6 +98,7 @@ let useHelperStore = defineStore("helper", () => {
     botCreateByEmail,
     botUnbind,
     botChangeName,
+    botJoinRealms,
     botPhoneCode,
     botCreateByPhone,
     botGetQrcode,

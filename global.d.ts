@@ -93,6 +93,9 @@ declare global {
     realname_url: string;
     username: string;
   }
+  interface HelperJoinRealmsInfo {
+    code: string;
+  }
 
   // owner相关
   // 请求使用礼包码

@@ -361,6 +361,47 @@
       </div>
     </el-card>
 
+    <el-card
+      shadow="hover"
+      v-if="helperStore.username && isLoaded"
+      v-loading="queryLoading"
+      style="margin-top: 12px"
+    >
+      <template #header>
+        <div class="card-header">山头邀请</div>
+      </template>
+      <div>
+        <div class="card-footer">
+          <el-icon>
+            <ChatDotRound />
+          </el-icon>
+          <span style="margin-left: 12px; color: dimgray"
+            >通过邀请链接加入山头服</span
+          >
+        </div>
+        <el-divider border-style="dashed" />
+        <el-form
+          @submit.prevent
+          class="botname-form-container"
+          :model="joinRealmsData"
+          :rules="joinRealmsRules"
+          ref="joinRealmsForm"
+        >
+          <el-form-item label="邀请链接" prop="code">
+            <el-input
+              v-model="joinRealmsData.code"
+              placeholder="请输入邀请链接"
+            />
+          </el-form-item>
+          <el-form-item style="margin-bottom: 0">
+            <el-button type="primary" native-type="submit" @click="joinRealms"
+              >加入</el-button
+            >
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+
     <el-dialog
       :width="settingStore.createDialogWidth"
       v-model="unbindDialogVisible"
@@ -981,6 +1022,73 @@ let changeBotName = async () => {
     changeLoading.value = false;
     changeDialogVisible.value = false;
     getBotStatus();
+  }
+};
+
+// 加入山头服务器
+const joinRealmsLoading = ref(false);
+// 表单元素
+const joinRealmsForm: EleFormRef = ref(null);
+// 表单数据
+const joinRealmsData = reactive({
+  code: ""
+});
+// 表单校验规则
+const joinRealmsRules = {
+  code: [
+    {
+      required: true,
+      message: "邀请链接不能为空",
+      trigger: "blur"
+    },
+  ]
+};
+// 清空表单
+const clearJoinRealmsForm = () => {
+  joinRealmsData.code = "";
+  // 清空校验提示
+  try {
+    setTimeout(() => {
+      if (joinRealmsForm.value) {
+        joinRealmsForm.value.clearValidate(["code"]);
+      }
+    }, 200);
+  } catch (error) {}
+};
+const realmsPrefix = "mc.163.com/open/mc_realms/?realms=";
+const joinRealms = async () => {
+  try {
+    await joinRealmsForm.value!.validate();
+    joinRealmsLoading.value = true;
+
+    // 从邀请链接中提取邀请码
+    let code = joinRealmsData.code;
+    if (code.includes(realmsPrefix)) {
+      code = code.split(realmsPrefix)[1];
+    }
+
+    const result = await helperStore.botJoinRealms({
+      code: code
+    });
+    if (result.success) {
+      ElNotification({
+        type: "success",
+        title: "Success",
+        message: result.message,
+        duration: 3000
+      });
+      clearJoinRealmsForm();
+    } else {
+      ElNotification({
+        type: "warning",
+        title: "Warning",
+        message: result.message,
+        duration: 3000
+      });
+    }
+  } catch (error: any) {
+  } finally {
+    joinRealmsLoading.value = false;
   }
 };
 </script>
