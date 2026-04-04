@@ -364,7 +364,7 @@
     <el-card
       shadow="hover"
       v-if="helperStore.username && isLoaded"
-      v-loading="queryLoading"
+      v-loading="joinRealmsLoading"
       style="margin-top: 12px"
     >
       <template #header>
