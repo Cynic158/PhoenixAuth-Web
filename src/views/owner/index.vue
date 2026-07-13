@@ -357,7 +357,7 @@
 import useOwnerStore from "@/store/modules/owner";
 // 导入消息通知组件
 import { ElNotification } from "element-plus";
-import { onUnmounted, reactive, ref } from "vue";
+import { onDeactivated, onUnmounted, reactive, ref } from "vue";
 // 使用设置仓库的移动端适配
 import useSettingStore from "@/store/modules/setting";
 let settingStore = useSettingStore();
@@ -575,6 +575,13 @@ let phoneVerify = ref(false);
 onUnmounted(() => {
   turnstile.remove();
 });
+onDeactivated(() => {
+  captchaExecutingFlag.value = false;
+  robotVisible.value = false;
+  codeloadingflag.value = false;
+  codedisabled.value = false;
+  turnstile.remove();
+});
 // 请求人机验证
 const requestWithCaptcha = (
   successCallback: (token: string) => void,
@@ -582,36 +589,42 @@ const requestWithCaptcha = (
 ) => {
   captchaExecutingFlag.value = true;
   turnstile.remove();
-  turnstile.render(".cf-turnstile", {
-    sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
-    theme:
-      exportedLocalStorage.getItem("DARKMODE") === "true" ? "dark" : "light",
-    size: "normal",
-    callback: async (token: string, _: boolean) => {
-      captchaExecutingFlag.value = false;
-      robotVisible.value = false;
-      turnstile.remove();
-      successCallback(token);
-    },
-    "error-callback": () => {
-      ElNotification({
-        type: "warning",
-        title: "Warning",
-        message: "人机验证未通过",
-        duration: 3000
-      });
-      captchaExecutingFlag.value = false;
-      robotVisible.value = false;
-      turnstile.remove();
-      failedCallback();
-    },
-    "before-interactive-callback": () => {
-      robotVisible.value = true;
-    },
-    "after-interactive-callback": () => {
-      robotVisible.value = false;
-    }
-  });
+  try {
+    turnstile.render(".cf-turnstile", {
+      sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
+      theme:
+        exportedLocalStorage.getItem("DARKMODE") === "true" ? "dark" : "light",
+      size: "normal",
+      callback: async (token: string, _: boolean) => {
+        captchaExecutingFlag.value = false;
+        robotVisible.value = false;
+        turnstile.remove();
+        successCallback(token);
+      },
+      "error-callback": () => {
+        ElNotification({
+          type: "warning",
+          title: "Warning",
+          message: "人机验证未通过",
+          duration: 3000
+        });
+        captchaExecutingFlag.value = false;
+        robotVisible.value = false;
+        turnstile.remove();
+        failedCallback();
+      },
+      "before-interactive-callback": () => {
+        robotVisible.value = true;
+      },
+      "after-interactive-callback": () => {
+        robotVisible.value = false;
+      }
+    });
+  } catch (error) {
+    captchaExecutingFlag.value = false;
+    robotVisible.value = false;
+    failedCallback();
+  }
 };
 // 获取验证码
 let getCode = async () => {

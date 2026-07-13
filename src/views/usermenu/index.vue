@@ -504,6 +504,7 @@ import useSettingStore from "@/store/modules/setting";
 import {
   computed,
   onActivated,
+  onDeactivated,
   onMounted,
   onUnmounted,
   reactive,
@@ -552,38 +553,48 @@ const requestWithCaptcha = (
   successCallback: (token: string) => void,
   failedCallback: () => void
 ) => {
+  const clearCaptcha = () => {
+    captchaExecutingFlag.value = false;
+    robotVisible.value = false;
+    turnstile.remove();
+    dynamicTurnstileVirtualRef.value = undefined;
+  };
+
   captchaExecutingFlag.value = true;
   turnstile.remove();
-  turnstile.render(".cf-turnstile", {
-    sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
-    theme:
-      exportedLocalStorage.getItem("DARKMODE") === "true" ? "dark" : "light",
-    size: "normal",
-    callback: async (token: string, _: boolean) => {
-      captchaExecutingFlag.value = false;
-      robotVisible.value = false;
-      turnstile.remove();
-      successCallback(token);
-    },
-    "error-callback": () => {
-      ElNotification({
-        type: "warning",
-        title: "Warning",
-        message: "人机验证未通过",
-        duration: 3000
-      });
-      captchaExecutingFlag.value = false;
-      robotVisible.value = false;
-      turnstile.remove();
-      failedCallback();
-    },
-    "before-interactive-callback": () => {
-      robotVisible.value = true;
-    },
-    "after-interactive-callback": () => {
-      robotVisible.value = false;
-    }
-  });
+  try {
+    turnstile.render(".cf-turnstile", {
+      sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
+      theme:
+        exportedLocalStorage.getItem("DARKMODE") === "true"
+          ? "dark"
+          : "light",
+      size: "normal",
+      callback: async (token: string, _: boolean) => {
+        clearCaptcha();
+        successCallback(token);
+      },
+      "error-callback": () => {
+        ElNotification({
+          type: "warning",
+          title: "Warning",
+          message: "人机验证未通过",
+          duration: 3000
+        });
+        clearCaptcha();
+        failedCallback();
+      },
+      "before-interactive-callback": () => {
+        robotVisible.value = true;
+      },
+      "after-interactive-callback": () => {
+        robotVisible.value = false;
+      }
+    });
+  } catch (error) {
+    clearCaptcha();
+    failedCallback();
+  }
 };
 
 let apikeyLoading = ref(false);
@@ -854,9 +865,6 @@ let sendEmailCode = async (type: String) => {
   //     return;
   //   }
   // }
-  // 尝试获取验证码
-  // 解绑动态虚拟ref
-  dynamicTurnstileVirtualRef.value = undefined;
   // 根据类型组装请求参数
   let requestEmailVerifyCodeInfo = {
     email: "",
@@ -1251,6 +1259,13 @@ let deleteAccount = async () => {
 };
 
 onUnmounted(() => {
+  turnstile.remove();
+});
+onDeactivated(() => {
+  captchaExecutingFlag.value = false;
+  robotVisible.value = false;
+  emailCodeLoadingFlag.value = false;
+  dynamicTurnstileVirtualRef.value = undefined;
   turnstile.remove();
 });
 onMounted(() => {
