@@ -62,6 +62,7 @@ declare global {
     content: string;
     author_name: string;
     create_at: number;
+    is_pinned: boolean;
   }
 
   // helper相关

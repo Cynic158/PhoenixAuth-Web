@@ -21,20 +21,33 @@
         v-for="item in annList"
         :key="item.id"
         shadow="hover"
-        class="notice-container"
+        :class="[
+          'notice-container',
+          { 'notice-container--pinned': item.is_pinned }
+        ]"
       >
         <template #header>
           <div class="card-header">
-            <span>{{ item.title }}</span>
+            <span class="notice-title">{{ item.title }}</span>
+            <el-tag
+              class="pinned-tag"
+              type="warning"
+              effect="dark"
+              v-if="item.is_pinned"
+            >
+              Pinned
+            </el-tag>
           </div>
         </template>
         <div class="notice-content" v-html="item.content"></div>
-        <el-divider border-style="dashed"/>
+        <el-divider border-style="dashed" />
         <div class="notice-author">
           <span>{{ getTimeStr2(item.create_at) }}</span>
           <div
             class="notice-option"
-            :style="{ width: settingStore.pageSize == 'small' ? '100%' : 'auto' }"
+            :style="{
+              width: settingStore.pageSize == 'small' ? '100%' : 'auto'
+            }"
           >
             <span>Author: {{ item.author_name }}</span>
             <div
@@ -42,7 +55,7 @@
             >
               <el-button
                 style="margin-left: 8px"
-                @click="editDialog(item.id, item.title, item.content)"
+                @click="editDialog(item.id, item.title, item.content, item.is_pinned)"
                 v-if="userStore.adminFlag == '是'"
                 type="primary"
                 round
@@ -77,6 +90,7 @@
           :model="noticeData"
           :rules="rules"
           ref="noticeform"
+          label-width="auto"
         >
           <el-form-item label="公告ID" v-if="noticeData.id != 0">
             <el-input v-model="noticeData.id" disabled />
@@ -91,6 +105,9 @@
               type="textarea"
               placeholder="请输入内容, 支持HTML渲染"
             />
+          </el-form-item>
+          <el-form-item class="pinned-form-item" label="置顶" prop="is_pinned">
+            <el-switch v-model="noticeData.is_pinned" />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -195,7 +212,7 @@ let getAnnList = async (page_num: number) => {
         type: "warning",
         title: "Warning",
         message: result.message,
-        duration: 3000,
+        duration: 3000
       });
     }
   } catch (err) {
@@ -251,12 +268,14 @@ let noticeData = reactive({
   id: 0,
   title: "",
   content: "",
+  is_pinned: false
 });
 // 清空表单
 let clearForm = () => {
   noticeData.id = 0;
   noticeData.title = "";
   noticeData.content = "";
+  noticeData.is_pinned = false;
   // 清空校验提示
   try {
     setTimeout(() => {
@@ -276,16 +295,16 @@ const rules = {
     {
       required: true,
       message: "请输入标题",
-      trigger: "blur",
-    },
+      trigger: "blur"
+    }
   ],
   content: [
     {
       required: true,
       message: "请输入内容",
-      trigger: "blur",
-    },
-  ],
+      trigger: "blur"
+    }
+  ]
 };
 // 预览公告
 let previewNotice = async () => {
@@ -298,7 +317,7 @@ let previewNotice = async () => {
       showClose: false,
       callback: () => {
         /* Do nothing */
-      },
+      }
     });
   } catch (error: any) {}
 };
@@ -313,10 +332,12 @@ let submitNotice = async () => {
       id: 0,
       title: "",
       content: "",
+      is_pinned: false
     };
     noticeInfo.id = noticeData.id;
     noticeInfo.title = noticeData.title;
     noticeInfo.content = noticeData.content;
+    noticeInfo.is_pinned = noticeData.is_pinned;
     // 如果id为0，说明是新公告，将调用创建接口，否则调用编辑接口
     if (noticeData.id == 0) {
       // 仓库发起请求
@@ -329,7 +350,7 @@ let submitNotice = async () => {
           type: "success",
           title: "Success",
           message: result.message,
-          duration: 3000,
+          duration: 3000
         });
       } else {
         // 请求失败，消息提示
@@ -337,7 +358,7 @@ let submitNotice = async () => {
           type: "warning",
           title: "Warning",
           message: result.message,
-          duration: 3000,
+          duration: 3000
         });
       }
     } else {
@@ -351,7 +372,7 @@ let submitNotice = async () => {
           type: "success",
           title: "Success",
           message: result.message,
-          duration: 3000,
+          duration: 3000
         });
       } else {
         // 请求失败，消息提示
@@ -359,7 +380,7 @@ let submitNotice = async () => {
           type: "warning",
           title: "Warning",
           message: result.message,
-          duration: 3000,
+          duration: 3000
         });
       }
     }
@@ -371,10 +392,11 @@ let submitNotice = async () => {
   }
 };
 // 编辑公告
-let editDialog = (id: number, title: string, content: string) => {
+let editDialog = (id: number, title: string, content: string, is_pinned: boolean) => {
   noticeData.id = id;
   noticeData.title = title;
   noticeData.content = content;
+  noticeData.is_pinned = is_pinned;
   dialogVisible.value = true;
 };
 
@@ -409,7 +431,7 @@ let deleteNotice = async () => {
         type: "success",
         title: "Success",
         message: result.message,
-        duration: 3000,
+        duration: 3000
       });
     } else {
       deleteDialogVisible.value = false;
@@ -418,7 +440,7 @@ let deleteNotice = async () => {
         type: "warning",
         title: "Warning",
         message: result.message,
-        duration: 3000,
+        duration: 3000
       });
     }
   } catch (error: any) {
@@ -435,6 +457,12 @@ let deleteNotice = async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.pinned-form-item {
+  :deep(.el-form-item__content) {
+    min-height: var(--el-component-size);
+    align-items: center;
+  }
 }
 .card-header {
   display: flex;
@@ -457,6 +485,9 @@ let deleteNotice = async () => {
     justify-content: space-between;
     flex-wrap: wrap;
   }
+}
+.notice-container--pinned {
+  border-color: var(--el-color-warning-light-5);
 }
 .notice-footer {
   display: flex;
