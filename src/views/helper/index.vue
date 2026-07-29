@@ -368,7 +368,7 @@
       style="margin-top: 12px"
     >
       <template #header>
-        <div class="card-header">山头邀请</div>
+        <div class="card-header">加入山头</div>
       </template>
       <div>
         <div class="card-footer">
@@ -376,7 +376,7 @@
             <ChatDotRound />
           </el-icon>
           <span style="margin-left: 12px; color: dimgray"
-            >通过邀请链接加入山头服</span
+            >通过邀请链接申请加入山头服，申请后需要等待服主审核</span
           >
         </div>
         <el-divider border-style="dashed" />
@@ -1086,7 +1086,7 @@ const joinRealms = async () => {
       code = code.split(realmsPrefix)[1];
     }
 
-    const result = await helperStore.botJoinRealms({
+    const result = await helperStore.botSubmitRealmsApplication({
       code: code
     });
     if (result.success) {

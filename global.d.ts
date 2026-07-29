@@ -94,7 +94,7 @@ declare global {
     realname_url: string;
     username: string;
   }
-  interface HelperJoinRealmsInfo {
+  interface HelperSubmitRealmsApplicationInfo {
     code: string;
   }
 

@@ -5,7 +5,7 @@ import request from "@/utils/request";
 enum API {
   GET_STATUS = "/helper/get_status",
   CHANGE_NAME = "/helper/change_name",
-  JOIN_REALMS = "/helper/join_realms",
+  SUBMIT_REALMS_APPLICATION = "/helper/submit_realms_application",
   BIND_GUEST_ACCOUNT = "/helper/bind_account/guest",
   BIND_EMAIL_ACCOUNT = "/helper/bind_account/email",
   UNBIND = "/helper/unbind",
@@ -21,9 +21,9 @@ export const reqGetStatus = () => request.get(API.GET_STATUS);
 // 请求更改机器人的游戏昵称
 export const reqChangeName = (username: { username: string }) =>
   request.post(API.CHANGE_NAME, username);
-// 请求加入山头服务器
-export const reqJoinRealms = (codeInfo: HelperJoinRealmsInfo) =>
-  request.post(API.JOIN_REALMS, codeInfo);
+// 请求提交山头服务器申请
+export const reqSubmitRealmsApplication = (codeInfo: HelperSubmitRealmsApplicationInfo) =>
+  request.post(API.SUBMIT_REALMS_APPLICATION, codeInfo);
 // 请求以游客登录的形式创建机器人
 export const reqCreate = () => request.get(API.BIND_GUEST_ACCOUNT);
 // 请求以网易邮箱账号登录的形式创建机器人
